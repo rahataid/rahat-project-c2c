@@ -34,3 +34,11 @@ testem.log
 Thumbs.db
 
 .nx
+.env
+
+
+#Prisma files
+prisma/dbml
+prisma/docs
+prisma/migrations
+prisma/json

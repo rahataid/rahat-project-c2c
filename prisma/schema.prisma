@@ -1,0 +1,91 @@
+// #region ***** Generators *********//
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  output              = "./dbml"
+  outputName          = "rahat-c2c-model.dbml"
+  projectName         = "Rahat C2C"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "Rahat C2C"
+}
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+  output   = "./docs"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+  output   = "./json"
+}
+
+// #endregion
+
+// #region ***** Data source*********//
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// #endregion
+
+// #region ***** Data Model*********//
+
+// ++++++++++++++++++ START: @c2c/beneficiaries +++++++++++++++++++++++++++
+
+model Beneficiary {
+  id                    Int     @id @default(autoincrement()) @db.Integer()
+  uuid                  String  @db.Uuid()
+  walletAddress         String?
+  extras                Json?
+  beneficiariesReferred Int?    @default(0)
+  referralBeneficiaryId String?
+
+  @@map(name: "tbl_beneficiaries")
+}
+
+// ++++++++++++++++++ END: @c2c/beneficiaries +++++++++++++++++++++++++++
+
+// ++++++++++++++++++ START: @c2c/users +++++++++++++++++++++++++++
+model User {
+  id        Int       @id @default(autoincrement()) @db.Integer()
+  uuid      String    @db.Uuid()
+  email     String    @unique
+  extras    Json?
+  projectId Int
+  projects  Project[] @relation("OwnerProject")
+
+  @@map(name: "tbl_users")
+}
+
+// ++++++++++++++++++ END: @c2c/users +++++++++++++++++++++++++++
+
+// ++++++++++++++++++ START: @c2c/projects +++++++++++++++++++++++++++
+
+model Project {
+  id                   Int       @id @default(autoincrement()) @db.Integer()
+  uuid                 String    @unique @default(uuid())
+  name                 String
+  location             String
+  description          String?
+  extras               Json?
+  contractAddress      String?
+  defaultTokenAddress  String?
+  referredTokenAddress String?
+  isArchived           Boolean   @default(false)
+  owner                User[]    @relation("OwnerProject")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  deletedAt            DateTime?
+
+  @@map(name: "tbl_projects")
+}
+
+// ++++++++++++++++++ END: @c2c/projects +++++++++++++++++++++++++++
+
+// #endregion
