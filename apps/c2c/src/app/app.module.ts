@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule, PrismaService } from '@rumsan/prisma';
-// import { ProjectModule } from '../project/project.module';
+import { SettingsModule } from '@rumsan/settings';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SettingsModule } from '@rumsan/settings';
 
 @Module({
   imports: [PrismaModule, SettingsModule],
