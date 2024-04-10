@@ -4,24 +4,24 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator dbml {
-  provider            = "prisma-dbml-generator"
-  output              = "./dbml"
-  outputName          = "rahat-c2c-model.dbml"
-  projectName         = "Rahat C2C"
-  projectDatabaseType = "PostgreSQL"
-  projectNote         = "Rahat C2C"
-}
+// generator dbml {
+//   provider            = "prisma-dbml-generator"
+//   output              = "./dbml"
+//   outputName          = "rahat-c2c-model.dbml"
+//   projectName         = "Rahat C2C"
+//   projectDatabaseType = "PostgreSQL"
+//   projectNote         = "Rahat C2C"
+// }
 
-generator docs {
-  provider = "node node_modules/prisma-docs-generator"
-  output   = "./docs"
-}
+// generator docs {
+//   provider = "node node_modules/prisma-docs-generator"
+//   output   = "./docs"
+// }
 
-generator jsonSchema {
-  provider = "prisma-json-schema-generator"
-  output   = "./json"
-}
+// generator jsonSchema {
+//   provider = "prisma-json-schema-generator"
+//   output   = "./json"
+// }
 
 // #endregion
 
@@ -43,9 +43,6 @@ model Beneficiary {
   uuid                  String  @db.Uuid()
   walletAddress         String?
   extras                Json?
-  beneficiariesReferred Int?    @default(0)
-  referralBeneficiaryId String?
-
   @@map(name: "tbl_beneficiaries")
 }
 
@@ -59,7 +56,6 @@ model User {
   extras    Json?
   projectId Int
   projects  Project[] @relation("OwnerProject")
-
   @@map(name: "tbl_users")
 }
 
@@ -76,7 +72,8 @@ model Project {
   extras               Json?
   contractAddress      String?
   defaultTokenAddress  String?
-  referredTokenAddress String?
+  startDate            DateTime
+  endDate              DateTime
   isArchived           Boolean   @default(false)
   owner                User[]    @relation("OwnerProject")
   createdAt            DateTime  @default(now())
