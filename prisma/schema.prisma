@@ -36,7 +36,6 @@ datasource db {
 
 // #region ***** Data Model*********//
 
-
 enum SettingDataType {
   STRING
   NUMBER
@@ -45,65 +44,35 @@ enum SettingDataType {
 }
 
 model Setting {
-  name           String          @id @unique
-  value          Json
-  dataType       SettingDataType
-  requiredFields String[]
-  isReadOnly     Boolean         @default(false)
-  isPrivate      Boolean         @default(true)
+  name            String          @id @unique
+  value           Json
+  dataType        SettingDataType
+  requiredFields  String[]
+  isReadOnly      Boolean         @default(false)
+  isPrivate       Boolean         @default(true)
+  description     String?
+  startDate       DateTime
+  endDate         DateTime
+  contractAddress String?
+  location        String?
+  projectManager  String?
+  extras          Json?
+  isArchived      Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  isClosed        Boolean         @default(false)
+  updatedAt       DateTime        @updatedAt
+  deletedAt       DateTime?
 
   @@map("tbl_settings")
 }
 
-
-
 // ++++++++++++++++++ START: @c2c/beneficiaries +++++++++++++++++++++++++++
 
 model Beneficiary {
-  id                    Int     @id @default(autoincrement()) @db.Integer()
-  uuid                  String  @db.Uuid()
-  walletAddress         String?
-  extras                Json?
+  id            Int     @id @default(autoincrement()) @db.Integer()
+  uuid          String  @db.Uuid()
+  walletAddress String?
+  extras        Json?
+
   @@map(name: "tbl_beneficiaries")
 }
-
-// ++++++++++++++++++ END: @c2c/beneficiaries +++++++++++++++++++++++++++
-
-// ++++++++++++++++++ START: @c2c/users +++++++++++++++++++++++++++
-model User {
-  id        Int       @id @default(autoincrement()) @db.Integer()
-  uuid      String    @db.Uuid()
-  email     String    @unique
-  extras    Json?
-  projectId Int
-  projects  Project[] @relation("OwnerProject")
-  @@map(name: "tbl_users")
-}
-
-// ++++++++++++++++++ END: @c2c/users +++++++++++++++++++++++++++
-
-// ++++++++++++++++++ START: @c2c/projects +++++++++++++++++++++++++++
-
-model Project {
-  id                   Int       @id @default(autoincrement()) @db.Integer()
-  uuid                 String    @unique @default(uuid())
-  name                 String
-  location             String
-  description          String?
-  extras               Json?
-  contractAddress      String?
-  defaultTokenAddress  String?
-  startDate            DateTime
-  endDate              DateTime
-  isArchived           Boolean   @default(false)
-  owner                User[]    @relation("OwnerProject")
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  deletedAt            DateTime?
-
-  @@map(name: "tbl_projects")
-}
-
-// ++++++++++++++++++ END: @c2c/projects +++++++++++++++++++++++++++
-
-// #endregion
