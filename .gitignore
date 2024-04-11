@@ -5,6 +5,7 @@ dist
 tmp
 /out-tsc
 
+.npmrc
 # dependencies
 node_modules
 
@@ -42,3 +43,21 @@ prisma/dbml
 prisma/docs
 prisma/migrations
 prisma/json
+
+
+# Hardhat
+node_modules
+.env
+
+# Hardhat files
+cache/
+artifacts/
+
+# TypeChain files
+typechain/
+typechain-types/
+types/
+
+# solidity-coverage files
+coverage/
+coverage.json
