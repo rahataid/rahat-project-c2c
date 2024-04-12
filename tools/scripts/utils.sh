@@ -16,5 +16,11 @@ setup() {
     pnpm seed:c2c $current_dir
     pnpm migrate:dev
     pnpm seed:project
-    # pnpm seed:networks  $current_dir
+    pnpm seed:networks  $current_dir
+}
+
+graph_setup() {
+    pnpm graph:create-local
+    graph_url=$(pnpm graph:deploy-local | grep -o 'http://[^ ]*' | tail -1)
+    export graph_url
 }

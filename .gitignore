@@ -60,3 +60,8 @@ typechain-types/
 # solidity-coverage files
 coverage/
 coverage.json
+
+
+#graph
+generated/
+build/
