@@ -23,8 +23,6 @@ const main = async () => {
     Prisma.sql`SELECT * FROM tbl_settings WHERE name = 'development'`
   );
 
-  console.log({ devSettings });
-
   const privateKey = devSettings.value.privateKey;
 
   await modifyEnv(uuid, privateKey);

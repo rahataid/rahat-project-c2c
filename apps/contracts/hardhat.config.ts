@@ -52,7 +52,7 @@ const config: ExtendedHardhatUserConfig = {
   defaultNetwork: 'hardhat',
 
   solidity: {
-    version: '0.8.23',
+    version: '0.8.20',
     settings: {
       optimizer: {
         enabled: true,
@@ -103,7 +103,7 @@ const config: ExtendedHardhatUserConfig = {
   },
 
   typechain: {
-    outDir: 'types',
+    outDir: 'typechain-types',
     target: 'ethers-v6',
   },
 

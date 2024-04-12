@@ -19,9 +19,9 @@ const privateKeys = {
 export class ContractLib {
   private networkSettings: Config['blockchain'];
   private provider: JsonRpcProvider;
-  private deployedContracts: DeployedContractData;
-  private deployerAddress: any;
-  private adminAddress: any;
+  public deployedContracts: DeployedContractData;
+  public deployerAddress: any;
+  public adminAddress: any;
 
   constructor() {
     const network: string =
@@ -59,7 +59,7 @@ export class ContractLib {
     return this.networkSettings;
   }
 
-  public getWalletfromPrivateKey(privateKey: string) {
+  public getWalletFromPrivateKey(privateKey: string) {
     return new ethers.Wallet(privateKey, this.provider);
   }
 
@@ -146,14 +146,14 @@ export class ContractLib {
 
   public async deployContract(contractName: string, args: any[]) {
     const signer = new ethers.Wallet(this.deployerAddress || '', this.provider);
-    const { abi, byteCode } = await this.getContractArtifacts(contractName);
-    const factory = new ContractFactory(abi, byteCode, signer);
+    const { abi, bytecode } = await this.getContractArtifacts(contractName);
+    const factory = new ContractFactory(abi, bytecode, signer);
     const contract = await factory.deploy(...args);
     const address = await contract.getAddress();
     await contract.waitForDeployment();
     this.delay(500);
     return {
-      blockNumber: contract.deploymentTransaction()?.blockNumber,
+      blockNumber: contract.deploymentTransaction()?.blockNumber ?? 1,
       contract: new ethers.Contract(address, abi, this.provider),
     };
   }

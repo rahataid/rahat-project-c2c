@@ -44,24 +44,12 @@ enum SettingDataType {
 }
 
 model Setting {
-  name            String          @id @unique
-  value           Json
-  dataType        SettingDataType
-  requiredFields  String[]
-  isReadOnly      Boolean         @default(false)
-  isPrivate       Boolean         @default(true)
-  description     String?
-  startDate       DateTime
-  endDate         DateTime
-  contractAddress String?
-  location        String?
-  projectManager  String?
-  extras          Json?
-  isArchived      Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-  isClosed        Boolean         @default(false)
-  updatedAt       DateTime        @updatedAt
-  deletedAt       DateTime?
+  name           String          @id @unique
+  value          Json
+  dataType       SettingDataType
+  requiredFields String[]
+  isReadOnly     Boolean         @default(false)
+  isPrivate      Boolean         @default(true)
 
   @@map("tbl_settings")
 }
