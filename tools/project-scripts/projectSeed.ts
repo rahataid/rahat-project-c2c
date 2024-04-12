@@ -176,9 +176,9 @@ async function main() {
   const seedProject = new SeedProject();
   await seedProject.deployC2CContracts();
   await seedProject.addAppSettings();
-  await seedProject.addContractSettings;
+  await seedProject.addContractSettings();
   await seedProject.addAdminAddress();
-  await seedProject.addGraphSettings;
+  await seedProject.addGraphSettings();
 
   process.exit(0);
 }

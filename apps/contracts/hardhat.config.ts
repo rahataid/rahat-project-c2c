@@ -5,7 +5,7 @@ import type { NetworkUserConfig } from 'hardhat/types';
 
 const coinMarketCapApiKey: string = vars.get('COINMARKETCAP_API_KEY');
 const privateKey: string = vars.get('PRIVATE_KEY');
-const infuraApiKey: string = vars.get('INFURA_API_KEY');
+const infuraApiKey: string = `43babf32ce0346fabbf1c1069418a90b`;
 
 interface DocgenConfig {
   outputDir?: string;
@@ -36,6 +36,9 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       break;
     case 'bsc':
       jsonRpcUrl = 'https://bsc-dataseed1.binance.org';
+      break;
+    case 'sepolia':
+      jsonRpcUrl = `https://sepolia.infura.io/v3/43babf32ce0346fabbf1c1069418a90b`;
       break;
     default:
       jsonRpcUrl = 'https://' + chain + '.infura.io/v3/' + infuraApiKey;
@@ -98,7 +101,10 @@ const config: ExtendedHardhatUserConfig = {
       optimisticEthereum: vars.get('OPTIMISM_API_KEY', ''),
       polygon: vars.get('POLYGONSCAN_API_KEY', ''),
       polygonMumbai: vars.get('POLYGONSCAN_API_KEY', ''),
-      sepolia: vars.get('ETHERSCAN_API_KEY', ''),
+      sepolia: vars.get(
+        'SEPOLIA_API_KEY',
+        '8J72K47SVDN4R3BQ65EJRA4QJ4Z2DMUI9T'
+      ),
     },
   },
 

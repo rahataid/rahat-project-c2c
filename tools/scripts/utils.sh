@@ -15,6 +15,6 @@ create_env() {
 setup() {
     pnpm seed:c2c $current_dir
     pnpm migrate:dev
-    # pnpm seed:project
-    pnpm seed:networks  $current_dir
+    pnpm seed:project
+    # pnpm seed:networks  $current_dir
 }

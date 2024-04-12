@@ -1,0 +1,41 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: RahatDonor
+    network: sepolia
+    source:
+      address: "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F"
+      abi: RahatDonor
+      startBlock: 5680229
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CloseStream
+        - Deposit
+        - ExecuteTransaction
+        - OpenStream
+        - Owner
+        - Withdraw
+      abis:
+        - name: RahatDonor
+          file: ./abis/RahatDonor.json
+      eventHandlers:
+        - event: CloseStream(indexed address)
+          handler: handleCloseStream
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: ExecuteTransaction(indexed address,address,uint256,bytes,uint256,bytes32,bytes)
+          handler: handleExecuteTransaction
+        - event: OpenStream(indexed address,uint256,uint256)
+          handler: handleOpenStream
+        - event: Owner(indexed address,bool)
+          handler: handleOwner
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdraw
+      file: ./src/rahat-donor.ts

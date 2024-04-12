@@ -36,6 +36,8 @@ export class ContractLib {
       ],
     };
 
+    console.log({ network });
+
     this.provider = new JsonRpcProvider(network);
     this.deployerAddress = privateKeys.deployer;
     this.adminAddress = privateKeys.admin;
