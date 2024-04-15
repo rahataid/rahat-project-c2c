@@ -69,7 +69,6 @@ export class ContractLib {
     contractName: string
   ): Promise<ContractArtifacts> {
     const contract = await import(`./contracts/${contractName}.json`);
-    console.log('contract', contract);
     return contract;
   }
 
