@@ -192,13 +192,13 @@ class SeedProject extends ContractLib {
 
 async function main() {
   const seedProject = new SeedProject();
-  // const devSettings = await seedProject.getDevSettings();
-  // const adminAccounts = devSettings.value.adminAccounts;
-  // await seedProject.deployC2CContracts();
+  const devSettings = await seedProject.getDevSettings();
+  const adminAccounts = devSettings.value.adminAccounts;
+  await seedProject.deployC2CContracts();
   await seedProject.addContractSettings();
 
-  // await seedProject.addAppSettings();
-  // await seedProject.addAdminAddress(adminAccounts[0]);
+  await seedProject.addAppSettings();
+  await seedProject.addAdminAddress(adminAccounts[0]);
   // await seedProject.addAdminAddress(
   // '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
   // );
