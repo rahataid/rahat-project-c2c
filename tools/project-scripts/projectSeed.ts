@@ -9,10 +9,10 @@ import { ContractLib } from './_common';
 dotenv.config();
 
 const prismaClient = new PrismaClient({
-    datasourceUrl: process.env.CORE_DATABASE_URL as string
+  datasourceUrl: process.env.CORE_DATABASE_URL as string,
 });
 
-const SETTINGS_DB_NAME = "C2C_DEV"
+const SETTINGS_DB_NAME = 'C2C_DEV';
 
 const prisma = new PrismaService();
 const settings = new SettingsService(prisma);
@@ -40,12 +40,14 @@ class SeedProject extends ContractLib {
     this.projectUUID = process.env.PROJECT_ID as string;
   }
 
-    async getDevSettings() {
-        const [devSettings] = await prismaClient.$queryRaw<any[]>(
-            Prisma.sql([`SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`])
-        )
-        return devSettings
-    }
+  async getDevSettings() {
+    const [devSettings] = await prismaClient.$queryRaw<any[]>(
+      Prisma.sql([
+        `SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`,
+      ])
+    );
+    return devSettings;
+  }
 
   static getUUID() {
     return uuidV4(randomBytes(16));
@@ -157,6 +159,7 @@ class SeedProject extends ContractLib {
       this.projectUUID,
       contractName
     );
+    // console.log('contracts', contracts);
     const data = {
       name: 'Contract',
       value: contracts,
@@ -166,11 +169,11 @@ class SeedProject extends ContractLib {
     await settings.create(data);
   }
 
-  public async addAdminAddress() {
+  public async addAdminAddress(adminAddress: string) {
     await settings.create({
       name: 'Admin',
       value: {
-        address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+        address: adminAddress,
       },
       isPrivate: false,
     });
@@ -189,11 +192,18 @@ class SeedProject extends ContractLib {
 
 async function main() {
   const seedProject = new SeedProject();
+  const devSettings = await seedProject.getDevSettings();
+  const adminAccounts = devSettings.value.adminAccounts;
   await seedProject.deployC2CContracts();
-  await seedProject.addAppSettings();
   await seedProject.addContractSettings();
-  await seedProject.addAdminAddress();
-  await seedProject.addGraphSettings();
+
+  await seedProject.addAppSettings();
+  await seedProject.addAdminAddress(adminAccounts[0]);
+  // await seedProject.addAdminAddress(
+  // '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+  // );
+
+  // await seedProject.addGraphSettings();
 
   process.exit(0);
 }

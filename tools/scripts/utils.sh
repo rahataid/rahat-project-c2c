@@ -25,9 +25,9 @@ graph_setup() {
     export graph_url
 }
 
-seed_settings(){
-    pnpm seed:settings $graph_url
-}
+# seed_settings(){
+#     pnpm seed:settings $graph_url
+# }
 
 drop_pg_database() {
     CONTAINER_NAME=postgres
