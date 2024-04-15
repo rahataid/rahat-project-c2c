@@ -20,7 +20,7 @@ const main = async () => {
 
   console.log(`Project C2C created Successfully with UUID: ${uuid}`);
   const [devSettings] = await prisma.$queryRaw<any[]>(
-    Prisma.sql`SELECT * FROM tbl_settings WHERE name = 'development'`
+    Prisma.sql`SELECT * FROM tbl_settings WHERE name = 'C2C_DEV'`
   );
 
   const privateKey = devSettings.value.privateKey;

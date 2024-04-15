@@ -148,10 +148,15 @@ export class ContractLib {
 
   public async deployContract(contractName: string, args: any[]) {
     const signer = new ethers.Wallet(this.deployerAddress || '', this.provider);
+    console.log({ signer });
     const { abi, bytecode } = await this.getContractArtifacts(contractName);
+    console.log({ abi, bytecode });
     const factory = new ContractFactory(abi, bytecode, signer);
+    console.log({ factory });
     const contract = await factory.deploy(...args);
+    console.log({ contract });
     const address = await contract.getAddress();
+    console.log({ address });
     await contract.waitForDeployment();
     this.delay(500);
     return {
