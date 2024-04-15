@@ -69,6 +69,7 @@ export class ContractLib {
     contractName: string
   ): Promise<ContractArtifacts> {
     const contract = await import(`./contracts/${contractName}.json`);
+    console.log('contract', contract);
     return contract;
   }
 
@@ -89,17 +90,18 @@ export class ContractLib {
     contractName: string[]
   ) {
     const contractDetails: ContractDetails = {};
-    contractName.map(async (contract) => {
-      const address = await this.getDeployedAddress(
-        contractAddressFile,
-        contract
-      );
-      const { abi } = await this.getContractArtifacts(contract);
-      contractDetails[contract] = { address, abi };
-    });
+    await Promise.all(
+      contractName.map(async (contract) => {
+        const address = await this.getDeployedAddress(
+          contractAddressFile,
+          contract
+        );
+        const { abi } = await this.getContractArtifacts(contract);
+        contractDetails[contract] = { address, abi };
+      })
+    );
     return contractDetails;
   }
-
   public async getInterface(contractName: string) {
     const { abi } = await this.getContractArtifacts(contractName);
     const interFace = new ethers.Interface(abi);
