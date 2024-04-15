@@ -1,0 +1,18 @@
+{
+  "RahatDonor": {
+    "address": "0xDC938bb4fcCf1277635e1F51caDfd838929f5225",
+    "startBlock": 1
+  },
+  "RahatToken": {
+    "address": "0x25eAe80D3e0004E0CD4Ed06C91D830f6a37c4E8B",
+    "startBlock": 1
+  },
+  "RahatCommunity": {
+    "address": "0x6FB350210C5A07044f8ec2871C71f693ac315dfc",
+    "startBlock": 1
+  },
+  "C2CProject": {
+    "address": "0xe00EfecE83De5BEb171F2E70633719c8DA518114",
+    "startBlock": 1
+  }
+}
