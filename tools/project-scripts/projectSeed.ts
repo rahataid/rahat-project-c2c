@@ -1,10 +1,18 @@
-import { PrismaService } from '@rumsan/prisma';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { SettingsService } from '@rumsan/extensions/settings';
+import { PrismaService } from '@rumsan/prisma';
 import { randomBytes } from 'crypto';
 import * as dotenv from 'dotenv';
 import { uuidV4 } from 'ethers';
 import { writeFileSync } from 'fs';
 import { ContractLib } from './_common';
+dotenv.config();
+
+const prismaClient = new PrismaClient({
+    datasourceUrl: process.env.CORE_DATABASE_URL as string
+});
+
+const SETTINGS_DB_NAME = "C2C_DEV"
 
 const prisma = new PrismaService();
 const settings = new SettingsService(prisma);
@@ -31,6 +39,13 @@ class SeedProject extends ContractLib {
     super();
     this.projectUUID = process.env.PROJECT_ID as string;
   }
+
+    async getDevSettings() {
+        const [devSettings] = await prismaClient.$queryRaw<any[]>(
+            Prisma.sql([`SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`])
+        )
+        return devSettings
+    }
 
   static getUUID() {
     return uuidV4(randomBytes(16));
