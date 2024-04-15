@@ -24,3 +24,21 @@ graph_setup() {
     graph_url=$(pnpm graph:deploy-local | grep -o 'http://[^ ]*' | tail -1)
     export graph_url
 }
+
+seed_settings(){
+    pnpm seed:settings $graph_url
+}
+
+drop_pg_database() {
+    CONTAINER_NAME=postgres
+    DB_NAME=$1
+    docker exec -i "$CONTAINER_NAME" psql -U "rahat" -c "DROP DATABASE \"rahat-c2c\" WITH (FORCE);"
+}
+
+rm_modules() {
+    rm -rf dist node_modules tmp
+}
+
+gen_prisma() {
+    pnpm prisma:generate
+}
