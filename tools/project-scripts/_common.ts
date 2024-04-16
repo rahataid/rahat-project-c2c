@@ -161,6 +161,7 @@ export class ContractLib {
     };
   }
 
+  // TODO:Refactor this method
   public async callContractMethod(
     contractName: string,
     methodName: string,
@@ -173,6 +174,7 @@ export class ContractLib {
       contractAddressFile,
       deployedContractName
     );
+    console.log('contractAddress', contractAddress);
 
     if (!contractAddress) {
       throw new Error(`Contract ${contractName} not deployed`);
@@ -208,7 +210,7 @@ export class ContractLib {
       ['RahatDonor']
     );
     return new Contract(
-      this.deployerAddress,
+      a.RahatDonor.address,
       a.RahatDonor.abi,
       wallet || this.provider
     );
@@ -233,7 +235,7 @@ export class ContractLib {
       ['RahatCommunity']
     );
     return new Contract(
-      this.deployerAddress,
+      a.RahatCommunity.address,
       a.RahatCommunity.abi,
       wallet || this.provider
     );
