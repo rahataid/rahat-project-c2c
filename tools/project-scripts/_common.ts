@@ -174,7 +174,6 @@ export class ContractLib {
       contractAddressFile,
       contractName
     );
-    console.log('contractAddress', contractAddress);
 
     if (!contractAddress) {
       throw new Error(`Contract ${contractName} not deployed`);

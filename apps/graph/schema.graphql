@@ -272,4 +272,6 @@ type TokenTransfer @entity(immutable: true) {
 type C2CProjectDetail @entity(immutable: false) {
   id: Bytes! # address
   totalClaimsAssigned: BigInt!
+  totalBeneficiaryClaims: BigInt!
+  tokenBudget: BigInt!
 }
