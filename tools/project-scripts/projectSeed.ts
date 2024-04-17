@@ -131,7 +131,6 @@ class SeedProject extends ContractLib {
       'RahatDonor',
       'registerProject',
       [C2CProjectContract.contract.target, true],
-      'RahatDonor',
       this.projectUUID,
       deployerAccount
     );

@@ -101,6 +101,7 @@ export class ContractLib {
     );
     return contractDetails;
   }
+
   public async getInterface(contractName: string) {
     const { abi } = await this.getContractArtifacts(contractName);
     const interFace = new ethers.Interface(abi);
@@ -165,13 +166,12 @@ export class ContractLib {
     contractName: string,
     methodName: string,
     args: any[],
-    deployedContractName: string,
     contractAddressFile: string,
     signer?: Signer
   ) {
     const contractAddress = await this.getDeployedAddress(
       contractAddressFile,
-      deployedContractName
+      contractName
     );
 
     if (!contractAddress) {
@@ -197,5 +197,45 @@ export class ContractLib {
     const result = await method(...args);
     await this.delay(3000);
     return result;
+  }
+
+  public async getDonorWallet() {
+    return this.getWalletFromPrivateKey(this.deployerAddress);
+  }
+  public async getDonorContract(wallet?: Signer) {
+    const a = await this.getDeployedContractDetails(
+      process.env.PROJECT_ID as string,
+      ['RahatDonor']
+    );
+    return new Contract(
+      this.deployerAddress,
+      a.RahatDonor.abi,
+      wallet || this.provider
+    );
+  }
+
+  public getAdminWallet() {
+    return this.getWalletFromPrivateKey(this.adminAddress);
+  }
+
+  public async getAdminContract(wallet?: Signer) {
+    const a = await this.getContractArtifacts('RahatDonor');
+    return new Contract(this.deployerAddress, a.abi, wallet || this.provider);
+  }
+
+  public getCommunityWallet() {
+    return this.getWalletFromPrivateKey(this.deployerAddress);
+  }
+
+  public async getCommunityContract(wallet?: Signer) {
+    const a = await this.getDeployedContractDetails(
+      process.env.PROJECT_ID as string,
+      ['RahatCommunity']
+    );
+    return new Contract(
+      this.deployerAddress,
+      a.RahatCommunity.abi,
+      wallet || this.provider
+    );
   }
 }
