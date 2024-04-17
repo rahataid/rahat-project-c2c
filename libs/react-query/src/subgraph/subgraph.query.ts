@@ -4,14 +4,14 @@ import { useRSQuery } from '@rumsan/react-query';
 import { ProjectDetails } from './graph.query';
 
 export const useProjectDetails = (projectAddress: string) => {
-  const { subgraphQuery } = useC2CSubgraph();
+  const { subgraphClient } = useC2CSubgraph();
   const { queryClient } = useRSQuery();
 
   const query = useQuery(
     {
       queryKey: ['ProjectDetails', projectAddress],
       queryFn: async () => {
-        const { data } = await subgraphQuery.query(ProjectDetails, {
+        const { data } = await subgraphClient.query(ProjectDetails, {
           projectAddress,
         });
         return data;
