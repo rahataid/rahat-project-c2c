@@ -1,6 +1,8 @@
 import { type Signer } from 'ethers';
 import { ContractLib } from './_common';
 
+const tokenMintAmount = 10000;
+
 class ProjectFundManagement extends ContractLib {
   private fundDeployerAddress: Signer;
   private fundAdminAddress: Signer;
@@ -48,17 +50,21 @@ class ProjectFundManagement extends ContractLib {
       this.projectUUID,
       this.fundDeployerAddress
     );
-    console.log({ tx });
+    if (tx)
+      console.log(
+        '----------Project Already Added To Community-------------------'
+      );
     return tx;
   }
 
   public async mintToken(tokenMintAmount: number) {
+    console.log('----------Mining Rahat Token -------------------');
     const mintTx = await this.callContractMethod(
       'RahatDonor',
       'mintTokenAndApprove',
       [
         await this.getRahatTokenAddress(),
-        this.fundAdminAddress,
+        await this.getC2CAddress(),
         tokenMintAmount,
         await this.getC2CAddress(),
       ],
@@ -66,32 +72,12 @@ class ProjectFundManagement extends ContractLib {
       this.fundDeployerAddress
     );
 
-    console.log('mintTx', mintTx);
-
     if (mintTx) {
       console.log('Token minted successfully');
     }
-
-    await this.callContractMethod(
-      'RahatToken',
-      'allowance',
-      [this.fundDeployerAddress, this.fundAdminAddress],
-      this.projectUUID,
-      this.fundDeployerAddress
-    );
-
-    const balance = await this.callContractMethod(
-      'RahatToken',
-      'balanceOf',
-      [await this.getRahatDonorAddress()],
-      this.projectUUID,
-      this.fundDeployerAddress
-    );
-    console.log({ balance });
   }
 
   public async getOwner() {
-    console.log(await this.fundDeployerAddress);
     const owner = await this.callContractMethod(
       'RahatDonor',
       'isOwner',
@@ -102,67 +88,56 @@ class ProjectFundManagement extends ContractLib {
 
     console.log({ owner });
   }
+
   async getProjectBalance() {
-    const deployerToAdminAllowance = await this.callContractMethod(
-      'RahatToken',
-      'allowance',
-      [this.fundDeployerAddress, this.fundAdminAddress],
-      this.projectUUID,
-      this.fundDeployerAddress
-    );
-
-    const adminToProjectAllowance = await this.callContractMethod(
-      'RahatToken',
-      'allowance',
-      [this.fundAdminAddress, await this.getC2CAddress()],
-      this.projectUUID,
-      this.fundDeployerAddress
-    );
-
+    console.log('----------Getting C2C Project Balance-------------------');
     const balance = await this.callContractMethod(
       'RahatDonor',
       'getBalance',
+      [await this.getRahatTokenAddress(), await this.getC2CAddress()],
+      this.projectUUID,
+      this.fundDeployerAddress
+    );
+    console.log(balance.toString());
+  }
+
+  public async acceptToken() {
+    console.log('----------Accepting token from Donor-------------------');
+    const allowanceToProject = await this.callContractMethod(
+      'RahatToken',
+      'allowance',
+      [await this.getRahatDonorAddress(), await this.getC2CAddress()],
+      this.projectUUID,
+      this.fundDeployerAddress
+    );
+
+    const acceptToken = await this.callContractMethod(
+      'C2CProject',
+      'acceptToken',
       [
-        await this.getDeployedAddress(this.projectUUID, 'RahatToken'),
-        this.fundDeployerAddress,
+        this.getRahatDonorAddress(),
+        this.getRahatTokenAddress(),
+        allowanceToProject,
       ],
       this.projectUUID,
       this.fundDeployerAddress
     );
-    return { balance, deployerToAdminAllowance, adminToProjectAllowance };
+    if (acceptToken) {
+      console.log(`Token Accepted Successfully`);
+    }
   }
-  public async acceptToken(tokenMintAmount: number) {
-    return this.callContractMethod(
-      'C2CProject',
-      'acceptToken',
-      [tokenMintAmount],
-      this.projectUUID
-    );
-  }
-
-  // public async checkBalance(): Promise<number> {
-  //   const tokenContract = await this.getErc20Contract();
-  //   console.log('first', this.contracts.CVAProject);
-  //   const balance = await tokenContract.balanceOf(this.contracts.CVAProject);
-  //   return balance;
-  // }
 }
 
 export default ProjectFundManagement;
 
-const tokenMintAmount = 10000;
-
 (async () => {
   const projectFundManagement = new ProjectFundManagement();
   const isRegistered = await projectFundManagement.isRegisteredProject();
-  console.log(isRegistered);
   if (!isRegistered) {
-    const isAdded = await projectFundManagement.addProjectToCommunity();
-    console.log({ isAdded });
+    await projectFundManagement.addProjectToCommunity();
   }
-  await projectFundManagement.mintToken(tokenMintAmount);
-  await projectFundManagement.getProjectBalance();
-  await projectFundManagement.acceptToken(tokenMintAmount);
-  await projectFundManagement.getProjectBalance();
   await projectFundManagement.getOwner();
+  await projectFundManagement.mintToken(tokenMintAmount);
+  await projectFundManagement.acceptToken();
+  await projectFundManagement.getProjectBalance();
 })();
