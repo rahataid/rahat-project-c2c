@@ -9,7 +9,7 @@ dataSources:
     network: mainnet
     source:
       abi: RahatDonor
-      address: "0x30e4d4031643AFBA37203F2DA1761eFB66b4Cfc0"
+      address: '0x30e4d4031643AFBA37203F2DA1761eFB66b4Cfc0'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -45,7 +45,7 @@ dataSources:
     network: mainnet
     source:
       abi: RahatToken
-      address: "0x944658b09b5dA1A9a13eB270bF093DF0454D07BD"
+      address: '0x944658b09b5dA1A9a13eB270bF093DF0454D07BD'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -74,7 +74,7 @@ dataSources:
     network: mainnet
     source:
       abi: RahatCommunity
-      address: "0xfa8de09E61806C95bdB351dCEc34A203a4bb2EFD"
+      address: '0xfa8de09E61806C95bdB351dCEc34A203a4bb2EFD'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -118,7 +118,7 @@ dataSources:
     network: mainnet
     source:
       abi: C2CProject
-      address: "0x0990338C69487C063CB144c64493C6F16a85bDfB"
+      address: '0x0990338C69487C063CB144c64493C6F16a85bDfB'
       startBlock: 1
     mapping:
       kind: ethereum/events
