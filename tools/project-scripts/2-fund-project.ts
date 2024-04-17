@@ -89,20 +89,30 @@ class ProjectFundManagement extends ContractLib {
   }
 
   public async sendFundToProjects(tokenMintAmount: string) {
-    const donorWallet = await this.getDonorWallet();
-    const projectAddress = await this.getDeployedContractDetails(
-      process.env.PROJECT_ID as string,
-      ['C2CProject', 'RahatToken']
-    );
-    console.log('projectAddress', projectAddress);
-    const donorContract = await this.getDonorContract(donorWallet);
-    console.log('this.deployedContracts', this.deployedContracts);
-    console.log('donorContract', donorContract);
-    return donorContract.mintTokenAndApprove(
-      projectAddress.RahatToken.address,
-      projectAddress.C2CProject.address,
-      tokenMintAmount
-    );
+    // const donorWallet = await this.getDonorWallet();
+    // const projectAddress = await this.getDeployedContractDetails(
+    //   process.env.PROJECT_ID as string,
+    //   ['C2CProject', 'RahatToken']
+    // );
+    // console.log('projectAddress', projectAddress);
+    // const donorContract = await this.getDonorContract(donorWallet);
+    // return this.callContractMethod(
+    //   'RahatDonor',
+    //   'mintTokenAndApprove',
+    //   [
+    //     projectAddress.RahatToken.address,
+    //     projectAddress.C2CProject.address,
+    //     tokenMintAmount,
+    //   ],
+    //   'RahatDonor',
+    //   process.env.PROJECT_ID as string,
+    //   donorWallet
+    // );
+    // return donorContract.mintTokenAndApprove(
+    //   projectAddress.RahatToken.address,
+    //   projectAddress.C2CProject.address,
+    //   tokenMintAmount
+    // );
     // const donorContract = await this.getDeployerContract(donorWallet);
     // const deployedContractDetails = await this.getDeployedContractDetails();
     // console.log('first', donorContract);
@@ -110,7 +120,6 @@ class ProjectFundManagement extends ContractLib {
     //   this.this.deployedContracts.CVAProject,
     //   tokenMintAmount
     // );
-
     // const donorContract = await this.getDonorContract(donorWallet);
     // console.log(
     //   'first',
@@ -161,12 +170,12 @@ const tokenMintAmount = '10000';
 
 (async () => {
   const projectFundManagement = new ProjectFundManagement();
-  // const isRegistered = await projectFundManagement.isRegisteredProject();
-  // console.log(isRegistered);
-  // if (!isRegistered) {
-  //   const isAdded = await projectFundManagement.addProjectToCommunity();
-  //   console.log({ isAdded });
-  // }
+  const isRegistered = await projectFundManagement.isRegisteredProject();
+  console.log(isRegistered);
+  if (!isRegistered) {
+    const isAdded = await projectFundManagement.addProjectToCommunity();
+    console.log({ isAdded });
+  }
   await projectFundManagement.mintToken(20);
   await projectFundManagement.getOwner();
   // const addProjectToCommunity =
