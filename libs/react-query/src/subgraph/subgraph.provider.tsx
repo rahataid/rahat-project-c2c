@@ -2,17 +2,17 @@ import { Client } from '@urql/core';
 import React from 'react';
 
 type C2CSubgraphContextType = {
-  subgraphQuery: Client;
-  setSubgraphQuery: React.Dispatch<React.SetStateAction<Client>>;
+  subgraphClient: Client;
+  setSubgraphClient: React.Dispatch<React.SetStateAction<Client>>;
 };
 
 const C2CSubgraphContext = React.createContext<C2CSubgraphContextType>(null);
 
 const C2CSubgraphProvider = ({ children }) => {
-  const [subgraphQuery, setSubgraphQuery] = React.useState<Client>();
+  const [subgraphClient, setSubgraphClient] = React.useState<Client>();
 
   return (
-    <C2CSubgraphContext.Provider value={{ subgraphQuery, setSubgraphQuery }}>
+    <C2CSubgraphContext.Provider value={{ subgraphClient, setSubgraphClient }}>
       {children}
     </C2CSubgraphContext.Provider>
   );
