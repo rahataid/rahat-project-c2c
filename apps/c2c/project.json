@@ -1,0 +1,51 @@
+{
+  "name": "c2c",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/c2c/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "dependsOn": ["mainBuild"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cp -r prisma/ dist/apps/c2c/prisma && node apps/c2c/modify-package.js"
+        ]
+      }
+    },
+    "mainBuild": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "generatePackageJson": true,
+        "outputPath": "dist/apps/c2c",
+        "main": "apps/c2c/src/main.ts",
+        "tsConfig": "apps/c2c/tsconfig.app.json",
+        "assets": [],
+        "webpackConfig": "apps/c2c/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "c2c:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "c2c:build:development"
+        },
+        "production": {
+          "buildTarget": "c2c:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

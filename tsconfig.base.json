@@ -1,0 +1,26 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@rahataid/c2c-query": ["libs/react-query/src/project-actions/index.ts"],
+      "@rahataid/c2c-query/subgraph": [
+        "libs/react-query/src/subgraph/index.ts"
+      ],
+      "@rahataid/contract-c2c": ["libs/contract/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

@@ -1,0 +1,66 @@
+// #region ***** Generators *********//
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  output              = "./dbml"
+  outputName          = "rahat-c2c-model.dbml"
+  projectName         = "Rahat C2C"
+  projectDatabaseType = "PostgreSQL"
+  projectNote         = "Rahat C2C"
+}
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+  output   = "./docs"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+  output   = "./json"
+}
+
+// #endregion
+
+// #region ***** Data source*********//
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// #endregion
+
+// #region ***** Data Model*********//
+
+enum SettingDataType {
+  STRING
+  NUMBER
+  BOOLEAN
+  OBJECT
+}
+
+model Setting {
+  name           String          @id @unique
+  value          Json
+  dataType       SettingDataType
+  requiredFields String[]
+  isReadOnly     Boolean         @default(false)
+  isPrivate      Boolean         @default(true)
+
+  @@map("tbl_settings")
+}
+
+// ++++++++++++++++++ START: @c2c/beneficiaries +++++++++++++++++++++++++++
+
+model Beneficiary {
+  id            Int     @id @default(autoincrement()) @db.Integer()
+  uuid          String  @db.Uuid()
+  walletAddress String?
+  extras        Json?
+
+  @@map(name: "tbl_beneficiaries")
+}
