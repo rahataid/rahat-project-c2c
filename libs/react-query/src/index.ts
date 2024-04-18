@@ -1,2 +1,2 @@
-export * from './lib/project-actions';
-export * from './lib/subgraph';
+export * from './project-actions';
+export * from './subgraph';
