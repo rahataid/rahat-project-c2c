@@ -1,0 +1,31 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Project "Rahat C2C" {
+  database_type: 'PostgreSQL'
+  Note: 'Rahat C2C'
+}
+
+Table tbl_settings {
+  name String [pk]
+  value Json [not null]
+  dataType SettingDataType [not null]
+  requiredFields String[] [not null]
+  isReadOnly Boolean [not null, default: false]
+  isPrivate Boolean [not null, default: true]
+}
+
+Table tbl_beneficiaries {
+  id Int [pk, increment]
+  uuid String [not null]
+  walletAddress String
+  extras Json
+}
+
+Enum SettingDataType {
+  STRING
+  NUMBER
+  BOOLEAN
+  OBJECT
+}
