@@ -66,6 +66,10 @@ class ProjectFundManagement extends ContractLib {
       this.fundDeployerAddress
     );
 
+    // const balance = await this.callContractMethod(
+    //   'Rahat'
+    // )
+
     if (mintTx) {
       console.log('Token minted successfully');
     }

@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@c2c-extensions/*": ["libs/extensions/src/*"],
       "@c2c-subgraph": ["libs/subgraph-query/src/index.ts"],
       "@rahataid/contract-c2c": ["libs/contract/src/index.ts"]
     }
