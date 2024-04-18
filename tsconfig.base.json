@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@rahataid/c2c-query": ["libs/react-query/src/index.ts"],
+      "@rahataid/c2c-query": ["libs/react-query/src/project-actions/index.ts"],
+      "@rahataid/c2c-query/subgraph": [
+        "libs/react-query/src/subgraph/index.ts"
+      ],
       "@rahataid/contract-c2c": ["libs/contract/src/index.ts"]
     }
   },
