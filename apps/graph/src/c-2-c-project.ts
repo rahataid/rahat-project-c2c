@@ -24,7 +24,7 @@ import {
   TokenRegistered,
   TokenTransfer,
 } from '../generated/schema';
-import { getProjectDetails } from './utils';
+// import { getProjectDetails } from './utils';
 
 export function handleBeneficiaryAdded(event: BeneficiaryAddedEvent): void {
   let entity = new BeneficiaryAdded(
@@ -63,7 +63,7 @@ export function handleClaimAssigned(event: ClaimAssignedEvent): void {
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
 
-  getProjectDetails(event.address);
+  // getProjectDetails(event.address);
 
   entity.save();
 }
