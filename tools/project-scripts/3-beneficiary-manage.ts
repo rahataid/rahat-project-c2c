@@ -20,6 +20,10 @@ class BeneficiaryManagement extends ContractLib {
     this.projectUUID = process.env.PROJECT_ID as string;
   }
 
+  private async getRahatTokenAddress(): Promise<string> {
+    return this.getDeployedAddress(this.projectUUID, 'RahatToken');
+  }
+
   async isRegisteredBeneficiary(beneficiaryAddress: string) {
     const tx = await this.callContractMethod(
       'RahatCommunity',
@@ -88,6 +92,19 @@ class BeneficiaryManagement extends ContractLib {
     return tx;
   }
 
+  async isBeneficiary(beneficiaryAddress: string) {
+    console.log(`----------Is Beneficiary -------------------`);
+    const tx = await this.callContractMethod(
+      'C2CProject',
+      'isBeneficiary',
+      [beneficiaryAddress],
+      this.projectUUID,
+      this.fundDeployerAddress
+    );
+    console.log(`${beneficiaryAddress} : ${tx}`);
+    return tx;
+  }
+
   async getBeneficiaryClaims(beneficiaryAddress: string) {
     const tx = await this.callContractMethod(
       'C2CProject',
@@ -96,7 +113,20 @@ class BeneficiaryManagement extends ContractLib {
       this.projectUUID,
       this.fundDeployerAddress
     );
-    console.log({ tx });
+
+    console.log(`Beneficiary Claims(${beneficiaryAddress}): ${tx.toString()}`);
+    return tx;
+  }
+
+  async totalClaimsAssigned() {
+    const tx = await this.callContractMethod(
+      'C2CProject',
+      'totalClaimsAssigned',
+      [],
+      this.projectUUID,
+      this.fundDeployerAddress
+    );
+    console.log(`Total Claims Assigned: ${tx.toString()}`);
     return tx;
   }
 
@@ -105,20 +135,22 @@ class BeneficiaryManagement extends ContractLib {
     const tx = await this.callContractMethod(
       'C2CProject',
       'assignClaims',
-      [beneficiaryAddress, claims],
+      [beneficiaryAddress, this.getRahatTokenAddress(), claims],
       this.projectUUID,
-      this.fundAdminAddress
+      this.fundDeployerAddress
     );
 
     return tx;
   }
 
-  async processTokenTransfer(beneficiaryAddress: string, tokenAmount: number) {
+  async processTransferToBeneficiary(beneficiaryAddress: string) {
     console.log('----------Processing Token Transfer-------------------');
+
+    const claim = await this.getBeneficiaryClaims(beneficiaryAddress);
     const tx = await this.callContractMethod(
       'C2CProject',
       'processTransferToBeneficiary',
-      [beneficiaryAddress, tokenAmount],
+      [beneficiaryAddress, await this.getRahatTokenAddress(), claim],
       this.projectUUID,
       this.fundAdminAddress
     );
@@ -129,33 +161,23 @@ class BeneficiaryManagement extends ContractLib {
     if (isBeneficiary) {
       console.log(
         'Token transfer processed successfully to beneficiary: ',
-        beneficiaryAddress + ' for amount: ' + tokenAmount
+        beneficiaryAddress + ' for amount: ' + claim
       );
     }
 
     return tx;
   }
 
-  async getProjectBalance() {
-    const allowance = await this.callContractMethod(
-      'RahatToken',
-      'allowance',
-      [this.fundDeployerAddress, this.fundAdminAddress],
-      this.projectUUID,
-      this.fundDeployerAddress
-    );
-
+  async getBeneficiaryBalance(beneficiaryAddress: string) {
     const balance = await this.callContractMethod(
       'RahatDonor',
       'getBalance',
-      [
-        await this.getDeployedAddress(this.projectUUID, 'RahatToken'),
-        this.fundDeployerAddress,
-      ],
+      [await this.getRahatTokenAddress(), beneficiaryAddress],
       this.projectUUID,
       this.fundDeployerAddress
     );
-    return { balance, allowance };
+    console.log(`Balance of ${beneficiaryAddress}: ${balance.toString()}`);
+    return balance;
   }
 }
 
@@ -170,46 +192,18 @@ class BeneficiaryManagement extends ContractLib {
       await beneficiaryManagement.addBeneficiary(address);
     }
     await beneficiaryManagement.addBeneficiaryToC2CProject(address);
+    await beneficiaryManagement.isBeneficiary(address);
+    await beneficiaryManagement.assignClaimsToBeneficiary(address, 100);
+    await beneficiaryManagement.getBeneficiaryClaims(address);
   }
 
   await beneficiaryManagement.beneficiaryCount();
-  await beneficiaryManagement.removeBeneficiary(addresses[1]);
-  await beneficiaryManagement.beneficiaryCount();
+  await beneficiaryManagement.totalClaimsAssigned();
+  await beneficiaryManagement.processTransferToBeneficiary(addresses[0]);
+  await beneficiaryManagement.processTransferToBeneficiary(addresses[1]);
 
-  // const projectBalance = await beneficiaryManagement.getProjectBalance();
-  // console.log('projectBalance', projectBalance);
+  await beneficiaryManagement.getBeneficiaryBalance(addresses[0]);
+  await beneficiaryManagement.getBeneficiaryBalance(addresses[1]);
 
-  // const addBeneficiary = await beneficiaryManagement.addBeneficiary(
-  //   beneficiaryAddress
-  // );
-  // console.log({ addBeneficiary });
-
-  // const removeBeneficiary = await beneficiaryManagement.removeBeneficiary(
-  //   beneficiaryAddress
-  // );
-  // console.log({ removeBeneficiary });
-
-  // const beneficiaryClaims = await beneficiaryManagement.getBeneficiaryClaims(
-  //   beneficiaryAddress
-  // );
-  // console.log({ beneficiaryClaims });
-
-  // const assignClaimsToBeneficiary =
-  //   await beneficiaryManagement.assignClaimsToBeneficiary(
-  //     beneficiaryAddress,
-  //     1
-  //   );
-
-  // console.log({ assignClaimsToBeneficiary });
-
-  // console.log('claimsAssigned', {
-  //   beneficiaryClaims,
-  // });
-
-  // const processTokenTransfer = await beneficiaryManagement.processTokenTransfer(
-  //   beneficiaryAddress,
-  //   tokenAmount
-  // );
-  // console.log({ processTokenTransfer });
-  // console.log('claims', { beneficiaryClaims });
+  // await beneficiaryManagement.removeBeneficiary(addresses[1]);
 })();
