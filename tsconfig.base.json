@@ -16,7 +16,10 @@
     "baseUrl": ".",
     "paths": {
       "@c2c-extensions/*": ["libs/extensions/src/*"],
-      "@c2c-subgraph": ["libs/subgraph-query/src/index.ts"],
+      "@rahataid/c2c-query": ["libs/react-query/src/project-actions/index.ts"],
+      "@rahataid/c2c-query/subgraph": [
+        "libs/react-query/src/subgraph/index.ts"
+      ],
       "@rahataid/contract-c2c": ["libs/contract/src/index.ts"]
     }
   },

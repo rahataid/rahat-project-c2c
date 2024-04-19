@@ -268,3 +268,10 @@ type TokenTransfer @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type C2CProjectDetail @entity(immutable: false) {
+  id: Bytes! # address
+  totalClaimsAssigned: BigInt!
+  totalBeneficiaryClaims: BigInt!
+  tokenBudget: BigInt!
+}

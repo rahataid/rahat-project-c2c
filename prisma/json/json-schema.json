@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Setting": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "object",
+            "array",
+            "null"
+          ]
+        },
+        "dataType": {
+          "type": "string",
+          "enum": [
+            "STRING",
+            "NUMBER",
+            "BOOLEAN",
+            "OBJECT"
+          ]
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isReadOnly": {
+          "type": "boolean",
+          "default": false
+        },
+        "isPrivate": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "Beneficiary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "uuid": {
+          "type": "string"
+        },
+        "walletAddress": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extras": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "object",
+            "array",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "setting": {
+      "$ref": "#/definitions/Setting"
+    },
+    "beneficiary": {
+      "$ref": "#/definitions/Beneficiary"
+    }
+  }
+}
