@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { SettingsService } from '@rumsan/settings';
 import { lowerCaseObjectKeys } from '../utils/utility';
-import { CreateSettingDto, GetSettingDto } from './dtos/create.settings.dto';
+import { CreateSettingDto, GetSettingDto } from '@c2c-extensions/dtos';
 
 @Injectable()
 export class AppService {
   constructor(private readonly settingService: SettingsService) {
-    this.refreshSettings();
+    // this.refreshSettings();
   }
 
   getData(): { message: string } {
@@ -28,14 +28,14 @@ export class AppService {
     return lowerCaseObjectKeys(res);
   }
 
-  async refreshSettings() {
-    const d = await this.settingService.listPublic();
-    require('./settings.config').setSettings(d);
-  }
+  // async refreshSettings() {
+  //   const d = await this.settingService.listPublic();
+  //   require('./settings.config').setSettings(d);
+  // }
 
-  static generateMessagePattern(patternPrefix: string) {
-    const settings =
-      require('./settings.config').getSettings('PROJECT_SETTINGS');
-    return { cmd: patternPrefix, uuid: settings.UUID || '' };
-  }
+  // static generateMessagePattern(patternPrefix: string) {
+  //   const settings =
+  //     require('./settings.config').getSettings('PROJECT_SETTINGS');
+  //   return { cmd: patternPrefix, uuid: settings.UUID || '' };
+  // }
 }

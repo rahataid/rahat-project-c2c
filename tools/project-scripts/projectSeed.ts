@@ -40,15 +40,6 @@ class SeedProject extends ContractLib {
     this.projectUUID = process.env.PROJECT_ID as string;
   }
 
-  async getDevSettings() {
-    const [devSettings] = await prismaClient.$queryRaw<any[]>(
-      Prisma.sql([
-        `SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`,
-      ])
-    );
-    return devSettings;
-  }
-
   static getUUID() {
     return uuidV4(randomBytes(16));
   }
@@ -136,23 +127,6 @@ class SeedProject extends ContractLib {
     );
   }
 
-  public async addAppSettings() {
-    await settings.create({
-      name: 'Blockchain',
-      value: {
-        chainId: process.env.CHAIN_ID,
-        rpcUrl: process.env.NETWORK_PROVIDER,
-        chainName: process.env.CHAIN_NAME,
-        networkId: process.env.NETWORK_ID,
-        nativeCurrency: {
-          name: process.env.CURRENCY_NAME,
-          symbol: process.env.CURRENCY_SYMBOL,
-        },
-      },
-      isPrivate: false,
-    });
-  }
-
   public async addContractSettings() {
     const contracts = await this.getDeployedContractDetails(
       this.projectUUID,
@@ -167,42 +141,12 @@ class SeedProject extends ContractLib {
 
     await settings.create(data);
   }
-
-  public async addAdminAddress(adminAddress: string) {
-    await settings.create({
-      name: 'Admin',
-      value: {
-        address: adminAddress,
-      },
-      isPrivate: false,
-    });
-  }
-
-  public async addGraphSettings() {
-    await settings.create({
-      name: 'Subgraph',
-      value: {
-        url: 'http://localhost:8000/subgraphs/name/rahat/c2c',
-      },
-      isPrivate: false,
-    });
-  }
 }
 
 async function main() {
   const seedProject = new SeedProject();
-  const devSettings = await seedProject.getDevSettings();
-  const adminAccounts = devSettings.value.adminAccounts;
   await seedProject.deployC2CContracts();
   await seedProject.addContractSettings();
-
-  await seedProject.addAppSettings();
-  await seedProject.addAdminAddress(adminAccounts[0]);
-  // await seedProject.addAdminAddress(
-  // '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-  // );
-
-  // await seedProject.addGraphSettings();
 
   process.exit(0);
 }

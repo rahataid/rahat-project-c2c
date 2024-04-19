@@ -12,6 +12,7 @@
     "seed:c2c": "ts-node ./tools/scripts/seed.c2c.ts",
     "seed:project": "ts-node ./tools/project-scripts/projectSeed",
     "seed:networks": "ts-node ./tools/project-scripts/networksSeed",
+    "seed:settings": "ts-node ./tools/project-scripts/settingsSeed",
     "fund:projects": "ts-node apps/c2c/scripts/2-fund-projects",
     "charge:beneficiaries": "ts-node apps/c2c/scripts/4-charge-beneficiaries",
     "redeem:voucher": "ts-node apps/c2c/scripts/5-redeem-voucher",
@@ -36,7 +37,7 @@
     "graph:deploy": "cd ./apps/graph && graph deploy --node https://api.thegraph.com/deploy/ anupamakoirala/c2c",
     "graph:create-local": "cd ./apps/graph && graph create --node http://localhost:8020/ rahat/c2c",
     "graph:remove-local": "cd ./apps/graph && graph remove --node http://localhost:8020/ rahat/c2c",
-    "graph:deploy-local": "cd ./apps/graph && graph deploy -l v0.0.1 --node http://localhost:8020/ --ipfs http://localhost:5001 --network mainnet rahat/c2c",
+    "graph:deploy-local": "cd ./apps/graph && graph deploy -l v0.0.1 --node http://localhost:8020/ --ipfs http://localhost:5001  rahat/c2c",
     "graph:studio:deploy-mumbai": "cd ./apps/graph && graph deploy --studio --network mumbai c2c-dev",
     "graph:test": "cd ./apps/graph && graph test"
   },
