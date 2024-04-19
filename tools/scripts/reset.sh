@@ -2,5 +2,6 @@
 
 source ./tools/scripts/utils.sh
 
-rm_modules
 drop_pg_database
+
+pnpm clean
