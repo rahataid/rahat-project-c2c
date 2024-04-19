@@ -128,7 +128,7 @@ export class ContractLib {
     return contract;
   }
 
-  public async generateMutiCallData(
+  public async generateMultiCallData(
     contractName: string,
     functionName: string,
     callData: any

@@ -8,6 +8,5 @@ create_env
 gen_prisma
 setup
 graph_setup
-# seed_settings
+seed_settings
 
-echo $graph_url
