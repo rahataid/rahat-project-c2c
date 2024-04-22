@@ -14,7 +14,7 @@
       "outputs": ["{projectRoot}/dist"]
     },
     "mainBuild": {
-      "dependsOn": ["subgraph-query:build"]
+      "dependsOn": ["react-query:build"]
     },
     "lint": {
       "dependsOn": ["^lint"],

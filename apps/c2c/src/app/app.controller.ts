@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
 import { MessagePattern } from '@nestjs/microservices';
-import { JOBS } from '@c2c-extensions/constants';
+import { JOBS } from '@rahataid/c2c-extensions/constants';
 import { AppService } from './app.service';
 import { CreateSettingDto, GetSettingDto } from './dtos/create.settings.dto';
 

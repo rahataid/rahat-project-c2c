@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CONTROLLERS, JOBS } from '@c2c-extensions/constants';
+import { CONTROLLERS, JOBS } from '@rahataid/c2c-extensions/constants';
 import { BeneficiaryService } from './beneficiary.service';
 import {
   CreateBeneficiaryDto,
   UpdateBeneficiaryDto,
-} from '@c2c-extensions/dtos/beneficiary';
+} from '@rahataid/c2c-extensions/dtos/beneficiary';
 
 @Controller()
 export class BeneficiaryController {

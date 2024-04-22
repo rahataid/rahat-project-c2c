@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SettingsService } from '@rumsan/settings';
 import { lowerCaseObjectKeys } from '../utils/utility';
-import { CreateSettingDto, GetSettingDto } from '@c2c-extensions/dtos';
+import { CreateSettingDto, GetSettingDto } from '@rahataid/c2c-extensions/dtos';
 
 @Injectable()
 export class AppService {

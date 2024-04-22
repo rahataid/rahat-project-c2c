@@ -1,7 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CONTROLLERS, JOBS } from '@c2c-extensions/constants';
-import { CreateProjectDto, UpdateProjectDto } from '@c2c-extensions/dtos';
+import { CONTROLLERS, JOBS } from '@rahataid/c2c-extensions/constants';
+import {
+  CreateProjectDto,
+  UpdateProjectDto,
+} from '@rahataid/c2c-extensions/dtos';
 import { ProjectService } from './project.service';
 
 @Controller()
