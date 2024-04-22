@@ -6,7 +6,7 @@ import { UUID } from 'crypto';
 import {
   CreateBeneficiaryDto,
   UpdateBeneficiaryDto,
-} from '@c2c-extensions/dtos/beneficiary';
+} from '@rahataid/c2c-extensions/dtos/beneficiary';
 
 @Injectable()
 export class BeneficiaryService {

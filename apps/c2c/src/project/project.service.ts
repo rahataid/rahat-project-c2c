@@ -7,7 +7,7 @@ import {
   BlockchainProjectDto,
   CreateProjectDto,
   UpdateProjectDto,
-} from '@c2c-extensions/dtos';
+} from '@rahataid/c2c-extensions';
 
 @Injectable()
 export class ProjectService {
