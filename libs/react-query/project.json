@@ -1,7 +1,7 @@
 {
-  "name": "subgraph-query",
+  "name": "react-query",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/subgraph-query/src",
+  "sourceRoot": "libs/react-query/src",
   "projectType": "library",
   "release": {
     "version": {
@@ -17,10 +17,10 @@
       "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/subgraph-query",
-        "main": "libs/subgraph-query/src/index.ts",
-        "tsConfig": "libs/subgraph-query/tsconfig.lib.json",
-        "assets": ["libs/subgraph-query/*.md"]
+        "outputPath": "dist/libs/react-query",
+        "main": "libs/react-query/src/index.ts",
+        "tsConfig": "libs/react-query/tsconfig.lib.json",
+        "assets": ["libs/react-query/*.md"]
       }
     },
     "nx-release-publish": {
@@ -32,7 +32,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/subgraph-query/jest.config.ts"
+        "jestConfig": "libs/react-query/jest.config.ts"
       }
     }
   }
