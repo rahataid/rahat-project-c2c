@@ -31,5 +31,23 @@
       "address": "0xBb7d75c7719f86eb895601920698fdd076eCD38b",
       "startBlock": 1
     }
+  },
+  "arbitrum-sepolia": {
+    "RahatDonor": {
+      "address": "0x4eDBB5bf92b3FFBa127440b693cA3Af8Ee2ef9e1",
+      "startBlock": 1
+    },
+    "RahatToken": {
+      "address": "0x853225EBaA54E31FFe8E2ae0E6c6AA855fbED22f",
+      "startBlock": 1
+    },
+    "RahatCommunity": {
+      "address": "0x99e2726277611F6211B7fD109Cf5f0Bc56B18273",
+      "startBlock": 1
+    },
+    "C2CProject": {
+      "address": "0xcC422fAe332E75827DbF02ddF43Ba8e7511aF0Bf",
+      "startBlock": 1
+    }
   }
 }
