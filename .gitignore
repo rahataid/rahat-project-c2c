@@ -9,6 +9,8 @@ tmp
 # dependencies
 node_modules
 
+play/
+
 # IDEs and editors
 /.idea
 .project
