@@ -6,19 +6,7 @@ import { BeneficiaryController } from './beneficiary.controller';
 import { BeneficiaryService } from './beneficiary.service';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: ProjectContants.ELClient,
-        transport: Transport.REDIS,
-        options: {
-          host: process.env.REDIS_HOST,
-          port: +process.env.REDIS_PORT,
-          password: process.env.REDIS_PASSWORD,
-        },
-      },
-    ]),
-  ],
+  imports: [],
   controllers: [BeneficiaryController],
   providers: [BeneficiaryService, PrismaService],
 })
