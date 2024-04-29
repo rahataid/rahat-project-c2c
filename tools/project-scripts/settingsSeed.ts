@@ -65,7 +65,7 @@ class SettingsSeed extends ContractLib {
       ? formatted
       : 'http://localhost:8000/subgraphs/name/rahat/c2c';
     await settings.create({
-      name: 'Subgraph',
+      name: 'Subgraph_URL',
       value: {
         url: formattedUrl,
       },
