@@ -66,6 +66,14 @@
             "array",
             "null"
           ]
+        },
+        "type": {
+          "type": "string",
+          "default": "ENROLLED",
+          "enum": [
+            "ENROLLED",
+            "REFERRED"
+          ]
         }
       }
     }

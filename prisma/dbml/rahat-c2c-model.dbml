@@ -21,6 +21,7 @@ Table tbl_beneficiaries {
   uuid String [not null]
   walletAddress String
   extras Json
+  type BeneficiaryType [not null, default: 'ENROLLED']
 }
 
 Enum SettingDataType {
@@ -28,4 +29,9 @@ Enum SettingDataType {
   NUMBER
   BOOLEAN
   OBJECT
+}
+
+Enum BeneficiaryType {
+  ENROLLED
+  REFERRED
 }

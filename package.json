@@ -63,9 +63,9 @@
     "@nestjs/swagger": "^7.3.0",
     "@openzeppelin/contracts": "5.0.1",
     "@prisma/client": "^5.12.0",
+    "@rahataid/c2c-subgraph": "link:libs/react-query",
     "@rahataid/contracts": "^0.0.1",
     "@rahataid/sdk": "^0.0.20",
-    "@rahataid/c2c-subgraph": "link:libs/react-query",
     "@rumsan/extensions": "^0.0.21",
     "@rumsan/prisma": "^1.0.121",
     "@rumsan/react-query": "^0.0.38",
@@ -74,6 +74,7 @@
     "@tanstack/react-query": "^5.22.2",
     "@types/react": "^18.2.79",
     "@urql/core": "^4.3.0",
+    "@wagmi/cli": "^2.1.4",
     "axios": "^1.6.8",
     "bull": "^4.12.2",
     "chai": "^4.3.7",
@@ -91,7 +92,8 @@
     "rxjs": "^7.8.1",
     "solidity-coverage": "^0.8.3",
     "solidity-docgen": "^0.6.0-beta.36",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "wagmi": "^2.7.1"
   },
   "devDependencies": {
     "@nestjs/schematics": "^10.1.1",

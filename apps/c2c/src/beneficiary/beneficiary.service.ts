@@ -11,10 +11,7 @@ import {
 @Injectable()
 export class BeneficiaryService {
   private rsprisma;
-  constructor(
-    protected prisma: PrismaService,
-    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
-  ) {
+  constructor(protected prisma: PrismaService) {
     this.rsprisma = prisma.rsclient;
   }
   async create(dto: CreateBeneficiaryDto) {
