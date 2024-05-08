@@ -32,7 +32,7 @@ seed_settings(){
 }
 
 drop_pg_database() {
-    CONTAINER_NAME=postgres
+    CONTAINER_NAME=postgres-rahat
     DB_NAME=$1
     docker exec -i "$CONTAINER_NAME" psql -U "rahat" -c "DROP DATABASE \"rahat-c2c\" WITH (FORCE);"
 }

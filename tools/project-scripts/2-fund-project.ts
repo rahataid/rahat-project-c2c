@@ -1,7 +1,7 @@
-import { type Signer } from 'ethers';
+import { ethers, type Signer } from 'ethers';
 import { ContractLib } from './_common';
 
-const tokenMintAmount = 10000;
+const tokenMintAmount = 10;
 
 class ProjectFundManagement extends ContractLib {
   private fundDeployerAddress: Signer;
@@ -65,7 +65,7 @@ class ProjectFundManagement extends ContractLib {
       [
         await this.getRahatTokenAddress(),
         await this.getC2CAddress(),
-        tokenMintAmount,
+        ethers.parseEther(tokenMintAmount.toString()),
         await this.getC2CAddress(),
       ],
       this.projectUUID,

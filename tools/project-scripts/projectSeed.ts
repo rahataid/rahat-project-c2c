@@ -25,8 +25,8 @@ const contractName = [
 ];
 
 const rahatTokenDetails = {
-  name: 'Rumsan Coin',
-  symbol: 'RUM',
+  name: 'Rahat Coin',
+  symbol: 'RHT',
   decimals: 18,
 };
 
@@ -117,11 +117,21 @@ class SeedProject extends ContractLib {
         2
       )
     );
-    console.log('Registering Project in Donor');
+    console.log('----------Registering Project in Donor----------');
     await this.callContractMethod(
       'RahatDonor',
       'registerProject',
       [C2CProjectContract.contract.target, true],
+      this.projectUUID,
+      deployerAccount
+    );
+
+    console.log(`----------Add Token owner-------------------`);
+
+    await this.callContractMethod(
+      'RahatDonor',
+      'addTokenOwner',
+      [TokenContract.contract.target, C2CProjectContract.contract.target],
       this.projectUUID,
       deployerAccount
     );
