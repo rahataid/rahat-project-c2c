@@ -1,37 +1,27 @@
 import { Client } from '@urql/core';
-import React, {
-  FC,
-  useState,
-  createContext,
-  useContext,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import React, { FC, createContext, useContext } from 'react';
 
-type C2CSubgraphContextType = {
+export type C2CSubgraphContextType = {
   subgraphClient: Client;
-  setSubgraphClient: Dispatch<SetStateAction<Client>>;
 };
 
-const C2CSubgraphContext = createContext<C2CSubgraphContextType | undefined>(
-  undefined
-);
+const C2CSubgraphContext = createContext({
+  subgraphClient: {} as Client,
+});
 
 type C2CSubgraphProviderProps = {
   children: React.ReactNode;
+  subgraphClient: Client;
 };
 
-const C2CSubgraphProvider: FC<C2CSubgraphProviderProps> = ({ children }) => {
-  const [subgraphClient, setSubgraphClient] = useState<Client>();
-
+const C2CSubgraphProvider: FC<C2CSubgraphProviderProps> = ({
+  children,
+  subgraphClient,
+}) => {
   return (
     <C2CSubgraphContext.Provider
       value={{
         subgraphClient: subgraphClient as Client,
-
-        setSubgraphClient: setSubgraphClient as Dispatch<
-          SetStateAction<Client>
-        >,
       }}
     >
       {children}
