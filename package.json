@@ -93,6 +93,7 @@
     "solidity-coverage": "^0.8.3",
     "solidity-docgen": "^0.6.0-beta.36",
     "tslib": "^2.6.2",
+    "viem": "^2.10.2",
     "wagmi": "^2.7.1"
   },
   "devDependencies": {
