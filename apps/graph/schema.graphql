@@ -275,3 +275,13 @@ type C2CProjectDetail @entity(immutable: false) {
   totalBeneficiaryClaims: BigInt!
   tokenBudget: BigInt!
 }
+
+type TokenBalance @entity(immutable: false) {
+  id: Bytes! # address
+  balance: BigInt!
+}
+
+type TokenDetail @entity(immutable: false) {
+  id: Bytes! # address
+  name: String!
+}

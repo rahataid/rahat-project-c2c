@@ -1,5 +1,5 @@
 import { Client } from '@urql/core';
-import React from 'react';
+import * as React from 'react';
 
 type C2CSubgraphContextType = {
   subgraphClient: Client;
