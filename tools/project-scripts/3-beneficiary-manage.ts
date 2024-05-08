@@ -1,8 +1,8 @@
-import { Signer } from 'ethers';
+import { Signer, ethers } from 'ethers';
 import { ContractLib } from './_common';
 
 const addresses = [
-  '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+  '0x13c43FE251870aDE7Ab32d484b60856829ec1fC8',
   '0x17469fF5Bdc86a5FCeb4604534fF2a47a821d421',
 ];
 
@@ -130,7 +130,7 @@ class BeneficiaryManagement extends ContractLib {
     return tx;
   }
 
-  async assignClaimsToBeneficiary(beneficiaryAddress: string, claims: number) {
+  async assignClaimsToBeneficiary(beneficiaryAddress: string, claims: BigInt) {
     console.log('----------Assigning Claims to Beneficiary-------------------');
     const tx = await this.callContractMethod(
       'C2CProject',
@@ -193,7 +193,10 @@ class BeneficiaryManagement extends ContractLib {
     }
     await beneficiaryManagement.addBeneficiaryToC2CProject(address);
     await beneficiaryManagement.isBeneficiary(address);
-    await beneficiaryManagement.assignClaimsToBeneficiary(address, 100);
+    await beneficiaryManagement.assignClaimsToBeneficiary(
+      address,
+      ethers.parseEther('5')
+    );
     await beneficiaryManagement.getBeneficiaryClaims(address);
   }
 
