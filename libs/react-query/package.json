@@ -1,6 +1,6 @@
 {
   "name": "@rahataid/c2c-query",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
     "@swc/helpers": "~0.5.2"
   },
