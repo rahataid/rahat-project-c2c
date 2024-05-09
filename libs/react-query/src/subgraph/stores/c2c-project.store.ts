@@ -1,7 +1,7 @@
 import { localStore, zustandStore } from '@rumsan/react-query';
 import { StoreApi, UseBoundStore } from 'zustand';
 
-type C2CProjectState = {
+export type C2CProjectState = {
   projectDetails: {
     tokenBalance: {
       balance: string;
@@ -10,13 +10,13 @@ type C2CProjectState = {
   };
 };
 
-type C2CProjectActions = {
+export type C2CProjectActions = {
   setProjectDetails: (
     projectDetails: C2CProjectState['projectDetails']
   ) => void;
 };
 
-type C2CProjectStore = C2CProjectState & C2CProjectActions;
+export type C2CProjectStore = C2CProjectState & C2CProjectActions;
 
 const initialState: C2CProjectState = {
   projectDetails: {
