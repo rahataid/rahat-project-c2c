@@ -2,8 +2,8 @@ import { Signer, ethers } from 'ethers';
 import { ContractLib } from './_common';
 
 const addresses = [
-  '0x13c43FE251870aDE7Ab32d484b60856829ec1fC8',
-  '0x17469fF5Bdc86a5FCeb4604534fF2a47a821d421',
+  '0x487F9D9316e62f29eA67f9bc173346AE94643048',
+  '0x48d6748b2e760bAe52C0a04B8e6a568d04098e09',
 ];
 
 class BeneficiaryManagement extends ContractLib {
