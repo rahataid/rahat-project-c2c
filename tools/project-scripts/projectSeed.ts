@@ -25,8 +25,8 @@ const contractName = [
 ];
 
 const rahatTokenDetails = {
-  name: 'Rahat Coin',
-  symbol: 'RHT',
+  name: 'USD Coin',
+  symbol: 'USDC',
   decimals: 18,
 };
 

@@ -2,7 +2,7 @@ import { Signer, ethers } from 'ethers';
 import { ContractLib } from './_common';
 
 const addresses = [
-  '0x13c43FE251870aDE7Ab32d484b60856829ec1fC8',
+  '0xD6786F3220bE85C69C137e822f30Ac3eA0Ab6014',
   '0x17469fF5Bdc86a5FCeb4604534fF2a47a821d421',
 ];
 
