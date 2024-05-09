@@ -89,13 +89,15 @@
     "prisma-docs-generator": "^0.8.0",
     "prisma-json-schema-generator": "^5.1.1",
     "react": "^18.2.0",
+    "react-dom": "18.2.0",
     "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.1",
     "solidity-coverage": "^0.8.3",
     "solidity-docgen": "^0.6.0-beta.36",
     "tslib": "^2.6.2",
     "viem": "^2.10.2",
-    "wagmi": "^2.7.1"
+    "wagmi": "^2.7.1",
+    "zustand": "4.5.2"
   },
   "devDependencies": {
     "@nestjs/schematics": "^10.1.1",
