@@ -9,7 +9,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: RahatDonor
-      address: "0x4eDBB5bf92b3FFBa127440b693cA3Af8Ee2ef9e1"
+      address: '0x5805aA3CE18e440686aD2EB1f9033247BB6fc938'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -45,7 +45,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: RahatToken
-      address: "0x853225EBaA54E31FFe8E2ae0E6c6AA855fbED22f"
+      address: '0xb48f7737e04741acF73Bf768aE03c3D1978DE670'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -74,7 +74,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: RahatCommunity
-      address: "0x99e2726277611F6211B7fD109Cf5f0Bc56B18273"
+      address: '0x657aa4e762D45C894870EB7E9a7Bd4fe2b937919'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -118,7 +118,7 @@ dataSources:
     network: arbitrum-sepolia
     source:
       abi: C2CProject
-      address: "0xcC422fAe332E75827DbF02ddF43Ba8e7511aF0Bf"
+      address: '0xf3E20730c482F427b955362D5817841d03c04753'
       startBlock: 1
     mapping:
       kind: ethereum/events
