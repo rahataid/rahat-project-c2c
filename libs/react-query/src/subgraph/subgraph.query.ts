@@ -16,6 +16,7 @@ export const useProjectDetails = (projectAddress: string) => {
     {
       queryKey: ['ProjectDetails', projectAddress],
       queryFn: async () => {
+        console.log(`here`);
         const { data } = await subgraphClient.query(ProjectDetails, {
           projectAddress,
         });

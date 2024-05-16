@@ -6,6 +6,7 @@ import { UUID } from 'crypto';
 import {
   CreateBeneficiaryDto,
   UpdateBeneficiaryDto,
+  VerifyWalletDto,
 } from '@rahataid/c2c-extensions/dtos/beneficiary';
 
 @Injectable()
@@ -26,6 +27,7 @@ export class BeneficiaryService {
 
   async findAll(data) {
     const projectdata = await this.rsprisma.beneficiary.findMany();
+    console.log({ projectdata });
 
     const combinedData = data.data
       .filter((item) =>
@@ -43,6 +45,8 @@ export class BeneficiaryService {
           },
         };
       });
+
+    console.log({ combinedData });
 
     return { data: combinedData, meta: data.meta };
   }
@@ -64,6 +68,14 @@ export class BeneficiaryService {
     return await this.rsprisma.beneficiary.update({
       where: { id: id },
       data: { ...updateBeneficiaryDto },
+    });
+  }
+
+  async verfiyWallet(verfiyWalletDto: VerifyWalletDto) {
+    const { walletAddress } = verfiyWalletDto;
+    return this.rsprisma.beneficiary.update({
+      where: { walletAddress },
+      data: { isVerified: true },
     });
   }
 }

@@ -21,6 +21,7 @@ export const useDisburseTokenToBeneficiaries = () => {
   return useMutation(
     {
       onError: (error) => {
+        console.log(`error`, error);
         console.error(error);
       },
       onSuccess: (d) => {

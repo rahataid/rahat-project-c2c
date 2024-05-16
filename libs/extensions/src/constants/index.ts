@@ -38,6 +38,7 @@ export const JOBS = {
     UPDATE: 'rahat.jobs.beneficiary.update',
     ADD_TO_PROJECT: 'rahat.jobs.beneficiary.add_to_project',
     BULK_ASSIGN_TO_PROJECT: 'rahat.jobs.beneficiary.bulk_assign',
+    VERIFY_SIGNATURE: 'rahat.jobs.beneficiary.verify_signature',
   },
 
   PROJECT: {

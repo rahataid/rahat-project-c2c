@@ -5,6 +5,7 @@ import { BeneficiaryService } from './beneficiary.service';
 import {
   CreateBeneficiaryDto,
   UpdateBeneficiaryDto,
+  VerifyWalletDto,
 } from '@rahataid/c2c-extensions/dtos/beneficiary';
 
 @Controller()
@@ -43,5 +44,13 @@ export class BeneficiaryController {
       updateBeneficiaryDto.id,
       updateBeneficiaryDto
     );
+  }
+
+  @MessagePattern({
+    cmd: JOBS.BENEFICIARY.VERIFY_SIGNATURE,
+    uuid: process.env.PROJECT_ID,
+  })
+  verifyWallet(verifyWalletDto: VerifyWalletDto) {
+    return this.beneficiaryService.verfiyWallet(verifyWalletDto);
   }
 }
