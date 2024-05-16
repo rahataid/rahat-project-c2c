@@ -27,7 +27,6 @@ export class BeneficiaryService {
 
   async findAll(data) {
     const projectdata = await this.rsprisma.beneficiary.findMany();
-    console.log({ projectdata });
 
     const combinedData = data.data
       .filter((item) =>
@@ -37,6 +36,10 @@ export class BeneficiaryService {
         const matchedBeneficiary = projectdata.find(
           (ben) => ben.uuid === item.beneficiaryId
         );
+        console.log({
+          ...item,
+          Beneficiary: { ...matchedBeneficiary, ...item.Beneficiary },
+        });
         return {
           ...item,
           Beneficiary: {
@@ -45,8 +48,6 @@ export class BeneficiaryService {
           },
         };
       });
-
-    console.log({ combinedData });
 
     return { data: combinedData, meta: data.meta };
   }
