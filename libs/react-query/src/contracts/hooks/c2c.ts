@@ -21,7 +21,6 @@ export const useDisburseTokenToBeneficiaries = () => {
   return useMutation(
     {
       onError: (error) => {
-        console.log(`error`, error);
         console.error(error);
       },
       onSuccess: (d) => {
@@ -31,25 +30,28 @@ export const useDisburseTokenToBeneficiaries = () => {
         amount,
         beneficiaryAddresses,
         rahatTokenAddress,
+        c2cProjectAddress,
       }: {
         beneficiaryAddresses: `0x${string}`[];
         amount: string;
         rahatTokenAddress: `0x{string}`;
+        c2cProjectAddress: `0x{string}`;
       }) => {
         const encodeAssignClaimsToBeneficiary = beneficiaryAddresses.map(
           (beneficiary) => {
             return encodeFunctionData({
               abi: c2CProjectAbi,
               functionName: 'assignClaims',
-              args: [beneficiary, rahatTokenAddress, parseEther(amount)],
+              args: [beneficiary, c2cProjectAddress, parseEther(amount)],
             });
           }
         );
-
+        console.log(`first`);
         await multi.writeContractAsync({
           args: [encodeAssignClaimsToBeneficiary],
-          address: rahatTokenAddress,
+          address: c2cProjectAddress,
         });
+        console.log(`second`);
 
         const encodeGetBeneficiaryClaims = beneficiaryAddresses.map(
           (beneficiary) => {
@@ -60,25 +62,23 @@ export const useDisburseTokenToBeneficiaries = () => {
             });
           }
         );
-
-        const claims = await multi.writeContractAsync({
-          args: [encodeGetBeneficiaryClaims],
-          address: rahatTokenAddress,
-        });
-
-        console.log('claims', claims);
-
-        const encodedForDisburse = beneficiaryAddresses.map((beneficiary) => {
-          return encodeFunctionData({
-            abi: c2CProjectAbi,
-            functionName: 'processTransferToBeneficiary',
-            args: [beneficiary, rahatTokenAddress, parseEther(amount)],
-          });
-        });
-        return multi.writeContractAsync({
-          args: [encodedForDisburse],
-          address: rahatTokenAddress,
-        });
+        console.log({ encodeGetBeneficiaryClaims });
+        // const claims = await multi.writeContractAsync({
+        //   args: [encodeGetBeneficiaryClaims],
+        //   address: rahatTokenAddress,
+        // });
+        // console.log('claims', claims);
+        // const encodedForDisburse = beneficiaryAddresses.map((beneficiary) => {
+        //   return encodeFunctionData({
+        //     abi: c2CProjectAbi,
+        //     functionName: 'processTransferToBeneficiary',
+        //     args: [beneficiary, rahatTokenAddress, parseEther(amount)],
+        //   });
+        // });
+        // return multi.writeContractAsync({
+        //   args: [encodedForDisburse],
+        //   address: rahatTokenAddress,
+        // });
       },
     },
     queryClient
