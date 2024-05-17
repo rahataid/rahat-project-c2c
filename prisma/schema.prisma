@@ -70,3 +70,10 @@ model Beneficiary {
 
   @@map(name: "tbl_beneficiaries")
 }
+
+model Campaign {
+  id            Int     @id @default(autoincrement()) @db.Integer()
+  campaignId    Int
+
+  @@map(name: "tbl_campaign")
+}
