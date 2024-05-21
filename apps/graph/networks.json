@@ -1,53 +1,8 @@
 {
   "sepolia": {
     "RahatDonor": {
-      "address": "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
-      "startBlock": 5680229
-    },
-    "RahatToken": {
-      "address": "0xc4D06bf1147Fa863292B618C4F427cCe3183017b"
-    },
-    "RahatCommunity": {
-      "address": "0x5a8b667Ea5D90016aD65DBEE79Ea102d3133DDaB"
-    },
-    "C2CProject": {
-      "address": "0x1A767197679f389de6a654bA903DD83A38b9977a"
-    }
-  },
-  "mainnet": {
-    "RahatDonor": {
-      "address": "0x0bFE1575669235dFFF86949c7BB64dC0C8445Afb",
-      "startBlock": 1
-    },
-    "RahatToken": {
-      "address": "0xCd29a466915783c9177490F9DD4F5b7eC19f5cEe",
-      "startBlock": 1
-    },
-    "RahatCommunity": {
-      "address": "0x5cbE242C60CB14663709B5b37D1A698D48B48f5E",
-      "startBlock": 1
-    },
-    "C2CProject": {
-      "address": "0xa29a431686024713d5e048a4034AD48b80318e3e",
-      "startBlock": 1
-    }
-  },
-  "arbitrum-sepolia": {
-    "RahatDonor": {
-      "address": "0x4eDBB5bf92b3FFBa127440b693cA3Af8Ee2ef9e1",
-      "startBlock": 1
-    },
-    "RahatToken": {
-      "address": "0x853225EBaA54E31FFe8E2ae0E6c6AA855fbED22f",
-      "startBlock": 1
-    },
-    "RahatCommunity": {
-      "address": "0x99e2726277611F6211B7fD109Cf5f0Bc56B18273",
-      "startBlock": 1
-    },
-    "C2CProject": {
-      "address": "0xcC422fAe332E75827DbF02ddF43Ba8e7511aF0Bf",
-      "startBlock": 1
+      "address": "0x7BD21577455b2287598dAA64E044EB3F276A0B03",
+      "startBlock": 5946117
     }
   }
 }

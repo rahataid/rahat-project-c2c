@@ -6,20 +6,22 @@ import {
   beforeAll,
   afterAll
 } from "matchstick-as/assembly/index"
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
-import { CloseStream } from "../generated/schema"
-import { CloseStream as CloseStreamEvent } from "../generated/RahatDonor/RahatDonor"
-import { handleCloseStream } from "../src/rahat-donor"
-import { createCloseStreamEvent } from "./rahat-donor-utils"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { OwnerAdded } from "../generated/schema"
+import { OwnerAdded as OwnerAddedEvent } from "../generated/RahatDonor/RahatDonor"
+import { handleOwnerAdded } from "../src/rahat-donor"
+import { createOwnerAddedEvent } from "./rahat-donor-utils"
 
 // Tests structure (matchstick-as >=0.5.0)
 // https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
 
 describe("Describe entity assertions", () => {
   beforeAll(() => {
-    let to = Address.fromString("0x0000000000000000000000000000000000000001")
-    let newCloseStreamEvent = createCloseStreamEvent(to)
-    handleCloseStream(newCloseStreamEvent)
+    let param0 = Address.fromString(
+      "0x0000000000000000000000000000000000000001"
+    )
+    let newOwnerAddedEvent = createOwnerAddedEvent(param0)
+    handleOwnerAdded(newOwnerAddedEvent)
   })
 
   afterAll(() => {
@@ -29,14 +31,14 @@ describe("Describe entity assertions", () => {
   // For more test scenarios, see:
   // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
 
-  test("CloseStream created and stored", () => {
-    assert.entityCount("CloseStream", 1)
+  test("OwnerAdded created and stored", () => {
+    assert.entityCount("OwnerAdded", 1)
 
     // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
     assert.fieldEquals(
-      "CloseStream",
+      "OwnerAdded",
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "to",
+      "param0",
       "0x0000000000000000000000000000000000000001"
     )
 

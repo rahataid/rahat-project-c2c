@@ -6,160 +6,30 @@ schema:
 dataSources:
   - kind: ethereum
     name: RahatDonor
-    network: mainnet
+    network: sepolia
     source:
+      address: "0x7BD21577455b2287598dAA64E044EB3F276A0B03"
       abi: RahatDonor
-      address: '0x0bFE1575669235dFFF86949c7BB64dC0C8445Afb'
-      startBlock: 1
+      startBlock: 5946117
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - CloseStream
-        - Deposit
-        - ExecuteTransaction
-        - OpenStream
-        - Owner
-        - Withdraw
+        - OwnerAdded
+        - OwnerRemoved
+        - TokenCreated
+        - TokenMintedAndApproved
       abis:
         - name: RahatDonor
           file: ./abis/RahatDonor.json
       eventHandlers:
-        - event: CloseStream(indexed address)
-          handler: handleCloseStream
-        - event: Deposit(indexed address,uint256,uint256)
-          handler: handleDeposit
-        - event: ExecuteTransaction(indexed
-            address,address,uint256,bytes,uint256,bytes32,bytes)
-          handler: handleExecuteTransaction
-        - event: OpenStream(indexed address,uint256,uint256)
-          handler: handleOpenStream
-        - event: Owner(indexed address,bool)
-          handler: handleOwner
-        - event: Withdraw(indexed address,uint256,string)
-          handler: handleWithdraw
-      file: ./src/rahat-donor.ts
-  - kind: ethereum
-    name: RahatToken
-    network: mainnet
-    source:
-      abi: RahatToken
-      address: '0xCd29a466915783c9177490F9DD4F5b7eC19f5cEe'
-      startBlock: 1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Approval
-        - OwnerAdded
-        - OwnerRemoved
-        - Transfer
-      abis:
-        - name: RahatToken
-          file: ./abis/RahatToken.json
-      eventHandlers:
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
         - event: OwnerAdded(indexed address)
           handler: handleOwnerAdded
         - event: OwnerRemoved(indexed address)
           handler: handleOwnerRemoved
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-      file: ./src/rahat-token.ts
-  - kind: ethereum
-    name: RahatCommunity
-    network: mainnet
-    source:
-      abi: RahatCommunity
-      address: '0x5cbE242C60CB14663709B5b37D1A698D48B48f5E'
-      startBlock: 1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - BeneficiaryAdded
-        - BeneficiaryRemoved
-        - ProjectApprovalRequest
-        - ProjectApproved
-        - ProjectRevoked
-        - Received
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
-      abis:
-        - name: RahatCommunity
-          file: ./abis/RahatCommunity.json
-      eventHandlers:
-        - event: BeneficiaryAdded(indexed address)
-          handler: handleBeneficiaryAdded
-        - event: BeneficiaryRemoved(indexed address)
-          handler: handleBeneficiaryRemoved
-        - event: ProjectApprovalRequest(indexed address,indexed address)
-          handler: handleProjectApprovalRequest
-        - event: ProjectApproved(indexed address)
-          handler: handleProjectApproved
-        - event: ProjectRevoked(indexed address)
-          handler: handleProjectRevoked
-        - event: Received(address,uint256)
-          handler: handleReceived
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
-      file: ./src/rahat-community.ts
-  - kind: ethereum
-    name: C2CProject
-    network: mainnet
-    source:
-      abi: C2CProject
-      address: '0xa29a431686024713d5e048a4034AD48b80318e3e'
-      startBlock: 1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - C2CProjectBeneficiaryAdded
-        - C2CProjectBeneficiaryRemoved
-        - ClaimAssigned
-        - ClaimProcessed
-        - ProjectLocked
-        - ProjectUnlocked
-        - TokenBudgetDecrease
-        - TokenBudgetIncrease
-        - TokenReceived
-        - TokenRegistered
-        - TokenTransfer
-      abis:
-        - name: C2CProject
-          file: ./abis/C2CProject.json
-      eventHandlers:
-        - event: BeneficiaryAdded(indexed address)
-          handler: handleBeneficiaryAdded
-        - event: BeneficiaryRemoved(indexed address)
-          handler: handleBeneficiaryRemoved
-        - event: ClaimAssigned(indexed address,uint256)
-          handler: handleClaimAssigned
-        - event: ClaimProcessed(indexed address,indexed address,uint256)
-          handler: handleClaimProcessed
-        - event: ProjectLocked()
-          handler: handleProjectLocked
-        - event: ProjectUnlocked()
-          handler: handleProjectUnlocked
-        - event: TokenBudgetDecrease(indexed address,uint256)
-          handler: handleTokenBudgetDecrease
-        - event: TokenBudgetIncrease(indexed address,uint256)
-          handler: handleTokenBudgetIncrease
-        - event: TokenReceived(indexed address,indexed address,uint256)
-          handler: handleTokenReceived
-        - event: TokenRegistered(indexed address)
-          handler: handleTokenRegistered
-        - event: TokenTransfer(indexed address,indexed address,uint256)
-          handler: handleTokenTransfer
-      file: ./src/c-2-c-project.ts
+        - event: TokenCreated(indexed address)
+          handler: handleTokenCreated
+        - event: TokenMintedAndApproved(indexed address,indexed address,uint256)
+          handler: handleTokenMintedAndApproved
+      file: ./src/rahat-donor.ts

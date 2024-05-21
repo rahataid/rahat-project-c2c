@@ -69,6 +69,5 @@ model Beneficiary {
   type          BeneficiaryType @default(ENROLLED)
   isVerfiied     Boolean         @default(false)
 
-
   @@map(name: "tbl_beneficiaries")
 }

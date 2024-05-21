@@ -12,7 +12,10 @@ import {
 @Injectable()
 export class BeneficiaryService {
   private rsprisma;
-  constructor(protected prisma: PrismaService) {
+  constructor(
+    protected prisma: PrismaService,
+    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy // private eventEmitter: EventEmitter2
+  ) {
     this.rsprisma = prisma.rsclient;
   }
   async create(dto: CreateBeneficiaryDto) {
@@ -25,31 +28,17 @@ export class BeneficiaryService {
     return this.rsprisma.beneficiary.createMany({ data: dto });
   }
 
-  async findAll(data) {
-    const projectdata = await this.rsprisma.beneficiary.findMany();
-
-    const combinedData = data.data
-      .filter((item) =>
-        projectdata.some((ben) => ben.uuid === item.beneficiaryId)
-      )
-      .map((item) => {
-        const matchedBeneficiary = projectdata.find(
-          (ben) => ben.uuid === item.beneficiaryId
-        );
-        console.log({
-          ...item,
-          Beneficiary: { ...matchedBeneficiary, ...item.Beneficiary },
-        });
-        return {
-          ...item,
-          Beneficiary: {
-            ...matchedBeneficiary,
-            ...item.Beneficiary,
-          },
-        };
-      });
-
-    return { data: combinedData, meta: data.meta };
+  async findAll() {
+    const data = await this.rsprisma.beneficiary.findMany();
+    // projectData.data = data;
+    // console.log('projectData', projectData);
+    const projectData = {
+      data: data,
+    };
+    return this.client.send(
+      { cmd: 'rahat.jobs.beneficiary.list_by_project' },
+      projectData
+    );
   }
 
   async findByUUID(uuid: UUID) {

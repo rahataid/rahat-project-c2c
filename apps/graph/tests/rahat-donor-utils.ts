@@ -1,147 +1,77 @@
 import { newMockEvent } from "matchstick-as"
-import { ethereum, Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
+import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
-  CloseStream,
-  Deposit,
-  ExecuteTransaction,
-  OpenStream,
-  Owner,
-  Withdraw
+  OwnerAdded,
+  OwnerRemoved,
+  TokenCreated,
+  TokenMintedAndApproved
 } from "../generated/RahatDonor/RahatDonor"
 
-export function createCloseStreamEvent(to: Address): CloseStream {
-  let closeStreamEvent = changetype<CloseStream>(newMockEvent())
+export function createOwnerAddedEvent(param0: Address): OwnerAdded {
+  let ownerAddedEvent = changetype<OwnerAdded>(newMockEvent())
 
-  closeStreamEvent.parameters = new Array()
+  ownerAddedEvent.parameters = new Array()
 
-  closeStreamEvent.parameters.push(
-    new ethereum.EventParam("to", ethereum.Value.fromAddress(to))
+  ownerAddedEvent.parameters.push(
+    new ethereum.EventParam("param0", ethereum.Value.fromAddress(param0))
   )
 
-  return closeStreamEvent
+  return ownerAddedEvent
 }
 
-export function createDepositEvent(
-  sender: Address,
-  amount: BigInt,
-  balance: BigInt
-): Deposit {
-  let depositEvent = changetype<Deposit>(newMockEvent())
+export function createOwnerRemovedEvent(param0: Address): OwnerRemoved {
+  let ownerRemovedEvent = changetype<OwnerRemoved>(newMockEvent())
 
-  depositEvent.parameters = new Array()
+  ownerRemovedEvent.parameters = new Array()
 
-  depositEvent.parameters.push(
-    new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender))
+  ownerRemovedEvent.parameters.push(
+    new ethereum.EventParam("param0", ethereum.Value.fromAddress(param0))
   )
-  depositEvent.parameters.push(
-    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
-  )
-  depositEvent.parameters.push(
+
+  return ownerRemovedEvent
+}
+
+export function createTokenCreatedEvent(tokenAddress: Address): TokenCreated {
+  let tokenCreatedEvent = changetype<TokenCreated>(newMockEvent())
+
+  tokenCreatedEvent.parameters = new Array()
+
+  tokenCreatedEvent.parameters.push(
     new ethereum.EventParam(
-      "balance",
-      ethereum.Value.fromUnsignedBigInt(balance)
+      "tokenAddress",
+      ethereum.Value.fromAddress(tokenAddress)
     )
   )
 
-  return depositEvent
+  return tokenCreatedEvent
 }
 
-export function createExecuteTransactionEvent(
-  owner: Address,
-  to: Address,
-  value: BigInt,
-  data: Bytes,
-  nonce: BigInt,
-  hash: Bytes,
-  result: Bytes
-): ExecuteTransaction {
-  let executeTransactionEvent = changetype<ExecuteTransaction>(newMockEvent())
-
-  executeTransactionEvent.parameters = new Array()
-
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner))
-  )
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("to", ethereum.Value.fromAddress(to))
-  )
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("value", ethereum.Value.fromUnsignedBigInt(value))
-  )
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("data", ethereum.Value.fromBytes(data))
-  )
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("nonce", ethereum.Value.fromUnsignedBigInt(nonce))
-  )
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("hash", ethereum.Value.fromFixedBytes(hash))
-  )
-  executeTransactionEvent.parameters.push(
-    new ethereum.EventParam("result", ethereum.Value.fromBytes(result))
+export function createTokenMintedAndApprovedEvent(
+  tokenAddress: Address,
+  approveAddress: Address,
+  amount: BigInt
+): TokenMintedAndApproved {
+  let tokenMintedAndApprovedEvent = changetype<TokenMintedAndApproved>(
+    newMockEvent()
   )
 
-  return executeTransactionEvent
-}
+  tokenMintedAndApprovedEvent.parameters = new Array()
 
-export function createOpenStreamEvent(
-  to: Address,
-  amount: BigInt,
-  frequency: BigInt
-): OpenStream {
-  let openStreamEvent = changetype<OpenStream>(newMockEvent())
-
-  openStreamEvent.parameters = new Array()
-
-  openStreamEvent.parameters.push(
-    new ethereum.EventParam("to", ethereum.Value.fromAddress(to))
-  )
-  openStreamEvent.parameters.push(
-    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
-  )
-  openStreamEvent.parameters.push(
+  tokenMintedAndApprovedEvent.parameters.push(
     new ethereum.EventParam(
-      "frequency",
-      ethereum.Value.fromUnsignedBigInt(frequency)
+      "tokenAddress",
+      ethereum.Value.fromAddress(tokenAddress)
     )
   )
-
-  return openStreamEvent
-}
-
-export function createOwnerEvent(owner: Address, added: boolean): Owner {
-  let ownerEvent = changetype<Owner>(newMockEvent())
-
-  ownerEvent.parameters = new Array()
-
-  ownerEvent.parameters.push(
-    new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner))
+  tokenMintedAndApprovedEvent.parameters.push(
+    new ethereum.EventParam(
+      "approveAddress",
+      ethereum.Value.fromAddress(approveAddress)
+    )
   )
-  ownerEvent.parameters.push(
-    new ethereum.EventParam("added", ethereum.Value.fromBoolean(added))
-  )
-
-  return ownerEvent
-}
-
-export function createWithdrawEvent(
-  to: Address,
-  amount: BigInt,
-  reason: string
-): Withdraw {
-  let withdrawEvent = changetype<Withdraw>(newMockEvent())
-
-  withdrawEvent.parameters = new Array()
-
-  withdrawEvent.parameters.push(
-    new ethereum.EventParam("to", ethereum.Value.fromAddress(to))
-  )
-  withdrawEvent.parameters.push(
+  tokenMintedAndApprovedEvent.parameters.push(
     new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
   )
-  withdrawEvent.parameters.push(
-    new ethereum.EventParam("reason", ethereum.Value.fromString(reason))
-  )
 
-  return withdrawEvent
+  return tokenMintedAndApprovedEvent
 }

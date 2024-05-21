@@ -18,10 +18,7 @@ interface IRahatProject is IERC165 {
      * @dev Removes a beneficiary from the contract.
      * @param _beneficiary The address of the beneficiary to be removed.
      */
-    function removeBeneficiary(
-        address _beneficiary,
-        address _tokenAddress
-    ) external;
+    function removeBeneficiary(address _beneficiary) external;
 
     function isBeneficiary(address _address) external view returns (bool);
 
