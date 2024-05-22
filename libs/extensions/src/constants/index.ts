@@ -58,6 +58,12 @@ export const JOBS = {
     UPDATE: 'rahat.jobs.settings.update',
     REMOVE: 'rahat.jobs.settings.remove',
   },
+  CAMPAIGN: {
+    CREATE: 'rahat.jobs.campaign.create',
+    LIST: 'rahat.jobs.campaign.list',
+    GET: 'rahat.jobs.campaign.get',
+    REMOVE: 'rahat.jobs.campaign.remove',
+  },
 };
 
 export const APP = {

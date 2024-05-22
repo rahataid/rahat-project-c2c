@@ -4,9 +4,10 @@ import { SettingsModule } from '@rumsan/settings';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BeneficiaryModule } from '../beneficiary/beneficiary.module';
+import { CampaignModule } from '../campaign/campaign.module';
 
 @Module({
-  imports: [PrismaModule, SettingsModule, BeneficiaryModule],
+  imports: [PrismaModule, SettingsModule, BeneficiaryModule, CampaignModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
