@@ -1,4 +1,3 @@
-import { Address } from '@graphprotocol/graph-ts';
 import {
   Approval as ApprovalEvent,
   OwnerAdded as OwnerAddedEvent,
@@ -11,7 +10,7 @@ import {
   OwnerRemoved,
   Transfer,
 } from '../generated/schema';
-import { getTokenBalance, getTokenDetail } from './utils';
+import { getTokenBalance } from './utils';
 
 export function handleApproval(event: ApprovalEvent): void {
   let entity = new Approval(
@@ -37,8 +36,6 @@ export function handleOwnerAdded(event: OwnerAddedEvent): void {
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
-
-  getTokenDetail(event.address);
 
   entity.save();
 }
@@ -68,7 +65,7 @@ export function handleTransfer(event: TransferEvent): void {
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
 
-  getTokenBalance(event.address, event.params.to);
+  getTokenBalance(event.address, event.params.from);
 
   entity.save();
 }

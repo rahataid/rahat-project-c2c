@@ -9,43 +9,36 @@ dataSources:
     network: mainnet
     source:
       abi: RahatDonor
-      address: "0xE3dB6a50d9137D48A87bbC6fEDce2E4168CADe1d"
+      address: '0xE3dB6a50d9137D48A87bbC6fEDce2E4168CADe1d'
       startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - CloseStream
-        - Deposit
-        - ExecuteTransaction
-        - OpenStream
-        - Owner
-        - Withdraw
+        - OwnerAdded
+        - OwnerRemoved
+        - TokenCreated
+        - TokenMintedAndApproved
       abis:
         - name: RahatDonor
           file: ./abis/RahatDonor.json
       eventHandlers:
-        - event: CloseStream(indexed address)
-          handler: handleCloseStream
-        - event: Deposit(indexed address,uint256,uint256)
-          handler: handleDeposit
-        - event: ExecuteTransaction(indexed
-            address,address,uint256,bytes,uint256,bytes32,bytes)
-          handler: handleExecuteTransaction
-        - event: OpenStream(indexed address,uint256,uint256)
-          handler: handleOpenStream
-        - event: Owner(indexed address,bool)
-          handler: handleOwner
-        - event: Withdraw(indexed address,uint256,string)
-          handler: handleWithdraw
+        - event: OwnerAdded(indexed address)
+          handler: handleOwnerAdded
+        - event: OwnerRemoved(indexed address)
+          handler: handleOwnerRemoved
+        - event: TokenCreated(indexed address)
+          handler: handleTokenCreated
+        - event: TokenMintedAndApproved(indexed address,indexed address,uint256)
+          handler: handleTokenMintedAndApproved
       file: ./src/rahat-donor.ts
   - kind: ethereum
     name: RahatToken
     network: mainnet
     source:
       abi: RahatToken
-      address: "0xAf3d5D3c6d734AD9C253F3c2890108f732CEB7A4"
+      address: '0xAf3d5D3c6d734AD9C253F3c2890108f732CEB7A4'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -53,8 +46,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Approval
-        - OwnerAdded
-        - OwnerRemoved
+        - RahatTokenOwnerAdded
+        - RahatTokenOwnerRemoved
         - Transfer
       abis:
         - name: RahatToken
@@ -74,7 +67,7 @@ dataSources:
     network: mainnet
     source:
       abi: RahatCommunity
-      address: "0x3e8f9962Bd58c2e0F5f963EDb019E03B9c8431c4"
+      address: '0x3e8f9962Bd58c2e0F5f963EDb019E03B9c8431c4'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -118,7 +111,7 @@ dataSources:
     network: mainnet
     source:
       abi: C2CProject
-      address: "0xaF5849B8c329bc863Af08BCc0727EAB492E69087"
+      address: '0xaF5849B8c329bc863Af08BCc0727EAB492E69087'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -127,8 +120,6 @@ dataSources:
       entities:
         - C2CProjectBeneficiaryAdded
         - C2CProjectBeneficiaryRemoved
-        - ClaimAssigned
-        - ClaimProcessed
         - ProjectLocked
         - ProjectUnlocked
         - TokenBudgetDecrease
@@ -136,6 +127,7 @@ dataSources:
         - TokenReceived
         - TokenRegistered
         - TokenTransfer
+        - TransferProcessed
       abis:
         - name: C2CProject
           file: ./abis/C2CProject.json
@@ -144,10 +136,6 @@ dataSources:
           handler: handleBeneficiaryAdded
         - event: BeneficiaryRemoved(indexed address)
           handler: handleBeneficiaryRemoved
-        - event: ClaimAssigned(indexed address,uint256)
-          handler: handleClaimAssigned
-        - event: ClaimProcessed(indexed address,indexed address,uint256)
-          handler: handleClaimProcessed
         - event: ProjectLocked()
           handler: handleProjectLocked
         - event: ProjectUnlocked()
@@ -162,4 +150,6 @@ dataSources:
           handler: handleTokenRegistered
         - event: TokenTransfer(indexed address,indexed address,uint256)
           handler: handleTokenTransfer
+        - event: TransferProcessed(indexed address,indexed address,uint256)
+          handler: handleTransferProcessed
       file: ./src/c-2-c-project.ts

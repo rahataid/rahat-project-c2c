@@ -3,15 +3,14 @@ import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   BeneficiaryAdded,
   BeneficiaryRemoved,
-  ClaimAssigned,
-  ClaimProcessed,
   ProjectLocked,
   ProjectUnlocked,
   TokenBudgetDecrease,
   TokenBudgetIncrease,
   TokenReceived,
   TokenRegistered,
-  TokenTransfer
+  TokenTransfer,
+  TransferProcessed
 } from "../generated/C2CProject/C2CProject"
 
 export function createBeneficiaryAddedEvent(param0: Address): BeneficiaryAdded {
@@ -38,61 +37,6 @@ export function createBeneficiaryRemovedEvent(
   )
 
   return beneficiaryRemovedEvent
-}
-
-export function createClaimAssignedEvent(
-  _beneficiary: Address,
-  _amount: BigInt
-): ClaimAssigned {
-  let claimAssignedEvent = changetype<ClaimAssigned>(newMockEvent())
-
-  claimAssignedEvent.parameters = new Array()
-
-  claimAssignedEvent.parameters.push(
-    new ethereum.EventParam(
-      "_beneficiary",
-      ethereum.Value.fromAddress(_beneficiary)
-    )
-  )
-  claimAssignedEvent.parameters.push(
-    new ethereum.EventParam(
-      "_amount",
-      ethereum.Value.fromUnsignedBigInt(_amount)
-    )
-  )
-
-  return claimAssignedEvent
-}
-
-export function createClaimProcessedEvent(
-  _beneficiary: Address,
-  _tokenAddress: Address,
-  _amount: BigInt
-): ClaimProcessed {
-  let claimProcessedEvent = changetype<ClaimProcessed>(newMockEvent())
-
-  claimProcessedEvent.parameters = new Array()
-
-  claimProcessedEvent.parameters.push(
-    new ethereum.EventParam(
-      "_beneficiary",
-      ethereum.Value.fromAddress(_beneficiary)
-    )
-  )
-  claimProcessedEvent.parameters.push(
-    new ethereum.EventParam(
-      "_tokenAddress",
-      ethereum.Value.fromAddress(_tokenAddress)
-    )
-  )
-  claimProcessedEvent.parameters.push(
-    new ethereum.EventParam(
-      "_amount",
-      ethereum.Value.fromUnsignedBigInt(_amount)
-    )
-  )
-
-  return claimProcessedEvent
 }
 
 export function createProjectLockedEvent(): ProjectLocked {
@@ -212,4 +156,35 @@ export function createTokenTransferEvent(
   )
 
   return tokenTransferEvent
+}
+
+export function createTransferProcessedEvent(
+  _beneficiary: Address,
+  _tokenAddress: Address,
+  _amount: BigInt
+): TransferProcessed {
+  let transferProcessedEvent = changetype<TransferProcessed>(newMockEvent())
+
+  transferProcessedEvent.parameters = new Array()
+
+  transferProcessedEvent.parameters.push(
+    new ethereum.EventParam(
+      "_beneficiary",
+      ethereum.Value.fromAddress(_beneficiary)
+    )
+  )
+  transferProcessedEvent.parameters.push(
+    new ethereum.EventParam(
+      "_tokenAddress",
+      ethereum.Value.fromAddress(_tokenAddress)
+    )
+  )
+  transferProcessedEvent.parameters.push(
+    new ethereum.EventParam(
+      "_amount",
+      ethereum.Value.fromUnsignedBigInt(_amount)
+    )
+  )
+
+  return transferProcessedEvent
 }

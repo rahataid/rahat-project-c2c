@@ -8,6 +8,10 @@ import {
   UpdateBeneficiaryDto,
   VerifyWalletDto,
 } from '@rahataid/c2c-extensions/dtos/beneficiary';
+import {
+  createContractInstance,
+  createContractInstanceSign,
+} from '../utils/web3';
 
 @Injectable()
 export class BeneficiaryService {
@@ -19,6 +23,14 @@ export class BeneficiaryService {
     this.rsprisma = prisma.rsclient;
   }
   async create(dto: CreateBeneficiaryDto) {
+    // const contract = await createContractInstanceSign(
+    //   'C2CPROJECT',
+    //   this.prisma.setting
+    // );
+    // console.log({ contract });
+    // const addBeneficiary = await contract.addBeneficiary(dto.walletAddress);
+    // console.log({ addBeneficiary });
+
     return this.rsprisma.beneficiary.create({
       data: dto,
     });

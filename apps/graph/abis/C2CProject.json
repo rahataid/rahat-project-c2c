@@ -43,50 +43,6 @@
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "ClaimAssigned",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_tokenAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "ClaimProcessed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
     "inputs": [],
     "name": "ProjectLocked",
     "type": "event"
@@ -199,6 +155,31 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "TransferProcessed",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "IID_RAHAT_PROJECT",
     "outputs": [{ "internalType": "bytes4", "name": "", "type": "bytes4" }],
@@ -236,24 +217,6 @@
     "name": "addBeneficiary",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_beneficiary", "type": "address" },
-      { "internalType": "address", "name": "_tokenAddress", "type": "address" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
-    ],
-    "name": "assignClaims",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "beneficiaryClaims",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -317,8 +280,7 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_beneficiary", "type": "address" },
-      { "internalType": "address", "name": "_tokenAddress", "type": "address" }
+      { "internalType": "address", "name": "_beneficiary", "type": "address" }
     ],
     "name": "removeBeneficiary",
     "outputs": [],
@@ -340,15 +302,6 @@
     ],
     "name": "tokenBudget",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalClaimsAssigned",
-    "outputs": [
-      { "internalType": "uint256", "name": "_totalClaims", "type": "uint256" }
-    ],
     "stateMutability": "view",
     "type": "function"
   },

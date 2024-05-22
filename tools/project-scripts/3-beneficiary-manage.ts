@@ -146,7 +146,7 @@ class BeneficiaryManagement extends ContractLib {
   async processTransferToBeneficiary(beneficiaryAddress: string) {
     console.log('----------Processing Token Transfer-------------------');
 
-    const claim = await this.getBeneficiaryClaims(beneficiaryAddress);
+    const claim = ethers.parseEther('5');
     const tx = await this.callContractMethod(
       'C2CProject',
       'processTransferToBeneficiary',
@@ -193,15 +193,15 @@ class BeneficiaryManagement extends ContractLib {
     }
     await beneficiaryManagement.addBeneficiaryToC2CProject(address);
     await beneficiaryManagement.isBeneficiary(address);
-    await beneficiaryManagement.assignClaimsToBeneficiary(
-      address,
-      ethers.parseEther('5')
-    );
-    await beneficiaryManagement.getBeneficiaryClaims(address);
+    // await beneficiaryManagement.assignClaimsToBeneficiary(
+    //   address,
+    //   ethers.parseEther('5')
+    // );
+    // await beneficiaryManagement.getBeneficiaryClaims(address);
   }
 
   await beneficiaryManagement.beneficiaryCount();
-  await beneficiaryManagement.totalClaimsAssigned();
+  // await beneficiaryManagement.totalClaimsAssigned();
   await beneficiaryManagement.processTransferToBeneficiary(addresses[0]);
   await beneficiaryManagement.processTransferToBeneficiary(addresses[1]);
 
