@@ -6,10 +6,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: RahatDonor
-    network: mainnet
+    network: arbitrum-sepolia
     source:
       abi: RahatDonor
-      address: '0xE3dB6a50d9137D48A87bbC6fEDce2E4168CADe1d'
+      address: "0xe0c0968d20Cc1300C7d247C024b76fe47d23419D"
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -35,10 +35,10 @@ dataSources:
       file: ./src/rahat-donor.ts
   - kind: ethereum
     name: RahatToken
-    network: mainnet
+    network: arbitrum-sepolia
     source:
       abi: RahatToken
-      address: '0xAf3d5D3c6d734AD9C253F3c2890108f732CEB7A4'
+      address: "0x1313B8C19F2B16fe298f9632c1671e02bD072fa0"
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -64,10 +64,10 @@ dataSources:
       file: ./src/rahat-token.ts
   - kind: ethereum
     name: RahatCommunity
-    network: mainnet
+    network: arbitrum-sepolia
     source:
       abi: RahatCommunity
-      address: '0x3e8f9962Bd58c2e0F5f963EDb019E03B9c8431c4'
+      address: "0x86F505353877f4eF8Dc31EA39Fd805136EB2B2D4"
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -108,10 +108,10 @@ dataSources:
       file: ./src/rahat-community.ts
   - kind: ethereum
     name: C2CProject
-    network: mainnet
+    network: arbitrum-sepolia
     source:
       abi: C2CProject
-      address: '0xaF5849B8c329bc863Af08BCc0727EAB492E69087'
+      address: "0xe9b82870C7Fbd47247a4e02d0238772B2EEE357f"
       startBlock: 1
     mapping:
       kind: ethereum/events

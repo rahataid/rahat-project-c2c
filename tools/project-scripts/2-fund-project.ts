@@ -1,7 +1,7 @@
 import { ethers, type Signer } from 'ethers';
 import { ContractLib } from './_common';
 
-const tokenMintAmount = 10;
+const tokenMintAmount = 100;
 
 class ProjectFundManagement extends ContractLib {
   private fundDeployerAddress: Signer;
