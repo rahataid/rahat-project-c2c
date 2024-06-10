@@ -1,21 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import {
-  CreateDisbursementDto,
+  // CreateDisbursementDto,
   UpdateDisbursementDto,
 } from '@rahataid/c2c-extensions/dtos';
+import { ProjectContants } from '@rahataid/sdk';
 import { PrismaService } from '@rumsan/prisma';
+import { randomUUID } from 'crypto';
+
 @Injectable()
 export class DisbursementService {
   private rsprisma;
-  constructor(protected prisma: PrismaService) {
-    this.rsprisma = prisma.rsclient;
-  }
+  constructor(
+    protected prisma: PrismaService,
+    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
+  ) {}
 
-  async create(createDisbursementDto: CreateDisbursementDto) {
-    console.log({ createDisbursementDto });
-    return await this.rsprisma.disbursementbeneficiary.create({
-      data: { createDisbursementDto },
-    });
+  async create(createDisbursementDto: any) {
+    try {
+      const { amount, beneficiaries, from, transactionHash, type, timestamp } =
+        createDisbursementDto;
+      console.log({ createDisbursementDto });
+
+      const result = await this.prisma.disbursementBeneficiary.create({
+        data: {
+          amount: parseFloat(amount),
+          from: from as any,
+          transactionHash,
+          Beneficiary: {
+            connectOrCreate: beneficiaries.map((address) => ({
+              where: {
+                walletAddress: address,
+              },
+            })),
+          },
+          Disbursement: {
+            create: {
+              uuid: randomUUID(),
+              type,
+              timestamp,
+              amount: parseFloat(amount),
+            },
+          },
+        },
+      });
+      console.log({ result });
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findAll() {

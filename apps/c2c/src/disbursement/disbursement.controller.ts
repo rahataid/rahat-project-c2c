@@ -11,7 +11,10 @@ import {
 export class DisbursementController {
   constructor(private readonly disbursementService: DisbursementService) {}
 
-  @MessagePattern({ cmd: JOBS.DISBURSEMENT.CREATE })
+  @MessagePattern({
+    cmd: JOBS.DISBURSEMENT.CREATE,
+    uuid: process.env.PROJECT_ID,
+  })
   create(@Payload() createDisbursementDto: CreateDisbursementDto) {
     console.log({ createDisbursementDto });
     return this.disbursementService.create(createDisbursementDto);
