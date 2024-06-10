@@ -64,6 +64,14 @@ export const JOBS = {
     GET: 'rahat.jobs.campaign.get',
     REMOVE: 'rahat.jobs.campaign.remove',
   },
+  DISBURSEMENT: {
+    CREATE: 'rahat.jobs.disbursement.create',
+    LIST: 'rahat.jobs.disbursement.list',
+    LISTONE: 'rahat.jobs.disbursement.listone',
+    UPDATE: 'rahat.jobs.disbursement.update',
+    DISBURSEMENT_TRANSACTION: 'rahat.jobs.disbursement.transactions.get',
+    DISBURSEMENT_APPROVAL: 'rahat.jobs.disbursement.approvals.get',
+  },
 };
 
 export const APP = {

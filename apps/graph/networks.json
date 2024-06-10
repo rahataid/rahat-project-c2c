@@ -16,19 +16,19 @@
   },
   "mainnet": {
     "RahatDonor": {
-      "address": "0xA084d874320E8B0fAf8CbADf1571778D013E22Dc",
+      "address": "0x09A528Cf484F88C9BF587e1CA3d91be724f6FfEf",
       "startBlock": 1
     },
     "RahatToken": {
-      "address": "0x3B6f526be3367608401C39e1CDA4d081604b0959",
+      "address": "0xF75F92Cf5AC658FEFD3c8B4c4f7d10C1E5F1fB26",
       "startBlock": 1
     },
     "RahatCommunity": {
-      "address": "0xb895246B9d3F29d28F828b0377f86bBA68baaE76",
+      "address": "0x6EFA82740Ed4b939A02703A5ff403e620aa43a74",
       "startBlock": 1
     },
     "C2CProject": {
-      "address": "0xF57046674341cE4419F19DA8c16715A0C4bA7EaD",
+      "address": "0x126e7CC15E80F88d081CF455cddADD032f4A62db",
       "startBlock": 1
     }
   }
