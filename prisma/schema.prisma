@@ -67,8 +67,12 @@ model Beneficiary {
   walletAddress           String?
   extras                  Json?
   type                    BeneficiaryType           @default(ENROLLED)
-  isVerfiied              Boolean                   @default(false)
+  isVerified              Boolean                   @default(false)
   DisbursementBeneficiary DisbursementBeneficiary[]
+
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime?                 @updatedAt
+  deletedAt               DateTime?
 
   @@map(name: "tbl_beneficiaries")
 }
@@ -96,13 +100,16 @@ model Disbursement {
 
 model DisbursementBeneficiary {
   id              Int          @id @default(autoincrement()) @db.Integer()
-  Disbursement    Disbursement @relation(fields: [id], references: [id])
-  Beneficiary     Beneficiary  @relation(fields: [id], references: [id], map: "beneficiary_id_fkey")
+  disbursementId  Int
+  beneficiaryId   Int
+  Disbursement    Disbursement @relation(fields: [disbursementId], references: [id])
+  Beneficiary     Beneficiary  @relation(fields: [beneficiaryId], references: [id])
   from            String?
   amount          Int?
   transactionHash String?
   extras          Json?
   createdAt       DateTime     @default(now())
+  updatedAt       DateTime?    @updatedAt
 }
 
 enum DisbursementType {
