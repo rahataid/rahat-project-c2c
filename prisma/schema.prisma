@@ -62,19 +62,58 @@ model Setting {
 // ++++++++++++++++++ START: @c2c/beneficiaries +++++++++++++++++++++++++++
 
 model Beneficiary {
-  id            Int     @id @default(autoincrement()) @db.Integer()
-  uuid          String  @db.Uuid()
-  walletAddress String?
-  extras        Json?
-  type          BeneficiaryType @default(ENROLLED)
-  isVerfiied     Boolean         @default(false)
+  id                      Int                       @id @default(autoincrement()) @db.Integer()
+  uuid                    String                    @unique @db.Uuid()
+  walletAddress           String?
+  extras                  Json?
+  type                    BeneficiaryType           @default(ENROLLED)
+  isVerfiied              Boolean                   @default(false)
+  DisbursementBeneficiary DisbursementBeneficiary[]
 
   @@map(name: "tbl_beneficiaries")
 }
 
 model Campaign {
-  id            Int     @id @default(autoincrement()) @db.Integer()
-  campaignId    Int
+  id         Int @id @default(autoincrement()) @db.Integer()
+  campaignId Int
 
   @@map(name: "tbl_campaign")
+}
+
+model Disbursement {
+  id                      Int                       @id @default(autoincrement()) @db.Integer()
+  uuid                    String                    @unique @db.Uuid()
+  DisbursementBeneficiary DisbursementBeneficiary[]
+  type                    DisbursementType          @default(PROJECT)
+  status                  DisbursementStatus        @default(DRAFT)
+  timestamp               String?
+  amount                  Int?
+  transactionHash         String?
+  extras                  Json?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime?                 @updatedAt
+}
+
+model DisbursementBeneficiary {
+  id              Int          @id @default(autoincrement()) @db.Integer()
+  Disbursement    Disbursement @relation(fields: [id], references: [id])
+  Beneficiary     Beneficiary  @relation(fields: [id], references: [id], map: "beneficiary_id_fkey")
+  from            String?
+  amount          Int?
+  transactionHash String?
+  extras          Json?
+  createdAt       DateTime     @default(now())
+}
+
+enum DisbursementType {
+  PROJECT
+  EOA
+  MULTISIG
+}
+
+enum DisbursementStatus {
+  DRAFT
+  PENDING
+  COMPLETED
+  REJECTED
 }
