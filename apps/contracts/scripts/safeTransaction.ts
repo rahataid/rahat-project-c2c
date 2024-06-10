@@ -104,13 +104,13 @@ const getApprovals = async (safeTxHash: string) => {
 const main = async () => {
     // await createTransaction()
 
-    // const owners = await getOwnersList();
+    const owners = await getOwnersList();
 
     // const confirmations = await getConfirmations('0x3c4ba73cee3e33eee35c7f489178a0862f837253f1100ed6afaf051c616da385');
 
     const approvals = await getApprovals('0x3c4ba73cee3e33eee35c7f489178a0862f837253f1100ed6afaf051c616da385');
 
-    console.log(approvals)
+    console.log(owners, approvals)
 }
 
 main()
