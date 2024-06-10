@@ -28,6 +28,7 @@ export class BeneficiaryService {
     //   this.prisma.setting
     // );
     // console.log({ contract });
+    // console.log({ dto });
     // const addBeneficiary = await contract.addBeneficiary(dto.walletAddress);
     // console.log({ addBeneficiary });
 

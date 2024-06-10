@@ -65,7 +65,7 @@ export function handleTransfer(event: TransferEvent): void {
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
 
-  getTokenBalance(event.address, event.params.from);
+  // getTokenBalance(event.address, event.params.from);
 
   entity.save();
 }

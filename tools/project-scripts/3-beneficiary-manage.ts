@@ -2,8 +2,8 @@ import { Signer, ethers } from 'ethers';
 import { ContractLib } from './_common';
 
 const addresses = [
-  '0xD6786F3220bE85C69C137e822f30Ac3eA0Ab6014',
-  '0x17469fF5Bdc86a5FCeb4604534fF2a47a821d421',
+  '0x491A0ae888449A9cE02f3F4288EFD9D5065c16C9',
+  '0x2751aAb31EF54CAFb4b2CB5F936e1aCf9EcDB1cf',
 ];
 
 class BeneficiaryManagement extends ContractLib {
@@ -146,7 +146,7 @@ class BeneficiaryManagement extends ContractLib {
   async processTransferToBeneficiary(beneficiaryAddress: string) {
     console.log('----------Processing Token Transfer-------------------');
 
-    const claim = ethers.parseEther('5');
+    const claim = ethers.parseEther('500');
     const tx = await this.callContractMethod(
       'C2CProject',
       'processTransferToBeneficiary',
