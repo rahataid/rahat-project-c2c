@@ -18,9 +18,7 @@ const prisma = new PrismaService();
 const settings = new SettingsService(prisma);
 
 const contractName = [
-  'RahatDonor',
   'RahatToken',
-  'RahatCommunity',
   'C2CProject',
 ];
 
@@ -49,21 +47,13 @@ class SeedProject extends ContractLib {
   }
 
   public async deployC2CContracts() {
-    const deployerAccount = this.getWalletFromPrivateKey(this.deployerAddress);
-    console.log('----------Deploying Rahat Donor-------------------');
-    const DonorContract = await this.deployContract('RahatDonor', [
-      deployerAccount,
-    ]);
-    console.log({
-      DonorContract: DonorContract.contract.target,
-      blockNumber: DonorContract.blockNumber,
-    });
+    const deployerAccount = this.getWalletFromPrivateKey(this.deployerKey);
 
     console.log('----------Deploying Rahat Token-------------------');
     const TokenContract = await this.deployContract('RahatToken', [
       rahatTokenDetails.name,
       rahatTokenDetails.symbol,
-      DonorContract.contract.target,
+      deployerAccount.address,
       rahatTokenDetails.decimals,
     ]);
     console.log({
@@ -71,20 +61,9 @@ class SeedProject extends ContractLib {
       blockNumber: TokenContract.blockNumber,
     });
 
-    console.log('----------Deploying Rahat Community-------------------');
-    const CommunityContract = await this.deployContract('RahatCommunity', [
-      communityName,
-      deployerAccount,
-    ]);
-    console.log({
-      CommunityContract: CommunityContract.contract.target,
-      blockNumber: CommunityContract.blockNumber,
-    });
-
     console.log('----------Deploying C2C Project Contract-------------------');
     const C2CProjectContract = await this.deployContract('C2CProject', [
       'C2C Project',
-      CommunityContract.contract.target,
     ]);
     console.log({
       C2CProjectContract: C2CProjectContract.contract.target,
@@ -96,17 +75,10 @@ class SeedProject extends ContractLib {
       `${__dirname}/${this.projectUUID}.json`,
       JSON.stringify(
         {
-          RahatDonor: {
-            address: DonorContract.contract.target,
-            startBlock: DonorContract.blockNumber,
-          },
+
           RahatToken: {
             address: TokenContract.contract.target,
             startBlock: TokenContract.blockNumber,
-          },
-          RahatCommunity: {
-            address: CommunityContract.contract.target,
-            startBlock: CommunityContract.blockNumber,
           },
           C2CProject: {
             address: C2CProjectContract.contract.target,
@@ -116,24 +88,6 @@ class SeedProject extends ContractLib {
         null,
         2
       )
-    );
-    console.log('----------Registering Project in Donor----------');
-    await this.callContractMethod(
-      'RahatDonor',
-      'registerProject',
-      [C2CProjectContract.contract.target, true],
-      this.projectUUID,
-      deployerAccount
-    );
-
-    console.log(`----------Add Token owner-------------------`);
-
-    await this.callContractMethod(
-      'RahatDonor',
-      'addTokenOwner',
-      [TokenContract.contract.target, C2CProjectContract.contract.target],
-      this.projectUUID,
-      deployerAccount
     );
   }
 
