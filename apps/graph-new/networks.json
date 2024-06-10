@@ -1,0 +1,8 @@
+{
+  "base-sepolia": {
+    "RahatToken": {
+      "address": "0x40BdA327da6460B106001709ef2F730825c634D8",
+      "startBlock": 11129388
+    }
+  }
+}

@@ -1,0 +1,35 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: RahatToken
+    network: base-sepolia
+    source:
+      address: "0x40BdA327da6460B106001709ef2F730825c634D8"
+      abi: RahatToken
+      startBlock: 11129388
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - OwnerAdded
+        - OwnerRemoved
+        - Transfer
+      abis:
+        - name: RahatToken
+          file: ./abis/RahatToken.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: OwnerAdded(indexed address)
+          handler: handleOwnerAdded
+        - event: OwnerRemoved(indexed address)
+          handler: handleOwnerRemoved
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/rahat-token.ts
