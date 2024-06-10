@@ -30,24 +30,11 @@ abstract contract AbstractTokenActions is AbstractOwner {
     IERC20(_token).transferFrom(_from, _to, _amount);
   }
 
-  function transferFromTokenTo(
-    address _token,
-    address _from,
-    address _to,
-    uint256 _amount
-  ) public virtual {
-    IERC20(_token).transferFrom(_from, _to, _amount);
-  }
-
   function getAllowanceAndBalance(
     address _token,
     address _from
   ) public view virtual returns (uint allowance, uint balance) {
     allowance = IERC20(_token).allowance(_from, address(this));
     balance = IERC20(_token).balanceOf(address(this));
-  }
-
-  function getBalance(address _token, address _of) public view virtual returns (uint balance) {
-    balance = IERC20(_token).balanceOf(_of);
   }
 }

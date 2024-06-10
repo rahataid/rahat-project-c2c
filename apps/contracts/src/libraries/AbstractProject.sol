@@ -6,7 +6,6 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/utils/Multicall.sol';
 
 import '../interfaces/IRahatProject.sol';
-import '../interfaces/IRahatCommunity.sol';
 
 abstract contract AbstractProject is IRahatProject, Multicall {
   using EnumerableSet for EnumerableSet.AddressSet;
@@ -14,8 +13,6 @@ abstract contract AbstractProject is IRahatProject, Multicall {
   // #region ***** Events *********//
   event BeneficiaryAdded(address indexed);
   event BeneficiaryRemoved(address indexed);
-  event ProjectLocked();
-  event ProjectUnlocked();
 
   event TokenRegistered(address indexed tokenAddress);
   event TokenBudgetIncrease(address indexed tokenAddress, uint amount);
@@ -25,21 +22,22 @@ abstract contract AbstractProject is IRahatProject, Multicall {
   // #endregion
 
   // #region ***** Variables *********//
-  bool internal _permaLock;
   mapping(address => uint) private _tokenBudget;
   mapping(address => bool) private _registeredTokens;
 
   string public override name;
 
-  IRahatCommunity public RahatCommunity;
   EnumerableSet.AddressSet internal _beneficiaries;
 
   // #endregion
 
-  constructor(string memory _name, address _community) {
+  constructor(string memory _name) {
     name = _name;
-    RahatCommunity = IRahatCommunity(_community);
   }
+
+
+
+  // #endregion
 
   // #region ***** Beneficiary Functions *********//
   function isBeneficiary(address _address) public view virtual returns (bool) {
@@ -51,7 +49,6 @@ abstract contract AbstractProject is IRahatProject, Multicall {
   }
 
   function _addBeneficiary(address _address) internal {
-    require(RahatCommunity.isBeneficiary(_address), 'not valid ben');
     if (!_beneficiaries.contains(_address)) emit BeneficiaryAdded(_address);
     _beneficiaries.add(_address);
   }
@@ -84,25 +81,16 @@ abstract contract AbstractProject is IRahatProject, Multicall {
   }
 
   function _acceptToken(address _tokenAddress, address _from, uint256 _amount) internal {
-    require(RahatCommunity.isProject(address(this)), 'project not approved');
 
     IERC20(_tokenAddress).transferFrom(_from, address(this), _amount);
     _tokenBudgetIncrease(_tokenAddress, _amount);
     emit TokenReceived(_tokenAddress, _from, _amount);
   }
 
-  function _withdrawToken(address _tokenAddress, uint _amount) internal {
-    IERC20(_tokenAddress).transfer(address(RahatCommunity), _amount);
+  function _withdrawToken(address _tokenAddress, uint _amount, address _withdrawAddress) internal {
     _tokenBudgetDecrease(_tokenAddress, _amount);
 
-    emit TokenTransfer(_tokenAddress, address(RahatCommunity), _amount);
+    emit TokenTransfer(_tokenAddress, address(_withdrawAddress), _amount);
   }
 
-  // #endregion
-
-  // #region ***** Misc Functions *********//
-  function community() public view virtual returns (address) {
-    return address(RahatCommunity);
-  }
-  // #endregion
 }
