@@ -1,4 +1,4 @@
-import { Signer } from 'ethers';
+import { Signer, ethers } from 'ethers';
 import { ContractLib } from './_common';
 
 class MintToken extends ContractLib {
@@ -12,15 +12,12 @@ class MintToken extends ContractLib {
     this.projectUUID = process.env.PROJECT_ID as string;
   }
 
-  public async mintToken(tokenMintAmount: number) {
+  public async mintToken(tokenMintAmount: number, address: string) {
     console.log('----------Minting Token-------------------');
     const tx = await this.callContractMethod(
       'RahatToken',
       'mint',
-      [
-        '0x17469fF5Bdc86a5FCeb4604534fF2a47a821d421',
-        tokenMintAmount.toString(),
-      ],
+      [address, ethers.parseEther(tokenMintAmount.toString())],
       this.projectUUID,
       this.deployerWalletAddress
     );
@@ -31,6 +28,9 @@ class MintToken extends ContractLib {
 
 (async () => {
   const mintToken = new MintToken();
-  const tx = await mintToken.mintToken(12000000);
+  const tx = await mintToken.mintToken(
+    12000000,
+    '0x008E28BC0D95d2045eEA111E35aFcD0d0b150772'
+  );
   console.log({ tx });
 })();

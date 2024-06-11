@@ -334,19 +334,6 @@ export const RahatToken = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'getSender',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
