@@ -7,10 +7,13 @@ import {
   DisbursementTransactionDto,
   UpdateDisbursementDto,
 } from '@rahataid/c2c-extensions/dtos';
+import { DisbursementMultisigService } from './disbursement.multisig.service';
 
 @Controller()
 export class DisbursementController {
-  constructor(private readonly disbursementService: DisbursementService) {}
+  constructor(private readonly disbursementService: DisbursementService,
+    private readonly disbursementMultisigService: DisbursementMultisigService
+  ) { }
 
   @MessagePattern({
     cmd: JOBS.DISBURSEMENT.CREATE,
@@ -66,5 +69,14 @@ export class DisbursementController {
     return this.disbursementService.disbursementApprovals(
       disbursementApprovalDto
     );
+  }
+
+  @MessagePattern({
+    cmd: JOBS.SAFE_TRANSACTION.CREATE,
+    uuid: process.env.PROJECT_ID,
+  })
+  createSafeTransaction() {
+    console.log("createSafeTransaction")
+    return this.disbursementMultisigService.createSafeTransaction();
   }
 }
