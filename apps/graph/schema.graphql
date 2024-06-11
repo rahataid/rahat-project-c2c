@@ -1,36 +1,3 @@
-type OwnerAdded @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnerRemoved @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TokenCreated @entity(immutable: true) {
-  id: Bytes!
-  tokenAddress: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TokenMintedAndApproved @entity(immutable: true) {
-  id: Bytes!
-  tokenAddress: Bytes! # address
-  approveAddress: Bytes! # address
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
 type Approval @entity(immutable: true) {
   id: Bytes!
   owner: Bytes! # address
@@ -41,7 +8,7 @@ type Approval @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type RahatTokenOwnerAdded @entity(immutable: true) {
+type OwnerAdded @entity(immutable: true) {
   id: Bytes!
   param0: Bytes! # address
   blockNumber: BigInt!
@@ -49,7 +16,7 @@ type RahatTokenOwnerAdded @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type RahatTokenOwnerRemoved @entity(immutable: true) {
+type OwnerRemoved @entity(immutable: true) {
   id: Bytes!
   param0: Bytes! # address
   blockNumber: BigInt!
@@ -77,101 +44,6 @@ type BeneficiaryAdded @entity(immutable: true) {
 type BeneficiaryRemoved @entity(immutable: true) {
   id: Bytes!
   param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProjectApprovalRequest @entity(immutable: true) {
-  id: Bytes!
-  requestor: Bytes! # address
-  project: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProjectApproved @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProjectRevoked @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Received @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  param1: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoleAdminChanged @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  previousAdminRole: Bytes! # bytes32
-  newAdminRole: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoleGranted @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoleRevoked @entity(immutable: true) {
-  id: Bytes!
-  role: Bytes! # bytes32
-  account: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type C2CProjectBeneficiaryAdded @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type C2CProjectBeneficiaryRemoved @entity(immutable: true) {
-  id: Bytes!
-  param0: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProjectLocked @entity(immutable: true) {
-  id: Bytes!
-
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ProjectUnlocked @entity(immutable: true) {
-  id: Bytes!
-
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -225,24 +97,11 @@ type TokenTransfer @entity(immutable: true) {
 
 type TransferProcessed @entity(immutable: true) {
   id: Bytes!
-  _beneficiary: Bytes! # address
   _tokenAddress: Bytes! # address
+  _to: Bytes! # address
+  _from: Bytes! # address
   _amount: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
-}
-
-type C2CProjectDetail @entity(immutable: true) {
-  id: Bytes!
-}
-
-type TokenBalance @entity(immutable: true) {
-  id: Bytes!
-  balance: BigInt! # uint256
-}
-
-type TokenDetail @entity(immutable: true) {
-  id: Bytes!
-  name: String!
 }
