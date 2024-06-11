@@ -1,6 +1,7 @@
 #! /bin/sh
 
-pnpm install
+pnpm install --frozen-lockfile
+
 
 source './tools/scripts/utils.sh'
 
