@@ -7,63 +7,143 @@ import {
 } from '@safe-global/safe-core-sdk-types'
 import { PrismaService } from '@rumsan/prisma';
 import { ethers } from 'ethers'
+import { erc20Abi } from '../utils/constant'
+import { getWalletFromPrivateKey } from "../utils/web3";
+import { get } from "http";
 
 
 @Injectable()
 export class DisbursementMultisigService {
+    private safeApiKit: SafeApiKit
     constructor(
         protected prisma: PrismaService,
-
-    ) { }
-
-    async generateTransactionData() {
-        const RPC_URL = 'https://sepolia.base.org'
-        const { value: contracts } = await this.prisma.setting.findFirst({
-            where: {
-                name: 'CONTRACT'
-            }
+    ) {
+        this.safeApiKit = new SafeApiKit({
+            chainId: 84532n
         })
-        const { value: safeWallet } = await this.prisma.setting.findFirst({
-            where: {
-                name: 'SAFE_WALLET'
-            }
-        })
-
-        // console.log({ contracts, safeWallet })
-        // const tokenContract = new ethers.Contract(
-        //     contracts?.C2CPROJECT?.ADDRESS,
-        //     contracts?.C2CPROJECT?.ABI,
-        //     new ethers.JsonRpcProvider(RPC_URL))
-        // console.log({ tokenContract })
     }
 
-
-    async createSafeTransaction() {
-        console.log("creatin tx")
-        const CONTRACTS = await this.prisma.setting.findFirst({
+    async generateTransactionData() {
+        const CONTRACT = await this.prisma.setting.findUnique({
             where: {
                 name: 'CONTRACT'
             }
         })
+        const c2cAddress = CONTRACT.value["C2CPROJECT"]["ADDRESS"]
+        const tokenAddress = CONTRACT.value["RAHATTOKEN"]["ADDRESS"]
+
+        const tokenContract = new ethers.Contract(
+            tokenAddress,
+            erc20Abi,
+        )
+        const tokenApprovalEncodedData = tokenContract.
+            interface.
+            encodeFunctionData('approve', [c2cAddress, ethers.parseEther('10')])
+        // Create transaction
+        const safeTransactionData: MetaTransactionData = {
+            to: tokenAddress,
+            value: '0', // in wei
+            data: tokenApprovalEncodedData,
+            operation: OperationType.Call
+        }
+
+        return safeTransactionData
+    }
+
+    async getSafeInstance() {
+        //CONSTANTS for BASE SEPOLIA
+        //TODO: getit from settings
+        const RPC_URL = 'https://sepolia.base.org'
         const SAFE_ADDRESS = await this.prisma.setting.findFirst({
             where: {
                 name: 'SAFE_WALLET'
             }
         })
-        console.log(CONTRACTS)
-        const signer = process.env.DEPLOYER_PRIVATE_KEY
+        const safeKit = await Safe.init({
+            provider: RPC_URL,
+            signer: process.env.DEPLOYER_PRIVATE_KEY,
+            safeAddress: SAFE_ADDRESS.value["ADDRESS"]
+        })
+        return safeKit
+    }
 
-        const RPC_URL = 'https://sepolia.base.org'
 
-        console.log({ SAFE_ADDRESS })
-        const TOKEN_ADDRESS = '0x40BdA327da6460B106001709ef2F730825c634D8'
+    async getOwnersList() {
+        const SAFE_ADDRESS = await this.prisma.setting.findFirst({
+            where: {
+                name: 'SAFE_WALLET'
+            }
+        })
+        const { owners } = await this.safeApiKit.getSafeInfo(SAFE_ADDRESS.value["ADDRESS"])
+        return owners;
+    }
 
-        const C2C_ADDRESS = '0x3A28d71a89123e8894A1Ac536c0623CA22022AE8'
-        // return Safe.init({
-        //     provider: RPC_URL,
-        //     signer,
-        //     safeAddress: SAFE_ADDRESS
-        // })
+    async getConfirmations(safeTxHash: string) {
+        const { confirmations } = await this.safeApiKit.getTransaction(safeTxHash)
+        return confirmations
+    }
 
+
+    async createSafeTransaction() {
+        console.log("creatin tx")
+        const transactionData = await this.generateTransactionData()
+        const safeWallet = await this.getSafeInstance();
+
+        const safeTransaction = await safeWallet.createTransaction({
+            transactions: [transactionData]
+        })
+        console.log({ safeTransaction })
+        const safeTxHash = await safeWallet.getTransactionHash(safeTransaction)
+        const signature = await safeWallet.signHash(safeTxHash)
+        const deployerWallet = getWalletFromPrivateKey(process.env.DEPLOYER_PRIVATE_KEY)
+        const safeAddress = await safeWallet.getAddress()
+
+        // Propose transaction to the service
+        console.log("proposing transaction", safeAddress)
+
+        await this.safeApiKit.proposeTransaction({
+            safeAddress: safeAddress,
+            safeTransactionData: safeTransaction.data,
+            safeTxHash,
+            senderAddress: deployerWallet.address,
+            senderSignature: signature.data
+        })
+
+        console.log(safeAddress)
+        console.log({
+            safeAddress,
+            safeTransactionData: safeTransaction.data,
+            safeTxHash,
+            senderAddress: deployerWallet.address,
+            senderSignature: signature.data
+        })
+
+        return {
+            safeAddress: safeAddress,
+            safeTransactionData: safeTransaction.data,
+            safeTxHash,
+            senderAddress: deployerWallet.address,
+            senderSignature: signature.data
+        }
+
+    }
+
+    async getTransactionData(safeTxHash: string) {
+        return this.safeApiKit.getTransaction(safeTxHash)
+    }
+
+    async getTransactionApprovals(safeTxHash: string) {
+        const owners = await this.getOwnersList();
+        const confirmations = await this.getConfirmations(safeTxHash);
+        console.log({ owners })
+        return owners.map(owner => {
+            const confirmation = confirmations?.find(confirmation => confirmation.owner === owner)
+            return {
+                owner,
+                submissionDate: confirmation?.submissionDate || null,
+                hasApproved: confirmation ? true : false
+            }
+        }
+        )
     }
 }
