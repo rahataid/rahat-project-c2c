@@ -24,15 +24,21 @@ export class DisbursementService {
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
-      const { amount, beneficiaries, from, transactionHash, type, timestamp } =
-        createDisbursementDto;
+      const {
+        amount,
+        beneficiaries,
+        from,
+        transactionHash,
+        status,
+        timestamp,
+      } = createDisbursementDto;
       console.log({ createDisbursementDto });
 
       // Create disbursement first
       const disbursement = await this.prisma.disbursement.create({
         data: {
           uuid: randomUUID(),
-          type,
+          status,
           timestamp,
           amount: parseFloat(amount),
           transactionHash,
@@ -89,12 +95,17 @@ export class DisbursementService {
       {
         page: 1,
         perPage: 20,
+        orderByTieBreakerPropertyName: 'createdAt',
       }
     );
   }
 
-  async findOne(id: number) {
-    return await this.rsprisma.disbursement.findUnique({ where: { id: id } });
+  async findOne(params: DisbursementTransactionDto) {
+    return await this.rsprisma.disbursement.findUnique({
+      where: {
+        uuid: params.disbursementUUID,
+      },
+    });
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
@@ -107,7 +118,7 @@ export class DisbursementService {
   async disbursementTransaction(disbursementDto: DisbursementTransactionDto) {
     const where: Prisma.DisbursementBeneficiaryWhereInput = {
       Disbursement: {
-        id: disbursementDto.disbursementId,
+        uuid: disbursementDto.disbursementUUID,
       },
     };
     const include: Prisma.DisbursementBeneficiaryInclude = {
@@ -135,7 +146,7 @@ export class DisbursementService {
   async disbursementApprovals(disbursementDto: DisbursementApprovalsDTO) {
     const where: Prisma.DisbursementBeneficiaryWhereInput = {
       Disbursement: {
-        id: disbursementDto.disbursementId,
+        uuid: disbursementDto.disbursementUUID,
         status: {
           equals: DisbursementStatus.COMPLETED,
         },

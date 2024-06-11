@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
+import { UUID, randomUUID } from 'crypto';
 
 export type DisbursementBenefeciaryCreate = {
   amount: string;
@@ -28,7 +29,7 @@ export class CreateDisbursementDto {
     example: 'PENDING',
   })
   // useenum
-  type!: any;
+  status!: any;
 
   @ApiProperty({
     example: '2021-10-01T00:00:00.000Z',
@@ -58,14 +59,14 @@ export class UpdateDisbursementDto {
 
 export class DisbursementApprovalsDTO {
   @ApiProperty({
-    example: 1,
+    example: randomUUID(),
   })
-  disbursementId!: number;
+  disbursementUUID!: UUID;
 }
 
 export class DisbursementTransactionDto {
   @ApiProperty({
-    example: 1,
+    example: randomUUID(),
   })
-  disbursementId!: number;
+  disbursementUUID!: UUID;
 }
