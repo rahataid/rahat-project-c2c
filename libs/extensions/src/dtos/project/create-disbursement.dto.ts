@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
+import { UUID, randomUUID } from 'crypto';
 
 export type DisbursementBenefeciaryCreate = {
   amount: string;
@@ -58,14 +59,14 @@ export class UpdateDisbursementDto {
 
 export class DisbursementApprovalsDTO {
   @ApiProperty({
-    example: 1,
+    example: randomUUID(),
   })
-  disbursementId!: number;
+  disbursementUUID!: UUID;
 }
 
 export class DisbursementTransactionDto {
   @ApiProperty({
-    example: 1,
+    example: randomUUID(),
   })
-  disbursementId!: number;
+  disbursementUUID!: UUID;
 }

@@ -113,7 +113,7 @@ export class DisbursementService {
   async disbursementTransaction(disbursementDto: DisbursementTransactionDto) {
     const where: Prisma.DisbursementBeneficiaryWhereInput = {
       Disbursement: {
-        id: disbursementDto.disbursementId,
+        uuid: disbursementDto.disbursementUUID,
       },
     };
     const include: Prisma.DisbursementBeneficiaryInclude = {
@@ -141,7 +141,7 @@ export class DisbursementService {
   async disbursementApprovals(disbursementDto: DisbursementApprovalsDTO) {
     const where: Prisma.DisbursementBeneficiaryWhereInput = {
       Disbursement: {
-        id: disbursementDto.disbursementId,
+        uuid: disbursementDto.disbursementUUID,
         status: {
           equals: DisbursementStatus.COMPLETED,
         },
