@@ -3,6 +3,8 @@ import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   BeneficiaryAdded,
   BeneficiaryRemoved,
+  ProjectLocked,
+  ProjectUnlocked,
   TokenBudgetDecrease,
   TokenBudgetIncrease,
   TokenReceived,
@@ -35,6 +37,22 @@ export function createBeneficiaryRemovedEvent(
   )
 
   return beneficiaryRemovedEvent
+}
+
+export function createProjectLockedEvent(): ProjectLocked {
+  let projectLockedEvent = changetype<ProjectLocked>(newMockEvent())
+
+  projectLockedEvent.parameters = new Array()
+
+  return projectLockedEvent
+}
+
+export function createProjectUnlockedEvent(): ProjectUnlocked {
+  let projectUnlockedEvent = changetype<ProjectUnlocked>(newMockEvent())
+
+  projectUnlockedEvent.parameters = new Array()
+
+  return projectUnlockedEvent
 }
 
 export function createTokenBudgetDecreaseEvent(
@@ -141,9 +159,8 @@ export function createTokenTransferEvent(
 }
 
 export function createTransferProcessedEvent(
+  _beneficiary: Address,
   _tokenAddress: Address,
-  _to: Address,
-  _from: Address,
   _amount: BigInt
 ): TransferProcessed {
   let transferProcessedEvent = changetype<TransferProcessed>(newMockEvent())
@@ -152,15 +169,15 @@ export function createTransferProcessedEvent(
 
   transferProcessedEvent.parameters.push(
     new ethereum.EventParam(
-      "_tokenAddress",
-      ethereum.Value.fromAddress(_tokenAddress)
+      "_beneficiary",
+      ethereum.Value.fromAddress(_beneficiary)
     )
   )
   transferProcessedEvent.parameters.push(
-    new ethereum.EventParam("_to", ethereum.Value.fromAddress(_to))
-  )
-  transferProcessedEvent.parameters.push(
-    new ethereum.EventParam("_from", ethereum.Value.fromAddress(_from))
+    new ethereum.EventParam(
+      "_tokenAddress",
+      ethereum.Value.fromAddress(_tokenAddress)
+    )
   )
   transferProcessedEvent.parameters.push(
     new ethereum.EventParam(

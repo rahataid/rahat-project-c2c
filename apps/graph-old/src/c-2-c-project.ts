@@ -1,6 +1,8 @@
 import {
   BeneficiaryAdded as BeneficiaryAddedEvent,
   BeneficiaryRemoved as BeneficiaryRemovedEvent,
+  ProjectLocked as ProjectLockedEvent,
+  ProjectUnlocked as ProjectUnlockedEvent,
   TokenBudgetDecrease as TokenBudgetDecreaseEvent,
   TokenBudgetIncrease as TokenBudgetIncreaseEvent,
   TokenReceived as TokenReceivedEvent,
@@ -11,6 +13,8 @@ import {
 import {
   BeneficiaryAdded,
   BeneficiaryRemoved,
+  ProjectLocked,
+  ProjectUnlocked,
   TokenBudgetDecrease,
   TokenBudgetIncrease,
   TokenReceived,
@@ -37,6 +41,30 @@ export function handleBeneficiaryRemoved(event: BeneficiaryRemovedEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.param0 = event.params.param0
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleProjectLocked(event: ProjectLockedEvent): void {
+  let entity = new ProjectLocked(
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
+  )
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleProjectUnlocked(event: ProjectUnlockedEvent): void {
+  let entity = new ProjectUnlocked(
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
+  )
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -124,9 +152,8 @@ export function handleTransferProcessed(event: TransferProcessedEvent): void {
   let entity = new TransferProcessed(
     event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
+  entity._beneficiary = event.params._beneficiary
   entity._tokenAddress = event.params._tokenAddress
-  entity._to = event.params._to
-  entity._from = event.params._from
   entity._amount = event.params._amount
 
   entity.blockNumber = event.block.number

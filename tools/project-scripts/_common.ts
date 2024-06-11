@@ -21,6 +21,7 @@ export class ContractLib {
   private provider: JsonRpcProvider;
   public deployedContracts: DeployedContractData;
   public deployerAddress: any;
+  public deployerKey: any;
   public adminAddress: any;
 
   constructor() {
@@ -32,7 +33,7 @@ export class ContractLib {
       chainId: Number(process.env.CHAIN_ID) || 8888,
       blockExplorerUrls: [
         process.env.BLOCK_EXPLORER_URL ||
-          'https://explorer-mumbai.maticvigil.com/',
+        'https://explorer-mumbai.maticvigil.com/',
       ],
     };
 
@@ -40,7 +41,8 @@ export class ContractLib {
 
     this.provider = new JsonRpcProvider(network);
     this.deployerAddress = privateKeys.deployer;
-    this.adminAddress = privateKeys.admin;
+    this.deployerKey = privateKeys.deployer;
+    this.adminAddress = privateKeys.deployer;
     this.deployedContracts = {};
   }
 
