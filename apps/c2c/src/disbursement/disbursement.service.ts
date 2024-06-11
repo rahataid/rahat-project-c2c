@@ -20,11 +20,11 @@ export class DisbursementService {
   constructor(
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
-  ) {}
+  ) { }
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
-      const { amount, beneficiaries, from, transactionHash, type, timestamp } =
+      const { amount, beneficiaries, from, transactionHash, status, timestamp } =
         createDisbursementDto;
       console.log({ createDisbursementDto });
 
@@ -32,7 +32,7 @@ export class DisbursementService {
       const disbursement = await this.prisma.disbursement.create({
         data: {
           uuid: randomUUID(),
-          type,
+          status,
           timestamp,
           amount: parseFloat(amount),
           transactionHash,
