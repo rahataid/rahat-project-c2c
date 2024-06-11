@@ -29,12 +29,12 @@ export class DisbursementMultisigService {
             }
         })
 
-        console.log({ contracts, safeWallet })
-        const tokenContract = new ethers.Contract(
-            contracts?.C2CPROJECT?.ADDRESS,
-            contracts?.C2CPROJECT?.ABI,
-            new ethers.JsonRpcProvider(RPC_URL))
-        console.log({ tokenContract })
+        // console.log({ contracts, safeWallet })
+        // const tokenContract = new ethers.Contract(
+        //     contracts?.C2CPROJECT?.ADDRESS,
+        //     contracts?.C2CPROJECT?.ABI,
+        //     new ethers.JsonRpcProvider(RPC_URL))
+        // console.log({ tokenContract })
     }
 
 

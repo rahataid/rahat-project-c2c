@@ -72,6 +72,16 @@ class SettingsSeed extends ContractLib {
       isPrivate: false,
     });
   }
+
+  public async addSafeWalletSettings() {
+    await settings.create({
+      name: 'SafeWallet',
+      value: {
+        address: process.env.SAFE_WALLET,
+      },
+      isPrivate: false,
+    });
+  }
 }
 
 async function main() {
@@ -82,6 +92,7 @@ async function main() {
   await seedProject.addAppSettings();
   await seedProject.addAdminAddress(adminAccounts[0]);
   await seedProject.addGraphSettings();
+  await seedProject.addSafeWalletSettings();
 
   process.exit(0);
 }
