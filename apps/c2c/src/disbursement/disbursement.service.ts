@@ -1,12 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { DisbursementStatus, Prisma } from '@prisma/client';
 import {
-  // CreateDisbursementDto,
+  DisbursementApprovalsDTO,
+  CreateDisbursementDto,
   UpdateDisbursementDto,
+  DisbursementTransactionDto,
+  DisbursementBenefeciaryCreate,
 } from '@rahataid/c2c-extensions/dtos';
 import { ProjectContants } from '@rahataid/sdk';
-import { PrismaService } from '@rumsan/prisma';
+import { PrismaService, paginator } from '@rumsan/prisma';
 import { randomUUID } from 'crypto';
+
+const paginate = paginator({ perPage: 20 });
 
 @Injectable()
 export class DisbursementService {
@@ -16,43 +22,75 @@ export class DisbursementService {
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
   ) {}
 
-  async create(createDisbursementDto: any) {
+  async create(createDisbursementDto: CreateDisbursementDto) {
     try {
       const { amount, beneficiaries, from, transactionHash, type, timestamp } =
         createDisbursementDto;
       console.log({ createDisbursementDto });
 
-      const result = await this.prisma.disbursementBeneficiary.create({
+      // Create disbursement first
+      const disbursement = await this.prisma.disbursement.create({
         data: {
+          uuid: randomUUID(),
+          type,
+          timestamp,
           amount: parseFloat(amount),
-          from: from as any,
           transactionHash,
-          Beneficiary: {
-            connectOrCreate: beneficiaries.map((address) => ({
-              where: {
-                walletAddress: address,
-              },
-            })),
-          },
-          Disbursement: {
-            create: {
-              uuid: randomUUID(),
-              type,
-              timestamp,
-              amount: parseFloat(amount),
-            },
-          },
         },
       });
+
+      // Create or connect beneficiaries to the disbursement
+      const result = await Promise.all(
+        beneficiaries.map(async (ben: DisbursementBenefeciaryCreate) => {
+          const disbursementBeneficiary =
+            await this.prisma.disbursementBeneficiary.create({
+              include: {
+                Beneficiary: true,
+                Disbursement: true,
+              },
+              data: {
+                amount: parseFloat(amount),
+                from,
+                transactionHash,
+                Disbursement: {
+                  connect: {
+                    id: disbursement.id,
+                  },
+                },
+                Beneficiary: {
+                  connect: {
+                    walletAddress: ben.walletAddress,
+                  },
+                },
+              },
+            });
+          return disbursementBeneficiary;
+        })
+      );
+
       console.log({ result });
       return result;
     } catch (error) {
       console.log(error);
+      throw error; // It's a good practice to rethrow the error or handle it appropriately
     }
   }
 
   async findAll() {
-    return await this.rsprisma.disbursement.findMany();
+    const where: Prisma.DisbursementBeneficiaryWhereInput = {};
+    const include: Prisma.DisbursementBeneficiaryInclude = {
+      Beneficiary: true,
+      Disbursement: true,
+    };
+
+    return paginate(
+      this.prisma.disbursementBeneficiary,
+      { where, include },
+      {
+        page: 1,
+        perPage: 20,
+      }
+    );
   }
 
   async findOne(id: number) {
@@ -61,16 +99,60 @@ export class DisbursementService {
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
     return await this.rsprisma.disbursement.update({
-      where: { id: id },
+      where: { id },
       data: { ...updateDisbursementDto },
     });
   }
 
-  async disbursementTransaction() {
-    // Add logic here
+  async disbursementTransaction(disbursementDto: DisbursementTransactionDto) {
+    const where: Prisma.DisbursementBeneficiaryWhereInput = {
+      Disbursement: {
+        id: disbursementDto.disbursementId,
+      },
+    };
+    const include: Prisma.DisbursementBeneficiaryInclude = {
+      Beneficiary: true,
+      Disbursement: {
+        select: {
+          status: true,
+          createdAt: true,
+          amount: true,
+          type: true,
+        },
+      },
+    };
+
+    return paginate(
+      this.prisma.disbursementBeneficiary,
+      { where, include },
+      {
+        page: 1,
+        perPage: 20,
+      }
+    );
   }
 
-  async disbursementApproval() {
-    // Add logic here
+  async disbursementApprovals(disbursementDto: DisbursementApprovalsDTO) {
+    const where: Prisma.DisbursementBeneficiaryWhereInput = {
+      Disbursement: {
+        id: disbursementDto.disbursementId,
+        status: {
+          equals: DisbursementStatus.COMPLETED,
+        },
+      },
+    };
+    const include: Prisma.DisbursementBeneficiaryInclude = {
+      Beneficiary: true,
+      Disbursement: true,
+    };
+
+    return paginate(
+      this.prisma.disbursementBeneficiary,
+      { where, include },
+      {
+        page: 1,
+        perPage: 20,
+      }
+    );
   }
 }
