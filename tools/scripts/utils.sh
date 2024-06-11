@@ -23,6 +23,7 @@ setup() {
 
 graph_setup() {
     pnpm graph:create-local
+    echo "Graph Deploying Locally..."
     graph_url=$(pnpm graph:deploy-local | grep -o 'http://[^ ]*' | tail -1)
     export graph_url
 }

@@ -6,11 +6,6 @@ export const C2CProject = [
         name: '_name',
         type: 'string',
       },
-      {
-        internalType: 'address',
-        name: '_community',
-        type: 'address',
-      },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -55,62 +50,6 @@ export const C2CProject = [
       },
     ],
     name: 'BeneficiaryRemoved',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: '_beneficiary',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'ClaimAssigned',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: '_beneficiary',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: '_tokenAddress',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'ClaimProcessed',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [],
-    name: 'ProjectLocked',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [],
-    name: 'ProjectUnlocked',
     type: 'event',
   },
   {
@@ -215,6 +154,37 @@ export const C2CProject = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: '_tokenAddress',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: '_to',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: '_from',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'TransferProcessed',
+    type: 'event',
+  },
+  {
     inputs: [],
     name: 'IID_RAHAT_PROJECT',
     outputs: [
@@ -222,19 +192,6 @@ export const C2CProject = [
         internalType: 'bytes4',
         name: '',
         type: 'bytes4',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'RahatCommunity',
-    outputs: [
-      {
-        internalType: 'contract IRahatCommunity',
-        name: '',
-        type: 'address',
       },
     ],
     stateMutability: 'view',
@@ -277,48 +234,6 @@ export const C2CProject = [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_beneficiary',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: '_tokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'assignClaims',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'beneficiaryClaims',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'beneficiaryCount',
     outputs: [
@@ -332,16 +247,77 @@ export const C2CProject = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'community',
-    outputs: [
+    inputs: [
       {
         internalType: 'address',
-        name: '',
+        name: '_tokenAddress',
         type: 'address',
       },
+      {
+        internalType: 'address',
+        name: '_beneficiary',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_tokenOwner',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
     ],
-    stateMutability: 'view',
+    name: 'disburseExternalToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_beneficiary',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'disburseOwnedToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_beneficiary',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'disburseProjectToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -421,34 +397,6 @@ export const C2CProject = [
         name: '_beneficiary',
         type: 'address',
       },
-      {
-        internalType: 'address',
-        name: '_tokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'processTransferToBeneficiary',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_beneficiary',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: '_tokenAddress',
-        type: 'address',
-      },
     ],
     name: 'removeBeneficiary',
     outputs: [],
@@ -494,23 +442,15 @@ export const C2CProject = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'totalClaimsAssigned',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '_totalClaims',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
         name: '_tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_withdrawAddress',
         type: 'address',
       },
     ],

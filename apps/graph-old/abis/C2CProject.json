@@ -1,6 +1,9 @@
 [
   {
-    "inputs": [{ "internalType": "string", "name": "_name", "type": "string" }],
+    "inputs": [
+      { "internalType": "string", "name": "_name", "type": "string" },
+      { "internalType": "address", "name": "_community", "type": "address" }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -36,6 +39,18 @@
       }
     ],
     "name": "BeneficiaryRemoved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "ProjectLocked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "ProjectUnlocked",
     "type": "event"
   },
   {
@@ -145,19 +160,13 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "_beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "_tokenAddress",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_to",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_from",
         "type": "address"
       },
       {
@@ -174,6 +183,19 @@
     "inputs": [],
     "name": "IID_RAHAT_PROJECT",
     "outputs": [{ "internalType": "bytes4", "name": "", "type": "bytes4" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "RahatCommunity",
+    "outputs": [
+      {
+        "internalType": "contract IRahatCommunity",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -205,37 +227,10 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_tokenAddress", "type": "address" },
-      { "internalType": "address", "name": "_beneficiary", "type": "address" },
-      { "internalType": "address", "name": "_tokenOwner", "type": "address" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
-    ],
-    "name": "disburseExternalToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_tokenAddress", "type": "address" },
-      { "internalType": "address", "name": "_beneficiary", "type": "address" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
-    ],
-    "name": "disburseOwnedToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_tokenAddress", "type": "address" },
-      { "internalType": "address", "name": "_beneficiary", "type": "address" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
-    ],
-    "name": "disburseProjectToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "inputs": [],
+    "name": "community",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -274,6 +269,17 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "_beneficiary", "type": "address" },
+      { "internalType": "address", "name": "_tokenAddress", "type": "address" },
+      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+    ],
+    "name": "processTransferToBeneficiary",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "_beneficiary", "type": "address" }
     ],
     "name": "removeBeneficiary",
@@ -301,12 +307,7 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_tokenAddress", "type": "address" },
-      {
-        "internalType": "address",
-        "name": "_withdrawAddress",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_tokenAddress", "type": "address" }
     ],
     "name": "withdrawToken",
     "outputs": [],

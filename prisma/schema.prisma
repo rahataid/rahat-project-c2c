@@ -64,7 +64,7 @@ model Setting {
 model Beneficiary {
   id                      Int                       @id @default(autoincrement()) @db.Integer()
   uuid                    String                    @unique @db.Uuid()
-  walletAddress           String?
+  walletAddress           String? @unique
   extras                  Json?
   type                    BeneficiaryType           @default(ENROLLED)
   isVerified              Boolean                   @default(false)
@@ -101,9 +101,9 @@ model Disbursement {
 model DisbursementBeneficiary {
   id              Int          @id @default(autoincrement()) @db.Integer()
   disbursementId  Int
-  beneficiaryId   Int
+  beneficiaryWalletAddress   String
   Disbursement    Disbursement @relation(fields: [disbursementId], references: [id])
-  Beneficiary     Beneficiary  @relation(fields: [beneficiaryId], references: [id])
+  Beneficiary     Beneficiary  @relation(fields: [beneficiaryWalletAddress], references: [walletAddress])
   from            String?
   amount          Int?
   transactionHash String?
