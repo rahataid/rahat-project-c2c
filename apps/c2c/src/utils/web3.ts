@@ -208,6 +208,10 @@ export async function getContractByName(contractName: string, modal: any) {
   return contractABI;
 }
 
+export const getWalletFromPrivateKey = (privateKey: string, provider?: any) => {
+  return new ethers.Wallet(privateKey, provider);
+}
+
 function findValueByKey(data, keyToFind) {
   // Iterate through the array of objects
   for (const obj of data) {

@@ -76,7 +76,15 @@ export class DisbursementController {
     uuid: process.env.PROJECT_ID,
   })
   createSafeTransaction() {
-    console.log("createSafeTransaction")
     return this.disbursementMultisigService.createSafeTransaction();
+  }
+
+
+  @MessagePattern({
+    cmd: JOBS.SAFE_TRANSACTION.GET,
+    uuid: process.env.PROJECT_ID,
+  })
+  getSafeApprovals(payload) {
+    return this.disbursementMultisigService.getTransactionApprovals(payload.transactionHash);
   }
 }
