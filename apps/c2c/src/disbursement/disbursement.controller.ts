@@ -40,11 +40,15 @@ export class DisbursementController {
 
   @MessagePattern({ cmd: JOBS.DISBURSEMENT.DISBURSEMENT_TRANSACTION })
   disbursementTransaction(@Payload() disbursementTransactinonDto) {
-    return this.disbursementService.disbursementTransaction();
+    return this.disbursementService.disbursementTransaction(
+      disbursementTransactinonDto
+    );
   }
 
   @MessagePattern({ cmd: JOBS.DISBURSEMENT.DISBURSEMENT_APPROVAL })
   approvalTransaction(@Payload() disbursementApprovalDto) {
-    return this.disbursementService.disbursementApproval();
+    return this.disbursementService.disbursementApprovals(
+      disbursementApprovalDto
+    );
   }
 }
