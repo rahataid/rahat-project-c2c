@@ -72,6 +72,10 @@ export const JOBS = {
     DISBURSEMENT_TRANSACTION: 'rahat.jobs.disbursement.transactions.get',
     DISBURSEMENT_APPROVAL: 'rahat.jobs.disbursement.approvals.get',
   },
+  SAFE_TRANSACTION: {
+    CREATE: 'rahat.jobs.safe_transaction.create',
+    GET: 'rahat.jobs.safe_transaction.get',
+  },
 };
 
 export const APP = {
