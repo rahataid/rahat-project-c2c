@@ -4,12 +4,13 @@ import { JOBS } from '@rahataid/c2c-extensions/constants';
 import { DisbursementService } from './disbursement.service';
 import {
   CreateDisbursementDto,
+  DisbursementTransactionDto,
   UpdateDisbursementDto,
 } from '@rahataid/c2c-extensions/dtos';
 
 @Controller()
 export class DisbursementController {
-  constructor(private readonly disbursementService: DisbursementService) { }
+  constructor(private readonly disbursementService: DisbursementService) {}
 
   @MessagePattern({
     cmd: JOBS.DISBURSEMENT.CREATE,
@@ -21,21 +22,24 @@ export class DisbursementController {
   }
 
   @MessagePattern({
-    cmd: JOBS.DISBURSEMENT.LIST, uuid: process.env.PROJECT_ID,
+    cmd: JOBS.DISBURSEMENT.LIST,
+    uuid: process.env.PROJECT_ID,
   })
   findAll() {
     return this.disbursementService.findAll();
   }
 
   @MessagePattern({
-    cmd: JOBS.DISBURSEMENT.LISTONE, uuid: process.env.PROJECT_ID,
+    cmd: JOBS.DISBURSEMENT.LISTONE,
+    uuid: process.env.PROJECT_ID,
   })
-  findOne(@Payload() id: number) {
-    return this.disbursementService.findOne(id);
+  findOne(@Payload() payload: DisbursementTransactionDto) {
+    return this.disbursementService.findOne(payload);
   }
 
   @MessagePattern({
-    cmd: JOBS.DISBURSEMENT.UPDATE, uuid: process.env.PROJECT_ID,
+    cmd: JOBS.DISBURSEMENT.UPDATE,
+    uuid: process.env.PROJECT_ID,
   })
   update(@Payload() updateDisbursementDto: UpdateDisbursementDto) {
     return this.disbursementService.update(
@@ -45,7 +49,8 @@ export class DisbursementController {
   }
 
   @MessagePattern({
-    cmd: JOBS.DISBURSEMENT.DISBURSEMENT_TRANSACTION, uuid: process.env.PROJECT_ID,
+    cmd: JOBS.DISBURSEMENT.DISBURSEMENT_TRANSACTION,
+    uuid: process.env.PROJECT_ID,
   })
   disbursementTransaction(@Payload() disbursementTransactinonDto) {
     return this.disbursementService.disbursementTransaction(
@@ -53,7 +58,10 @@ export class DisbursementController {
     );
   }
 
-  @MessagePattern({ cmd: JOBS.DISBURSEMENT.DISBURSEMENT_APPROVAL, uuid: process.env.PROJECT_ID })
+  @MessagePattern({
+    cmd: JOBS.DISBURSEMENT.DISBURSEMENT_APPROVAL,
+    uuid: process.env.PROJECT_ID,
+  })
   approvalTransaction(@Payload() disbursementApprovalDto) {
     return this.disbursementService.disbursementApprovals(
       disbursementApprovalDto

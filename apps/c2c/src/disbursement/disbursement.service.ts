@@ -20,12 +20,18 @@ export class DisbursementService {
   constructor(
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
-  ) { }
+  ) {}
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
-      const { amount, beneficiaries, from, transactionHash, status, timestamp } =
-        createDisbursementDto;
+      const {
+        amount,
+        beneficiaries,
+        from,
+        transactionHash,
+        status,
+        timestamp,
+      } = createDisbursementDto;
       console.log({ createDisbursementDto });
 
       // Create disbursement first
@@ -89,12 +95,17 @@ export class DisbursementService {
       {
         page: 1,
         perPage: 20,
+        orderByTieBreakerPropertyName: 'createdAt',
       }
     );
   }
 
-  async findOne(id: number) {
-    return await this.rsprisma.disbursement.findUnique({ where: { id: id } });
+  async findOne(params: DisbursementTransactionDto) {
+    return await this.rsprisma.disbursement.findUnique({
+      where: {
+        uuid: params.disbursementUUID,
+      },
+    });
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
