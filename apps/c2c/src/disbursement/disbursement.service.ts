@@ -22,32 +22,50 @@ export class DisbursementService {
         createDisbursementDto;
       console.log({ createDisbursementDto });
 
-      const result = await this.prisma.disbursementBeneficiary.create({
+      // Create disbursement first
+      const disbursement = await this.prisma.disbursement.create({
         data: {
+          uuid: randomUUID(),
+          type,
+          timestamp,
           amount: parseFloat(amount),
-          from: from as any,
-          transactionHash,
-          Beneficiary: {
-            connectOrCreate: beneficiaries.map((address) => ({
-              where: {
-                walletAddress: address,
-              },
-            })),
-          },
-          Disbursement: {
-            create: {
-              uuid: randomUUID(),
-              type,
-              timestamp,
-              amount: parseFloat(amount),
-            },
-          },
         },
       });
+
+      // Create or connect beneficiaries to the disbursement
+      const result = await Promise.all(
+        beneficiaries.map(async (address: string) => {
+          const disbursementBeneficiary =
+            await this.prisma.disbursementBeneficiary.create({
+              include: {
+                Beneficiary: true,
+                Disbursement: true,
+              },
+              data: {
+                amount: parseFloat(amount),
+                from: from,
+                transactionHash,
+                Disbursement: {
+                  connect: {
+                    id: disbursement.id,
+                  },
+                },
+                Beneficiary: {
+                  connect: {
+                    walletAddress: address,
+                  },
+                },
+              },
+            });
+          return disbursementBeneficiary;
+        })
+      );
+
       console.log({ result });
       return result;
     } catch (error) {
       console.log(error);
+      throw error; // It's a good practice to rethrow the error or handle it appropriately
     }
   }
 
