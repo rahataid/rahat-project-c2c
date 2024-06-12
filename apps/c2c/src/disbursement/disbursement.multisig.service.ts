@@ -75,9 +75,9 @@ export class DisbursementMultisigService {
     return owners;
   }
 
-  async getConfirmations(safeTxHash: string) {
-    const { confirmations } = await this.safeApiKit.getTransaction(safeTxHash);
-    return confirmations;
+  async getSafeTransaction(safeTxHash: string) {
+    const { confirmations, confirmationsRequired, isExecuted, proposer } = await this.safeApiKit.getTransaction(safeTxHash);
+    return { confirmations, confirmationsRequired, isExecuted, proposer };
   }
 
   async createSafeTransaction(payload: CreateSafeTransactionDto) {
@@ -132,15 +132,12 @@ export class DisbursementMultisigService {
     }
   }
 
-  async getTransactionData(safeTxHash: string) {
-    return this.safeApiKit.getTransaction(safeTxHash);
-  }
 
   async getTransactionApprovals(safeTxHash: string) {
     const owners = await this.getOwnersList();
-    const confirmations = await this.getConfirmations(safeTxHash);
+    const { confirmations, confirmationsRequired, isExecuted, proposer } = await this.getSafeTransaction(safeTxHash);
     console.log({ owners });
-    return owners.map((owner) => {
+    const approvals = owners.map((owner) => {
       const confirmation = confirmations?.find(
         (confirmation) => confirmation.owner === owner
       );
@@ -150,5 +147,6 @@ export class DisbursementMultisigService {
         hasApproved: confirmation ? true : false,
       };
     });
+    return { approvals, confirmationsRequired, isExecuted, proposer };
   }
 }
