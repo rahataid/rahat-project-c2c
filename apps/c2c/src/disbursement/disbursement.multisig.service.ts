@@ -91,7 +91,6 @@ export class DisbursementMultisigService {
       const safeTransaction = await safeWallet.createTransaction({
         transactions: [transactionData],
       });
-      console.log({ safeTransaction });
       const safeTxHash = await safeWallet.getTransactionHash(safeTransaction);
       const signature = await safeWallet.signHash(safeTxHash);
       const deployerWallet = getWalletFromPrivateKey(
@@ -100,7 +99,6 @@ export class DisbursementMultisigService {
       const safeAddress = await safeWallet.getAddress();
 
       // Propose transaction to the service
-      console.log('proposing transaction', safeAddress);
 
       await this.safeApiKit.proposeTransaction({
         safeAddress: safeAddress,
@@ -110,14 +108,13 @@ export class DisbursementMultisigService {
         senderSignature: signature.data,
       });
 
-      console.log(safeAddress);
-      console.log({
-        safeAddress,
-        safeTransactionData: safeTransaction.data,
-        safeTxHash,
-        senderAddress: deployerWallet.address,
-        senderSignature: signature.data,
-      });
+      // console.log({
+      //   safeAddress,
+      //   safeTransactionData: safeTransaction.data,
+      //   safeTxHash,
+      //   senderAddress: deployerWallet.address,
+      //   senderSignature: signature.data,
+      // });
 
       return {
         safeAddress: safeAddress,
@@ -139,7 +136,6 @@ export class DisbursementMultisigService {
   async getTransactionApprovals(safeTxHash: string) {
     const owners = await this.getOwnersList();
     const confirmations = await this.getConfirmations(safeTxHash);
-    console.log({ owners });
     return owners.map((owner) => {
       const confirmation = confirmations?.find(
         (confirmation) => confirmation.owner === owner

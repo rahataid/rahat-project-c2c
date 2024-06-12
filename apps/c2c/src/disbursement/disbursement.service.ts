@@ -40,7 +40,10 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: parseFloat(amount),
+          amount: beneficiaries.reduce(
+            (acc, curr) => acc + parseFloat(curr.amount),
+            0
+          ),
           transactionHash,
           type,
         },
@@ -121,11 +124,21 @@ export class DisbursementService {
   }
 
   async findOne(params: DisbursementTransactionDto) {
-    return await this.rsprisma.disbursement.findUnique({
+    console.log('params', params);
+    const disbursement = await this.prisma.disbursement.findUnique({
       where: {
         uuid: params.disbursementUUID,
       },
+      include: {
+        _count: {
+          select: {
+            DisbursementBeneficiary: true,
+          },
+        },
+      },
     });
+
+    return disbursement;
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {

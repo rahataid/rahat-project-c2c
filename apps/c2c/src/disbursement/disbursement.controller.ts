@@ -83,7 +83,7 @@ export class DisbursementController {
     cmd: JOBS.SAFE_TRANSACTION.GET,
     uuid: process.env.PROJECT_ID,
   })
-  getSafeApprovals(payload) {
+  getSafeApprovals(@Payload() payload) {
     return this.disbursementMultisigService.getTransactionApprovals(
       payload.transactionHash
     );
