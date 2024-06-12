@@ -11,16 +11,16 @@ import { DisbursementMultisigService } from './disbursement.multisig.service';
 
 @Controller()
 export class DisbursementController {
-  constructor(private readonly disbursementService: DisbursementService,
+  constructor(
+    private readonly disbursementService: DisbursementService,
     private readonly disbursementMultisigService: DisbursementMultisigService
-  ) { }
+  ) {}
 
   @MessagePattern({
     cmd: JOBS.DISBURSEMENT.CREATE,
     uuid: process.env.PROJECT_ID,
   })
   create(@Payload() createDisbursementDto: CreateDisbursementDto) {
-    console.log({ createDisbursementDto });
     return this.disbursementService.create(createDisbursementDto);
   }
 
@@ -75,16 +75,17 @@ export class DisbursementController {
     cmd: JOBS.SAFE_TRANSACTION.CREATE,
     uuid: process.env.PROJECT_ID,
   })
-  createSafeTransaction() {
-    return this.disbursementMultisigService.createSafeTransaction();
+  createSafeTransaction(@Payload() payload) {
+    return this.disbursementMultisigService.createSafeTransaction(payload);
   }
-
 
   @MessagePattern({
     cmd: JOBS.SAFE_TRANSACTION.GET,
     uuid: process.env.PROJECT_ID,
   })
   getSafeApprovals(payload) {
-    return this.disbursementMultisigService.getTransactionApprovals(payload.transactionHash);
+    return this.disbursementMultisigService.getTransactionApprovals(
+      payload.transactionHash
+    );
   }
 }

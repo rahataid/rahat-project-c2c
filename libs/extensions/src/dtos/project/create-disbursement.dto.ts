@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { UUID, randomUUID } from 'crypto';
+import { DisbursementStatus, DisbursementType } from '@prisma/client';
 
 export type DisbursementBenefeciaryCreate = {
   amount: string;
@@ -28,8 +35,8 @@ export class CreateDisbursementDto {
   @ApiProperty({
     example: 'PENDING',
   })
-  // useenum
-  status!: any;
+  @IsEnum(DisbursementStatus)
+  status!: DisbursementStatus;
 
   @ApiProperty({
     example: '2021-10-01T00:00:00.000Z',
@@ -50,6 +57,12 @@ export class CreateDisbursementDto {
   })
   @IsArray()
   beneficiaries!: DisbursementBenefeciaryCreate[];
+
+  @ApiProperty({
+    example: DisbursementType.MULTISIG,
+  })
+  @IsEnum(DisbursementType)
+  type!: DisbursementType;
 }
 
 export class UpdateDisbursementDto {
@@ -69,4 +82,12 @@ export class DisbursementTransactionDto {
     example: randomUUID(),
   })
   disbursementUUID!: UUID;
+}
+
+export class CreateSafeTransactionDto {
+  @ApiProperty({
+    example: '20',
+  })
+  @IsString()
+  amount!: string;
 }
