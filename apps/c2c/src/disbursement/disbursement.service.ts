@@ -31,8 +31,8 @@ export class DisbursementService {
         transactionHash,
         status,
         timestamp,
+        type,
       } = createDisbursementDto;
-      console.log({ createDisbursementDto });
 
       // Create disbursement first
       const disbursement = await this.prisma.disbursement.create({
@@ -40,10 +40,34 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: parseFloat(amount),
+          amount: beneficiaries.reduce(
+            (acc, curr) => acc + parseFloat(curr.amount),
+            0
+          ),
           transactionHash,
+          type,
         },
       });
+
+      // const result = await this.prisma.disbursementBeneficiary.create({
+      //   data: {
+      //     amount: parseFloat(amount),
+      //     from,
+      //     transactionHash,
+      //     Disbursement: {
+      //       connect: {
+      //         id: disbursement.id,
+      //       },
+      //     },
+      //     Beneficiary: {
+      //       connect: beneficiaries.map((ben) => {
+      //         return {
+      //           walletAddress: ben.walletAddress,
+      //         };
+      //       }),
+      //     },
+      //   },
+      // });
 
       // Create or connect beneficiaries to the disbursement
       const result = await Promise.all(
@@ -83,14 +107,13 @@ export class DisbursementService {
   }
 
   async findAll() {
-    const where: Prisma.DisbursementBeneficiaryWhereInput = {};
-    const include: Prisma.DisbursementBeneficiaryInclude = {
-      Beneficiary: true,
-      Disbursement: true,
+    const where: Prisma.DisbursementWhereInput = {};
+    const include: Prisma.DisbursementInclude = {
+      DisbursementBeneficiary: true,
     };
 
     return paginate(
-      this.prisma.disbursementBeneficiary,
+      this.prisma.disbursement,
       { where, include },
       {
         page: 1,
@@ -101,11 +124,21 @@ export class DisbursementService {
   }
 
   async findOne(params: DisbursementTransactionDto) {
-    return await this.rsprisma.disbursement.findUnique({
+    console.log('params', params);
+    const disbursement = await this.prisma.disbursement.findUnique({
       where: {
         uuid: params.disbursementUUID,
       },
+      include: {
+        _count: {
+          select: {
+            DisbursementBeneficiary: true,
+          },
+        },
+      },
     });
+
+    return disbursement;
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {

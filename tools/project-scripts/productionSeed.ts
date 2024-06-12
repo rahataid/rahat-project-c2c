@@ -88,7 +88,7 @@ class SettingsSeed extends ContractLib {
 
     public async addContractSettings(contractName: string[]) {
         const contractDetails: ContractDetails = {};
-        const contracts = await Promise.all(
+        await Promise.all(
             contractName.map(async (contract) => {
                 const address = await this.getDeployedAddress(
                     contract
@@ -100,7 +100,7 @@ class SettingsSeed extends ContractLib {
         // console.log('contracts', contracts);
         const data = {
             name: 'Contract',
-            value: contracts,
+            value: contractDetails,
             isPrivate: false,
         };
         await settings.create(data);
