@@ -111,20 +111,21 @@ export class DisbursementService {
     const include: Prisma.DisbursementInclude = {
       DisbursementBeneficiary: true,
     };
+    const orderBy: Prisma.DisbursementOrderByWithRelationInput = {
+      createdAt: 'desc',
+    };
 
     return paginate(
       this.prisma.disbursement,
-      { where, include },
+      { where, include, orderBy },
       {
         page: 1,
         perPage: 20,
-        orderByTieBreakerPropertyName: 'createdAt',
       }
     );
   }
 
   async findOne(params: DisbursementTransactionDto) {
-    console.log('params', params);
     const disbursement = await this.prisma.disbursement.findUnique({
       where: {
         uuid: params.disbursementUUID,
@@ -166,10 +167,13 @@ export class DisbursementService {
         },
       },
     };
+    const order: Prisma.DisbursementBeneficiaryOrderByWithAggregationInput = {
+      createdAt: 'desc',
+    };
 
     return paginate(
       this.prisma.disbursementBeneficiary,
-      { where, include },
+      { where, include, order },
       {
         page: 1,
         perPage: 20,
