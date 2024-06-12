@@ -167,13 +167,13 @@ export class DisbursementService {
         },
       },
     };
-    const order: Prisma.DisbursementBeneficiaryOrderByWithAggregationInput = {
+    const orderBy: Prisma.DisbursementBeneficiaryOrderByWithAggregationInput = {
       createdAt: 'desc',
     };
 
     return paginate(
       this.prisma.disbursementBeneficiary,
-      { where, include, order },
+      { where, include, orderBy },
       {
         page: 1,
         perPage: 20,
