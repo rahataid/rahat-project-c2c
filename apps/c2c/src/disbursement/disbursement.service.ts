@@ -130,6 +130,7 @@ export class DisbursementService {
         uuid: params.disbursementUUID,
       },
       include: {
+        DisbursementBeneficiary: true,
         _count: {
           select: {
             DisbursementBeneficiary: true,
