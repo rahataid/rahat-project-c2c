@@ -75,7 +75,7 @@ class SettingsSeed extends ContractLib {
 
   public async addSafeWalletSettings() {
     await settings.create({
-      name: 'SafeWallet',
+      name: 'Safe_Wallet',
       value: {
         address: process.env.SAFE_WALLET,
       },
