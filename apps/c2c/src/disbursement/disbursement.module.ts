@@ -4,6 +4,7 @@ import { DisbursementService } from './disbursement.service';
 import { DisbursementController } from './disbursement.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ProjectContants } from '@rahataid/sdk';
+import { DisbursementMultisigService } from './disbursement.multisig.service';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { ProjectContants } from '@rahataid/sdk';
   ],
 
   controllers: [DisbursementController],
-  providers: [PrismaService, DisbursementService],
+  providers: [PrismaService, DisbursementService, DisbursementMultisigService],
 })
-export class DisbursementModule {}
+export class DisbursementModule { }
