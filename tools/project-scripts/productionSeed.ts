@@ -112,6 +112,7 @@ async function main() {
     const devSettings = await seedProject.getDevSettings();
     const adminAccounts = await devSettings.value.adminAccounts;
 
+    await seedProject.addContractSettings(['RahatToken', 'C2CProject']);
     await seedProject.addAppSettings();
     await seedProject.addAdminAddress(adminAccounts[0]);
     await seedProject.addGraphSettings();
