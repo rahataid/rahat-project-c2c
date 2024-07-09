@@ -47,6 +47,31 @@ export class BeneficiaryService {
     return { data: combinedData, meta: data.meta };
   }
 
+  async findAllBeneficaryPii(data) {
+    const projectdata = await this.rsprisma.beneficiary.findMany({
+      where: { type: data?.status },
+    });
+
+    const combinedData = data.data
+      .filter((item) =>
+        projectdata.some((ben) => ben.uuid === item.beneficiaryId)
+      )
+      .map((item) => {
+        const matchedBeneficiary = projectdata.find(
+          (ben) => ben.uuid === item.beneficiaryId
+        );
+        return {
+          ...item,
+          Beneficiary: {
+            ...matchedBeneficiary,
+            ...item.Beneficiary,
+          },
+        };
+      });
+
+    return { data: combinedData, meta: data.meta };
+  }
+
   async findByUUID(uuid: UUID) {
     return await this.rsprisma.beneficiary.findUnique({ where: { uuid } });
   }

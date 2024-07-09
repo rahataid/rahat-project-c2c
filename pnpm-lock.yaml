@@ -53,6 +53,9 @@ dependencies:
   '@rahataid/sdk':
     specifier: ^0.0.20
     version: 0.0.20
+  '@rumsan/communication':
+    specifier: ^0.0.23
+    version: 0.0.23
   '@rumsan/extensions':
     specifier: ^0.0.21
     version: 0.0.21(@nestjs/core@10.3.7)(ioredis@5.3.2)(prisma@5.12.1)(reflect-metadata@0.1.14)
@@ -5521,6 +5524,10 @@ packages:
       rimraf: 3.0.2
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@rumsan/communication@0.0.23:
+    resolution: {integrity: sha512-a4pV6Q9qiPDmW9vzQeaZL+KNft7DY5yulNxh2wFMhrOhXh/ALl7kH/NYTk4cF9gvcntqTdKBvl/blMKHhQD25Q==, tarball: https://npm.pkg.github.com/download/@rumsan/communication/0.0.23/9271998d9d429b0dbd4197ff5f9b4c6c38427e83}
     dev: false
 
   /@rumsan/communication@0.0.8:
@@ -11761,6 +11768,7 @@ packages:
 
   /glob@7.1.7:
     resolution: {integrity: sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -17228,6 +17236,7 @@ packages:
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
