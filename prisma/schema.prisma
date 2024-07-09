@@ -62,18 +62,65 @@ model Setting {
 // ++++++++++++++++++ START: @c2c/beneficiaries +++++++++++++++++++++++++++
 
 model Beneficiary {
-  id            Int     @id @default(autoincrement()) @db.Integer()
-  uuid          String  @db.Uuid()
-  walletAddress String?
-  extras        Json?
-  type          BeneficiaryType @default(ENROLLED)
+  id                      Int                       @id @default(autoincrement()) @db.Integer()
+  uuid                    String                    @unique @db.Uuid()
+  walletAddress           String? @unique
+  extras                  Json?
+  type                    BeneficiaryType           @default(ENROLLED)
+  isVerified              Boolean                   @default(false)
+  DisbursementBeneficiary DisbursementBeneficiary[]
+
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime?                 @updatedAt
+  deletedAt               DateTime?
 
   @@map(name: "tbl_beneficiaries")
 }
 
 model Campaign {
-  id            Int     @id @default(autoincrement()) @db.Integer()
-  campaignId    Int
+  id         Int @id @default(autoincrement()) @db.Integer()
+  campaignId Int
 
   @@map(name: "tbl_campaign")
+}
+
+model Disbursement {
+  id                      Int                       @id @default(autoincrement()) @db.Integer()
+  uuid                    String                    @unique @db.Uuid()
+  DisbursementBeneficiary DisbursementBeneficiary[]
+  type                    DisbursementType          @default(PROJECT)
+  status                  DisbursementStatus        @default(DRAFT)
+  timestamp               String?
+  amount                  Int?
+  transactionHash         String?
+  extras                  Json?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime?                 @updatedAt
+}
+
+model DisbursementBeneficiary {
+  id              Int          @id @default(autoincrement()) @db.Integer()
+  disbursementId  Int
+  beneficiaryWalletAddress   String
+  Disbursement    Disbursement @relation(fields: [disbursementId], references: [id])
+  Beneficiary     Beneficiary  @relation(fields: [beneficiaryWalletAddress], references: [walletAddress])
+  from            String?
+  amount          Int?
+  transactionHash String?
+  extras          Json?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime?    @updatedAt
+}
+
+enum DisbursementType {
+  PROJECT
+  EOA
+  MULTISIG
+}
+
+enum DisbursementStatus {
+  DRAFT
+  PENDING
+  COMPLETED
+  REJECTED
 }

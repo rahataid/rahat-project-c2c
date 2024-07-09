@@ -39,6 +39,7 @@ export const JOBS = {
     UPDATE: 'rahat.jobs.beneficiary.update',
     ADD_TO_PROJECT: 'rahat.jobs.beneficiary.add_to_project',
     BULK_ASSIGN_TO_PROJECT: 'rahat.jobs.beneficiary.bulk_assign',
+    VERIFY_SIGNATURE: 'rahat.jobs.beneficiary.verify_signature',
   },
 
   PROJECT: {
@@ -69,6 +70,18 @@ export const JOBS = {
     GET_ALL_COMMUNICATION_LOGS: 'rahat.jobs.campaign.communication_logs',
     GET_ALL_COMMUNICATION_STATS: 'rahat.jobs.campaign.communication_stats',
     CREATE_AUDIENCE: 'rahat.jobs.campaign.create_audience',
+  },
+  DISBURSEMENT: {
+    CREATE: 'rahat.jobs.disbursement.create',
+    LIST: 'rahat.jobs.disbursement.list',
+    LISTONE: 'rahat.jobs.disbursement.listone',
+    UPDATE: 'rahat.jobs.disbursement.update',
+    DISBURSEMENT_TRANSACTION: 'rahat.jobs.disbursement.transactions.get',
+    DISBURSEMENT_APPROVAL: 'rahat.jobs.disbursement.approvals.get',
+  },
+  SAFE_TRANSACTION: {
+    CREATE: 'rahat.jobs.safe_transaction.create',
+    GET: 'rahat.jobs.safe_transaction.get',
   },
 };
 

@@ -5,47 +5,11 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: RahatDonor
-    network: mainnet
-    source:
-      abi: RahatDonor
-      address: "0x884a019105850ec839e8a7d92Cc5B773aedF3043"
-      startBlock: 1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - CloseStream
-        - Deposit
-        - ExecuteTransaction
-        - OpenStream
-        - Owner
-        - Withdraw
-      abis:
-        - name: RahatDonor
-          file: ./abis/RahatDonor.json
-      eventHandlers:
-        - event: CloseStream(indexed address)
-          handler: handleCloseStream
-        - event: Deposit(indexed address,uint256,uint256)
-          handler: handleDeposit
-        - event: ExecuteTransaction(indexed
-            address,address,uint256,bytes,uint256,bytes32,bytes)
-          handler: handleExecuteTransaction
-        - event: OpenStream(indexed address,uint256,uint256)
-          handler: handleOpenStream
-        - event: Owner(indexed address,bool)
-          handler: handleOwner
-        - event: Withdraw(indexed address,uint256,string)
-          handler: handleWithdraw
-      file: ./src/rahat-donor.ts
-  - kind: ethereum
     name: RahatToken
     network: mainnet
     source:
       abi: RahatToken
-      address: "0xfBC3ee154e054ED3Ba38299c68492893cb027762"
+      address: '0xcAebDAC40F99f6b9c4fff0bD8e6d73f0F846d2fd'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -70,11 +34,11 @@ dataSources:
           handler: handleTransfer
       file: ./src/rahat-token.ts
   - kind: ethereum
-    name: RahatCommunity
+    name: C2CProject
     network: mainnet
     source:
-      abi: RahatCommunity
-      address: "0x44b884837901769eB0eADfdcB26FE7114BB003eE"
+      abi: C2CProject
+      address: '0xde0Ce5382D963f9C894CBd4FB9C9710998cFA7c3'
       startBlock: 1
     mapping:
       kind: ethereum/events
@@ -83,59 +47,12 @@ dataSources:
       entities:
         - BeneficiaryAdded
         - BeneficiaryRemoved
-        - ProjectApprovalRequest
-        - ProjectApproved
-        - ProjectRevoked
-        - Received
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
-      abis:
-        - name: RahatCommunity
-          file: ./abis/RahatCommunity.json
-      eventHandlers:
-        - event: BeneficiaryAdded(indexed address)
-          handler: handleBeneficiaryAdded
-        - event: BeneficiaryRemoved(indexed address)
-          handler: handleBeneficiaryRemoved
-        - event: ProjectApprovalRequest(indexed address,indexed address)
-          handler: handleProjectApprovalRequest
-        - event: ProjectApproved(indexed address)
-          handler: handleProjectApproved
-        - event: ProjectRevoked(indexed address)
-          handler: handleProjectRevoked
-        - event: Received(address,uint256)
-          handler: handleReceived
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
-      file: ./src/rahat-community.ts
-  - kind: ethereum
-    name: C2CProject
-    network: mainnet
-    source:
-      abi: C2CProject
-      address: "0xa4Ea974c39a6CFBa389FB5583889f189183472E8"
-      startBlock: 1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - C2CProjectBeneficiaryAdded
-        - C2CProjectBeneficiaryRemoved
-        - ClaimAssigned
-        - ClaimProcessed
-        - ProjectLocked
-        - ProjectUnlocked
         - TokenBudgetDecrease
         - TokenBudgetIncrease
         - TokenReceived
         - TokenRegistered
         - TokenTransfer
+        - TransferProcessed
       abis:
         - name: C2CProject
           file: ./abis/C2CProject.json
@@ -144,14 +61,6 @@ dataSources:
           handler: handleBeneficiaryAdded
         - event: BeneficiaryRemoved(indexed address)
           handler: handleBeneficiaryRemoved
-        - event: ClaimAssigned(indexed address,uint256)
-          handler: handleClaimAssigned
-        - event: ClaimProcessed(indexed address,indexed address,uint256)
-          handler: handleClaimProcessed
-        - event: ProjectLocked()
-          handler: handleProjectLocked
-        - event: ProjectUnlocked()
-          handler: handleProjectUnlocked
         - event: TokenBudgetDecrease(indexed address,uint256)
           handler: handleTokenBudgetDecrease
         - event: TokenBudgetIncrease(indexed address,uint256)
@@ -162,4 +71,7 @@ dataSources:
           handler: handleTokenRegistered
         - event: TokenTransfer(indexed address,indexed address,uint256)
           handler: handleTokenTransfer
+        - event: TransferProcessed(indexed address,indexed address,indexed
+            address,uint256)
+          handler: handleTransferProcessed
       file: ./src/c-2-c-project.ts

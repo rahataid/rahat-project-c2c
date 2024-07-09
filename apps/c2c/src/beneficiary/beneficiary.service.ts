@@ -6,15 +6,32 @@ import { UUID } from 'crypto';
 import {
   CreateBeneficiaryDto,
   UpdateBeneficiaryDto,
+  VerifyWalletDto,
 } from '@rahataid/c2c-extensions/dtos/beneficiary';
+import {
+  createContractInstance,
+  createContractInstanceSign,
+} from '../utils/web3';
 
 @Injectable()
 export class BeneficiaryService {
   private rsprisma;
-  constructor(protected prisma: PrismaService) {
+  constructor(
+    protected prisma: PrismaService,
+    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy // private eventEmitter: EventEmitter2
+  ) {
     this.rsprisma = prisma.rsclient;
   }
   async create(dto: CreateBeneficiaryDto) {
+    // const contract = await createContractInstanceSign(
+    //   'C2CPROJECT',
+    //   this.prisma.setting
+    // );
+    // console.log({ contract });
+    // console.log({ dto });
+    // const addBeneficiary = await contract.addBeneficiary(dto.walletAddress);
+    // console.log({ addBeneficiary });
+
     return this.rsprisma.beneficiary.create({
       data: dto,
     });
@@ -24,27 +41,17 @@ export class BeneficiaryService {
     return this.rsprisma.beneficiary.createMany({ data: dto });
   }
 
-  async findAll(data) {
-    const projectdata = await this.rsprisma.beneficiary.findMany();
-
-    const combinedData = data.data
-      .filter((item) =>
-        projectdata.some((ben) => ben.uuid === item.beneficiaryId)
-      )
-      .map((item) => {
-        const matchedBeneficiary = projectdata.find(
-          (ben) => ben.uuid === item.beneficiaryId
-        );
-        return {
-          ...item,
-          Beneficiary: {
-            ...matchedBeneficiary,
-            ...item.Beneficiary,
-          },
-        };
-      });
-
-    return { data: combinedData, meta: data.meta };
+  async findAll() {
+    const data = await this.rsprisma.beneficiary.findMany();
+    // projectData.data = data;
+    // console.log('projectData', projectData);
+    const projectData = {
+      data: data,
+    };
+    return this.client.send(
+      { cmd: 'rahat.jobs.beneficiary.list_by_project' },
+      projectData
+    );
   }
 
   async findAllBeneficaryPii(data) {
@@ -89,6 +96,14 @@ export class BeneficiaryService {
     return await this.rsprisma.beneficiary.update({
       where: { id: id },
       data: { ...updateBeneficiaryDto },
+    });
+  }
+
+  async verfiyWallet(verfiyWalletDto: VerifyWalletDto) {
+    const { walletAddress } = verfiyWalletDto;
+    return this.rsprisma.beneficiary.update({
+      where: { walletAddress },
+      data: { isVerified: true },
     });
   }
 }

@@ -21,10 +21,6 @@ abstract contract AbstractOwner is IOwner, Multicall {
     _;
   }
 
-  function getSender() public view returns (bool) {
-    return owners.contains(msg.sender);
-  }
-
   /// @notice Add an account to the owner role
   /// @param _address address of new owner
   function _addOwner(address _address) internal returns (bool success) {

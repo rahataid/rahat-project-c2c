@@ -49,7 +49,6 @@ const modifyEnv = async (uuid: string, privateKey: string) => {
     const newData = newLines.join('\n');
     await fs.writeFile(rootEnv, newData, 'utf-8');
 
-    console.log({ rootEnv });
     console.log('File Updated Successfully.');
   } catch (error) {
     console.error('Error Modifying .env file', error);

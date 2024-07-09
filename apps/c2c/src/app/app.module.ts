@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { BeneficiaryModule } from '../beneficiary/beneficiary.module';
 import { CampaignModule } from '../campaign/campaign.module';
 import { ConfigModule } from '@nestjs/config';
+import { DisbursementModule } from '../disbursement/disbursement.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     BeneficiaryModule,
     CampaignModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    DisbursementModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
