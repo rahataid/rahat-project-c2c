@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BeneficiaryModule } from '../beneficiary/beneficiary.module';
 import { CampaignModule } from '../campaign/campaign.module';
+import { ConfigModule } from '@nestjs/config';
 import { DisbursementModule } from '../disbursement/disbursement.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { DisbursementModule } from '../disbursement/disbursement.module';
     SettingsModule,
     BeneficiaryModule,
     CampaignModule,
+    ConfigModule.forRoot({ isGlobal: true }),
     DisbursementModule,
   ],
   controllers: [AppController],

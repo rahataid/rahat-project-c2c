@@ -18,6 +18,14 @@ export class BeneficiaryController {
   }
 
   @MessagePattern({
+    cmd: JOBS.BENEFICIARY.LIST_PROJECT_PII,
+    uuid: process.env.PROJECT_ID,
+  })
+  findAllPii(data) {
+    return this.beneficiaryService.findAllBeneficaryPii(data);
+  }
+
+  @MessagePattern({
     cmd: JOBS.BENEFICIARY.ADD_TO_PROJECT,
     uuid: process.env.PROJECT_ID,
   })
