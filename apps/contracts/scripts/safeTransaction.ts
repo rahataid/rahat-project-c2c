@@ -96,7 +96,7 @@ const getOwnersList = async () => {
 }
 
 const getConfirmations = async (safeTxHash: string) => {
-    const { confirmations } = await apiKit.getTransaction(safeTxHash)
+    const { confirmations, confirmationsRequired, isExecuted } = await apiKit.getTransaction(safeTxHash)
     return confirmations
 }
 const getApprovals = async (safeTxHash: string) => {
@@ -115,15 +115,15 @@ const getApprovals = async (safeTxHash: string) => {
 
 
 const main = async () => {
-    await createTransaction()
+    //await createTransaction()
 
-    //const owners = await getOwnersList();
+    const owners = await getOwnersList();
 
-    // const confirmations = await getConfirmations('0x3c4ba73cee3e33eee35c7f489178a0862f837253f1100ed6afaf051c616da385');
+    const confirmations = await getConfirmations('0x3c4ba73cee3e33eee35c7f489178a0862f837253f1100ed6afaf051c616da385');
 
-    // const approvals = await getApprovals('0xe17f2d3b5b5397dc565b42a1de5bff79a0e1450f3b832aa46e954d869e40a1fc');
-
-    // console.log(approvals)
+    const approvals = await getApprovals('0xe17f2d3b5b5397dc565b42a1de5bff79a0e1450f3b832aa46e954d869e40a1fc');
+    const transaction = await apiKit.getTransaction('0xe17f2d3b5b5397dc565b42a1de5bff79a0e1450f3b832aa46e954d869e40a1fc')
+    console.log(approvals, transaction)
 
 }
 

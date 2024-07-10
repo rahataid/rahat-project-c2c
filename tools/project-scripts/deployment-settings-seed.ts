@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { PrismaService } from '@rumsan/prisma';
 import { SettingsService } from '@rumsan/settings';
 import * as dotenv from 'dotenv';
-import { ContractLib } from './_common';
+import { ContractLib } from './local-setup/_common';
 dotenv.config();
 
 const prismaClient = new PrismaClient({

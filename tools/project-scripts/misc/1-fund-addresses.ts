@@ -1,5 +1,5 @@
 import { Signer } from 'ethers';
-import { ContractLib } from './_common';
+import { ContractLib } from '../local-setup/_common';
 
 const tokenMintAmount = 1000;
 

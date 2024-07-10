@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { ContractLib } from './_common';
+import { ContractLib } from './local-setup/_common';
 import { PrismaService } from '@rumsan/prisma';
 import { SettingsService } from '@rumsan/extensions/settings';
 import { readFileSync } from 'fs';

@@ -1,5 +1,5 @@
 import { Signer, parseEther } from 'ethers';
-import { ContractLib } from './_common';
+import { ContractLib } from '../local-setup/_common';
 
 class MintToken extends ContractLib {
   private fundDeployerAddress: Signer;

@@ -2,7 +2,6 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { ContractLib } from './_common';
 import { PrismaService } from '@rumsan/prisma';
 import { SettingsService } from '@rumsan/extensions/settings';
-import { error } from 'console';
 
 const prismaClient = new PrismaClient({
   datasourceUrl: process.env.CORE_DATABASE_URL as string,

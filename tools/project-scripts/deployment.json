@@ -1,0 +1,15 @@
+{
+    "contracts": {
+        "RahatToken": {
+            "address": "0x40BdA327da6460B106001709ef2F730825c634D8",
+            "startBlock": 11129388
+        },
+        "C2CProject": {
+            "address": "0x3A28d71a89123e8894A1Ac536c0623CA22022AE8",
+            "startBlock": 11129412
+        }
+    },
+    "graphUrl": "https://api.thegraph.com/subgraphs/name/rahatarmanahmed/c2c-project",
+    "communicationAppId": "bf1fcb98-18ed-4db4-87e9-15573c6db08e",
+    "projectId": "bf1fcb98-18ed-4db4-87e9-15573c6db08e"
+}

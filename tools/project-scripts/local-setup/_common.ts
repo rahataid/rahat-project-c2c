@@ -1,11 +1,11 @@
 import * as dotenv from 'dotenv';
-import { Config } from './types/config';
+import { Config } from '../types/config';
 import { Contract, ContractFactory, JsonRpcProvider, ethers } from 'ethers';
 import {
   ContractArtifacts,
   ContractDetails,
   DeployedContractData,
-} from './types/contract';
+} from '../types/contract';
 import type { Signer } from 'ethers';
 import { readFileSync } from 'fs';
 
@@ -70,7 +70,7 @@ export class ContractLib {
   public async getContractArtifacts(
     contractName: string
   ): Promise<ContractArtifacts> {
-    const contract = await import(`./contracts/${contractName}.json`);
+    const contract = await import(`../contracts/${contractName}.json`);
     return contract;
   }
 

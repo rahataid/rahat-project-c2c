@@ -1,5 +1,5 @@
 import { Signer, ethers } from 'ethers';
-import { ContractLib } from './_common';
+import { ContractLib } from '../local-setup/_common';
 
 const addresses = [
   '0x491A0ae888449A9cE02f3F4288EFD9D5065c16C9',
