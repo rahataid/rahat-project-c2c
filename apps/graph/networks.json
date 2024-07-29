@@ -11,11 +11,11 @@
   },
   "mainnet": {
     "RahatToken": {
-      "address": "0xf903629a452640B788597983bbbB617a43Bc5Bb3",
+      "address": "0xbc9Dd4D928029f34070096B61717e894BE5710e9",
       "startBlock": 1
     },
     "C2CProject": {
-      "address": "0x043Bc8C44FBf9478F17dc90CDF983A6C4856c721",
+      "address": "0x89C460bc3F4EbA714F4CE5B0D58cEF0AA23338D3",
       "startBlock": 1
     }
   }

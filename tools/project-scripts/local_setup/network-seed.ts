@@ -3,22 +3,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const getProjectID = async (envPath: string) => {
-  try {
-    const data = await fs.readFile(envPath, 'utf8');
-    const lines = data.split('\n') as string[];
-
-    for (const line of lines) {
-      if (line.startsWith('PROJECT_ID')) {
-        const value = line.split('=');
-        return value[1];
-      }
-    }
-  } catch (error) {
-    console.error('Error reading .env file.', error);
-  }
-};
-
 const modifyNetworksFile = async (
   contractAddressesPath: string,
   networksFilePath: string
@@ -50,7 +34,7 @@ const modifyNetworksFile = async (
 (async function () {
   const rootPath = process.argv[2];
   const projectID = process.env.PROJECT_ID;
-  const contractAddressesPath = `${rootPath}/tools/project-scripts/${projectID}.json`;
+  const contractAddressesPath = `${rootPath}/tools/project-scripts/deployments/${projectID}.json`;
   const networksFilePath = `${rootPath}/apps/graph/networks.json`;
   modifyNetworksFile(contractAddressesPath, networksFilePath);
 })();

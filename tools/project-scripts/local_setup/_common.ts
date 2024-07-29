@@ -1,0 +1,266 @@
+import * as dotenv from 'dotenv';
+import { Config } from '../types/config';
+import { Contract, ContractFactory, JsonRpcProvider, ethers } from 'ethers';
+import {
+  ContractArtifacts,
+  ContractDetails,
+  DeployedContractData,
+} from '../types/contract';
+import type { Signer } from 'ethers';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+
+dotenv.config();
+
+const privateKeys = {
+  deployer: process.env.DEPLOYER_PRIVATE_KEY,
+  admin: process.env.RAHAT_ADMIN_PRIVATE_KEY,
+  vendor: process.env.VENDOR_PRIVATE_KEY,
+};
+
+export class ContractLib {
+  private networkSettings: Config['blockchain'];
+  private provider: JsonRpcProvider;
+  public deployedContracts: DeployedContractData;
+  public vendorAddress: any;
+  public deployerAddress: any;
+  public adminAddress: any;
+
+  constructor() {
+    const network: string =
+      process.env.NETWORK_PROVIDER || 'http://127.0.0.1:8888';
+    this.networkSettings = {
+      rpcUrl: network,
+      chainName: process.env.CHAIN_NAME || 'matic',
+      chainId: Number(process.env.CHAIN_ID) || 8888,
+      blockExplorerUrls: [
+        process.env.BLOCK_EXPLORER_URL ||
+          'https://explorer-mumbai.maticvigil.com/',
+      ],
+    };
+
+    console.log({ network });
+
+    this.provider = new JsonRpcProvider(network);
+    this.deployerAddress = privateKeys.deployer;
+    this.adminAddress = privateKeys.admin;
+    this.deployedContracts = {};
+  }
+
+  public getDeployedContracts(
+    contractName: string
+  ): DeployedContractData[string] | DeployedContractData {
+    if (contractName) {
+      const contract = this.deployedContracts[contractName];
+      if (contract) {
+        return contract;
+      }
+      throw new Error(`Contract ${contractName} not found`);
+    }
+    return this.deployedContracts[contractName];
+  }
+
+  public getNetworkSettings() {
+    return this.networkSettings;
+  }
+
+  public async writeToDeploymentFile(fileName: string, newData: any) {
+    const dirPath = `${__dirname}/deployments`;
+    const filePath = `${dirPath}/${fileName}.json`;
+
+    // Ensure the directory exists
+    if (!existsSync(dirPath)) {
+      mkdirSync(dirPath);
+    }
+
+    let fileData = {};
+    if (existsSync(filePath)) {
+      // Read and parse the existing file if it exists
+      const existingData = readFileSync(filePath, { encoding: 'utf8' });
+      if (existingData) fileData = JSON.parse(existingData);
+    }
+    fileData = { ...fileData, ...newData };
+    console.log({ fileData });
+    writeFileSync(filePath, JSON.stringify(fileData, null, 2));
+  }
+
+  public getWalletFromPrivateKey(privateKey: string) {
+    return new ethers.Wallet(privateKey, this.provider);
+  }
+
+  public async getContractArtifacts(
+    contractName: string
+  ): Promise<ContractArtifacts> {
+    const contract = await import(`../contracts/${contractName}.json`);
+    return contract;
+  }
+
+  public async getDeployedAddress(
+    contractAddressFile: string,
+    contractName: string
+  ) {
+    const fileData = readFileSync(
+      `${__dirname}/deployments/${contractAddressFile}.json`,
+      'utf8'
+    );
+    const data = JSON.parse(fileData);
+    return data[contractName].address;
+  }
+
+  public async getDeployedContractDetails(
+    contractAddressFile: string,
+    contractName: string[]
+  ) {
+    const contractDetails: ContractDetails = {};
+    await Promise.all(
+      contractName.map(async (contract) => {
+        console.log({ contract });
+        const address = await this.getDeployedAddress(
+          contractAddressFile,
+          contract
+        );
+        console.log({ contract, address });
+        const { abi } = await this.getContractArtifacts(contract);
+        contractDetails[contract] = { address, abi };
+      })
+    );
+    return contractDetails;
+  }
+
+  public async getInterface(contractName: string) {
+    const { abi } = await this.getContractArtifacts(contractName);
+    const interFace = new ethers.Interface(abi);
+    return interFace;
+  }
+
+  public async getContracts(
+    contractName: string,
+    contractAddressFile: string,
+    deployedContractName: string,
+    signer?: Signer
+  ) {
+    const contractAddress = await this.getDeployedAddress(
+      contractAddressFile,
+      deployedContractName
+    );
+
+    const { abi } = await this.getContractArtifacts(contractName);
+    const privateKey = this.adminAddress || '';
+
+    const wallet = new ethers.Wallet(privateKey, this.provider);
+
+    const contract = new Contract(contractAddress, abi, wallet);
+    return contract;
+  }
+
+  public async generateMultiCallData(
+    contractName: string,
+    functionName: string,
+    callData: any
+  ) {
+    const interFace = await this.getInterface(contractName);
+    const encodedData: any[] = [];
+
+    if (callData) {
+      for (const data of callData) {
+        encodedData.push(interFace.encodeFunctionData(functionName, data));
+      }
+    }
+    return encodedData;
+  }
+
+  public delay(ms: number) {
+    return new Promise((res) => setTimeout(res, ms));
+  }
+
+  public async deployContract(contractName: string, args: any[]) {
+    const signer = new ethers.Wallet(this.deployerAddress || '', this.provider);
+    const { abi, bytecode } = await this.getContractArtifacts(contractName);
+    const factory = new ContractFactory(abi, bytecode, signer);
+    const contract = await factory.deploy(...args);
+    const address = await contract.getAddress();
+    await contract.waitForDeployment();
+    this.delay(500);
+    return {
+      blockNumber: contract.deploymentTransaction()?.blockNumber ?? 1,
+      contract: new ethers.Contract(address, abi, this.provider),
+    };
+  }
+
+  // TODO:Refactor this method
+  public async callContractMethod(
+    contractName: string,
+    methodName: string,
+    args: any[],
+    contractAddressFile: string,
+    signer?: Signer
+  ) {
+    const contractAddress = await this.getDeployedAddress(
+      contractAddressFile,
+      contractName
+    );
+
+    if (!contractAddress) {
+      throw new Error(`Contract ${contractName} not deployed`);
+    }
+
+    const contractArtifacts = await this.getContractArtifacts(contractName);
+
+    const contract = new ethers.Contract(
+      contractAddress,
+      contractArtifacts.abi,
+      signer || this.provider
+    );
+
+    const method = contract[methodName];
+
+    if (!method) {
+      throw new Error(
+        `Method ${methodName} not found in contract ${contractName}`
+      );
+    }
+
+    const result = await method(...args);
+    await this.delay(3000);
+    return result;
+  }
+
+  public async getDonorWallet() {
+    return this.getWalletFromPrivateKey(this.deployerAddress);
+  }
+  public async getDonorContract(wallet?: Signer) {
+    const a = await this.getDeployedContractDetails(
+      process.env.PROJECT_ID as string,
+      ['RahatDonor']
+    );
+    return new Contract(
+      a.RahatDonor.address,
+      a.RahatDonor.abi,
+      wallet || this.provider
+    );
+  }
+
+  public getAdminWallet() {
+    return this.getWalletFromPrivateKey(this.adminAddress);
+  }
+
+  public async getAdminContract(wallet?: Signer) {
+    const a = await this.getContractArtifacts('RahatDonor');
+    return new Contract(this.deployerAddress, a.abi, wallet || this.provider);
+  }
+
+  public getCommunityWallet() {
+    return this.getWalletFromPrivateKey(this.deployerAddress);
+  }
+
+  public async getCommunityContract(wallet?: Signer) {
+    const a = await this.getDeployedContractDetails(
+      process.env.PROJECT_ID as string,
+      ['RahatCommunity']
+    );
+    return new Contract(
+      a.RahatCommunity.address,
+      a.RahatCommunity.abi,
+      wallet || this.provider
+    );
+  }
+}
