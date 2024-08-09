@@ -18,6 +18,7 @@
       "@rahataid/c2c-extensions/*": ["libs/extensions/src/*"],
       "@rahataid/c2c-extensions": ["libs/extensions/src/index.ts"],
       "@rahataid/c2c-query": ["libs/react-query/src/project-actions/index.ts"],
+      "@rahataid/c2c-contract-hooks": ["libs/react-query/src/contracts/*"],
       "@rahataid/c2c-query/subgraph": [
         "libs/react-query/src/subgraph/index.ts"
       ],

@@ -2,8 +2,8 @@ import { Signer, ethers } from 'ethers';
 import { ContractLib } from './_common';
 
 const addresses = [
-  '0x13c43FE251870aDE7Ab32d484b60856829ec1fC8',
-  '0x17469fF5Bdc86a5FCeb4604534fF2a47a821d421',
+  '0x491A0ae888449A9cE02f3F4288EFD9D5065c16C9',
+  '0x2751aAb31EF54CAFb4b2CB5F936e1aCf9EcDB1cf',
 ];
 
 class BeneficiaryManagement extends ContractLib {
@@ -146,7 +146,7 @@ class BeneficiaryManagement extends ContractLib {
   async processTransferToBeneficiary(beneficiaryAddress: string) {
     console.log('----------Processing Token Transfer-------------------');
 
-    const claim = await this.getBeneficiaryClaims(beneficiaryAddress);
+    const claim = ethers.parseEther('500');
     const tx = await this.callContractMethod(
       'C2CProject',
       'processTransferToBeneficiary',
@@ -193,15 +193,15 @@ class BeneficiaryManagement extends ContractLib {
     }
     await beneficiaryManagement.addBeneficiaryToC2CProject(address);
     await beneficiaryManagement.isBeneficiary(address);
-    await beneficiaryManagement.assignClaimsToBeneficiary(
-      address,
-      ethers.parseEther('5')
-    );
-    await beneficiaryManagement.getBeneficiaryClaims(address);
+    // await beneficiaryManagement.assignClaimsToBeneficiary(
+    //   address,
+    //   ethers.parseEther('5')
+    // );
+    // await beneficiaryManagement.getBeneficiaryClaims(address);
   }
 
   await beneficiaryManagement.beneficiaryCount();
-  await beneficiaryManagement.totalClaimsAssigned();
+  // await beneficiaryManagement.totalClaimsAssigned();
   await beneficiaryManagement.processTransferToBeneficiary(addresses[0]);
   await beneficiaryManagement.processTransferToBeneficiary(addresses[1]);
 

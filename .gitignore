@@ -9,6 +9,8 @@ tmp
 # dependencies
 node_modules
 
+play/
+
 # IDEs and editors
 /.idea
 .project
@@ -36,7 +38,8 @@ Thumbs.db
 
 .nx
 .env
-
+.env.*
+!.env.example
 
 #Prisma files
 prisma/dbml

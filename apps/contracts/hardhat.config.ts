@@ -26,6 +26,7 @@ const chainIds = {
   'polygon-mainnet': 137,
   'polygon-mumbai': 80001,
   sepolia: 11155111,
+  baseSepolia: 84532
 };
 
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
@@ -39,6 +40,9 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       break;
     case 'sepolia':
       jsonRpcUrl = `https://sepolia.infura.io/v3/43babf32ce0346fabbf1c1069418a90b`;
+      break;
+    case 'baseSepolia':
+      jsonRpcUrl = `https://sepolia.base.org`;
       break;
     default:
       jsonRpcUrl = 'https://' + chain + '.infura.io/v3/' + infuraApiKey;
@@ -124,6 +128,7 @@ const config: ExtendedHardhatUserConfig = {
         },
       },
     },
+    baseSepolia: getChainConfig('baseSepolia'),
     ganache: {
       chainId: chainIds.ganache,
       url: 'http://localhost:8545',

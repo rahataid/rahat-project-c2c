@@ -13,9 +13,9 @@ export { isAddress } from 'ethers';
 type IStringArr = string[];
 type ICallData = IStringArr[];
 
-export async function createContractInstance(contract: any, model: any) {
+export async function createContractInstance(contractName: any, model: any) {
   //  Get Contract
-  //   const contract = await getContractByName(projectName);
+  const contract = await getContractByName(contractName, model);
 
   //  Get RPC URL
   const res = await model.findFirstOrThrow({
@@ -32,7 +32,7 @@ export async function createContractInstance(contract: any, model: any) {
   const provider = new JsonRpcProvider(res?.value?.rpcUrl);
 
   //  Create an instance of the contract
-  return new Contract(contract.address, contract.abi, provider);
+  return new Contract(contract.ADDRESS, contract.ABI, provider);
 }
 
 export async function createContractInstanceSign(contract: any, model: any) {
@@ -56,9 +56,7 @@ export async function createContractInstanceSign(contract: any, model: any) {
 
   const wallet = new ethers.Wallet(privateKey, provider);
 
- 
-
-  const convertToLowerCase=(obj)=> {
+  const convertToLowerCase = (obj) => {
     const newObj = {};
     for (const key in obj) {
       const newKey = key.toLowerCase();
@@ -72,13 +70,12 @@ export async function createContractInstanceSign(contract: any, model: any) {
       }
     }
     return newObj;
-  }
-  
+  };
 
-  const abi = contract.ABI.map(convertToLowerCase)
+  const abi = contract.ABI.map(convertToLowerCase);
   //  Create an instance of the contract
-  const contracts =  new Contract(contract.ADDRESS, abi, wallet);
-  return contracts
+  const contracts = new Contract(contract.ADDRESS, abi, wallet);
+  return contracts;
 }
 
 export const signMessage = async ({ wallet, message }: any) => {
@@ -199,29 +196,33 @@ export async function getFunctionsList(contractInstance: any) {
 }
 
 export async function getContractByName(contractName: string, modal: any) {
-  const addresses = await modal.findMany({
+  const abis = await modal.findMany({
     where: { name: 'CONTRACT' },
   });
+  const contractABI = abis[0].value[contractName];
 
   // const address = addresses.find((address) => address.value === contractName);
-  const address = findValueByKey(addresses, contractName);
-
-  if (!address) {
+  if (!contractABI) {
     throw new Error('Contract not found');
   }
-  return address;
+  return contractABI;
+}
+
+export const getWalletFromPrivateKey = (privateKey: string, provider?: any) => {
+  return new ethers.Wallet(privateKey, provider);
 }
 
 function findValueByKey(data, keyToFind) {
   // Iterate through the array of objects
   for (const obj of data) {
+    console.log({ obj, data });
     // Check if the current object has a value property and if it contains the key we're looking for
-    if (obj.value && obj.value.hasOwnProperty(keyToFind)) {
+    if (Object.prototype.hasOwnProperty.call(obj.value, keyToFind)) {
       // Return the value associated with the key
+      console.log(`first`);
       return obj.value[keyToFind];
     }
   }
   // If the key is not found in any of the objects, return undefined
   return undefined;
 }
-

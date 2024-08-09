@@ -1,18 +1,29 @@
 import { Client } from '@urql/core';
-import * as React from 'react';
+import React, { FC, createContext, useContext } from 'react';
 
-type C2CSubgraphContextType = {
+export type C2CSubgraphContextType = {
   subgraphClient: Client;
-  setSubgraphClient: React.Dispatch<React.SetStateAction<Client>>;
 };
 
-const C2CSubgraphContext = React.createContext<C2CSubgraphContextType>(null);
+const C2CSubgraphContext = createContext({
+  subgraphClient: {} as Client,
+});
 
-const C2CSubgraphProvider = ({ children }) => {
-  const [subgraphClient, setSubgraphClient] = React.useState<Client>();
+type C2CSubgraphProviderProps = {
+  children: React.ReactNode;
+  subgraphClient: Client;
+};
 
+const C2CSubgraphProvider: FC<C2CSubgraphProviderProps> = ({
+  children,
+  subgraphClient,
+}) => {
   return (
-    <C2CSubgraphContext.Provider value={{ subgraphClient, setSubgraphClient }}>
+    <C2CSubgraphContext.Provider
+      value={{
+        subgraphClient: subgraphClient as Client,
+      }}
+    >
       {children}
     </C2CSubgraphContext.Provider>
   );
@@ -21,7 +32,7 @@ const C2CSubgraphProvider = ({ children }) => {
 export default C2CSubgraphProvider;
 
 export const useC2CSubgraph = (): C2CSubgraphContextType => {
-  const context = React.useContext(C2CSubgraphContext);
+  const context = useContext(C2CSubgraphContext);
   if (context === undefined) {
     throw new Error('useC2CSubgraph must be used within a C2CSubgraphProvider');
   }

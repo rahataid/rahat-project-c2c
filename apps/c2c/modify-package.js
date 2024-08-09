@@ -22,6 +22,11 @@ try {
     prisma: '^5.1.0',
     'ts-node': '^10.9.1',
     '@prisma/client': '^5.1.0',
+    'prisma-dbml-generator': '^0.12.0',
+    'prisma-docs-generator': '^0.8.0',
+    'prisma-json-schema-generator': '^5.1.1',
+    dotenv: '^16.4.4',
+    '@rumsan/extensions': '^0.0.21',
   };
 
   packageData.prisma = {

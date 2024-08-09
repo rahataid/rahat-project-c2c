@@ -19,12 +19,12 @@ if (swcJestConfig.swcrc === undefined) {
 // swcJestConfig.module.noInterop = false;
 
 export default {
-  displayName: 'subgraph-query',
+  displayName: 'react-query',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   testEnvironment: 'node',
-  coverageDirectory: '../../coverage/libs/subgraph-query',
+  coverageDirectory: '../../coverage/libs/react-query',
 };
