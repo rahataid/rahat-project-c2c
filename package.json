@@ -44,7 +44,9 @@
     "graph:studio:deploy-mumbai": "cd ./apps/graph && graph deploy --studio --network mumbai c2c-dev",
     "graph:studio:deploy-arbitrum-sepolia-dev": "cd ./apps/graph && graph deploy --studio --network arbitrum-sepolia c2c-dev-arbi",
     "graph:studio:deploy-arbitrum-sepolia-stage": "cd ./apps/graph && graph deploy --studio --network arbitrum-sepolia c2c-stage-arbi",
-    "graph:studio:deploy-base-sepolia": "cd ./apps/graph-new && graph deploy --studio --network base-sepolia rahat-c2c-dev",
+    "graph:studio:deploy-base-sepolia": "cd ./apps/graph && graph deploy --studio --network base-sepolia rahat-c2c-dev",
+        "graph:studio:deploy-stage-base-sepolia": "cd ./apps/graph && graph deploy --studio --network base-sepolia c2c-stage-base",
+
     "graph:test": "cd ./apps/graph && graph test",
     "fund:project": "ts-node  tools/project-scripts/2-fund-project",
     "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage"

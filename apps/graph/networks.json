@@ -1,21 +1,21 @@
 {
   "base-sepolia": {
     "RahatToken": {
-      "address": "0x40BdA327da6460B106001709ef2F730825c634D8",
-      "startBlock": 11129388
+      "address": "0x12e32e06cd36C21120932BCB2600c7C396e04F45",
+      "startBlock": 12418270
     },
     "C2CProject": {
-      "address": "0x3A28d71a89123e8894A1Ac536c0623CA22022AE8",
-      "startBlock": 11129412
+      "address": "0x69517be1307861d0C768B5eD80A1623bE5483f3b",
+      "startBlock": 12418272
     }
   },
   "mainnet": {
     "RahatToken": {
-      "address": "0xcAebDAC40F99f6b9c4fff0bD8e6d73f0F846d2fd",
+      "address": "0xf903629a452640B788597983bbbB617a43Bc5Bb3",
       "startBlock": 1
     },
     "C2CProject": {
-      "address": "0xde0Ce5382D963f9C894CBd4FB9C9710998cFA7c3",
+      "address": "0x043Bc8C44FBf9478F17dc90CDF983A6C4856c721",
       "startBlock": 1
     }
   }

@@ -38,7 +38,8 @@ Thumbs.db
 
 .nx
 .env
-
+.env.*
+!.env.example
 
 #Prisma files
 prisma/dbml
