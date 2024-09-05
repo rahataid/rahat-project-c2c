@@ -27,6 +27,7 @@ try {
     'prisma-json-schema-generator': '^5.1.1',
     dotenv: '^16.4.4',
     '@rumsan/extensions': '^0.0.21',
+    'viem': "^2.10.2"
   };
 
   packageData.prisma = {
