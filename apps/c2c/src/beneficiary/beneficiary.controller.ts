@@ -13,8 +13,8 @@ export class BeneficiaryController {
   constructor(private readonly beneficiaryService: BeneficiaryService) {}
 
   @MessagePattern({ cmd: JOBS.BENEFICIARY.LIST, uuid: process.env.PROJECT_ID })
-  findAll() {
-    return this.beneficiaryService.findAll();
+  findAll(data) {
+    return this.beneficiaryService.findAll(data);
   }
 
   @MessagePattern({

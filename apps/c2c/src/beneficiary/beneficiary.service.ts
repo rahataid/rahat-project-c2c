@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ProjectContants } from '@rahataid/sdk';
-import { PrismaService } from '@rumsan/prisma';
+import { paginator, PaginatorTypes, PrismaService } from '@rumsan/prisma';
 import { UUID } from 'crypto';
 import {
   CreateBeneficiaryDto,
@@ -12,6 +12,8 @@ import {
   createContractInstance,
   createContractInstanceSign,
 } from '../utils/web3';
+
+const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 20 });
 
 @Injectable()
 export class BeneficiaryService {
@@ -41,13 +43,26 @@ export class BeneficiaryService {
     return this.rsprisma.beneficiary.createMany({ data: dto });
   }
 
-  async findAll() {
-    const data = await this.rsprisma.beneficiary.findMany();
-    // projectData.data = data;
-    // console.log('projectData', projectData);
-    const projectData = {
-      data: data,
-    };
+  async findAll(dto) {
+    const { page, perPage, sort, order } = dto;
+
+    const orderBy: Record<string, 'asc' | 'desc'> = {};
+    orderBy[sort] = order;
+
+    const projectData = await paginate(
+      this.rsprisma.beneficiary,
+      {
+        where: {
+          deletedAt: null,
+        },
+        orderBy,
+      },
+      {
+        page,
+        perPage,
+      }
+    );
+
     return this.client.send(
       { cmd: 'rahat.jobs.beneficiary.list_by_project' },
       projectData
