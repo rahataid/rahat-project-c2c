@@ -41,11 +41,7 @@ Thumbs.db
 .env.*
 !.env.example
 
-#Prisma files
-prisma/dbml
-prisma/docs
-prisma/migrations
-prisma/json
+
 
 
 # Hardhat
