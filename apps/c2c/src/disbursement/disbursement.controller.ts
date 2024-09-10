@@ -88,4 +88,12 @@ export class DisbursementController {
       payload.transactionHash
     );
   }
+
+  @MessagePattern({
+    cmd: JOBS.SAFE_TRANSACTION.GET_PENDING,
+    uuid: process.env.PROJECT_ID,
+  })
+  getPendingSafeTransactions() {
+    return this.disbursementMultisigService.getSafePendingTransactions();
+  }
 }
