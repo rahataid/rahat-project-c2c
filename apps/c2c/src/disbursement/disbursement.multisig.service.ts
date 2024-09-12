@@ -154,12 +154,8 @@ export class DisbursementMultisigService {
         name: 'SAFE_WALLET',
       },
     });
-    const pendingTransaction = await this.safeApiKit.getAllTransactions(
+    const pendingTransaction = await this.safeApiKit.getPendingTransactions(
       SAFE_ADDRESS.value['ADDRESS'],
-      {
-        executed: false,
-        queued: true,
-      }
     );
 
     return pendingTransaction;
