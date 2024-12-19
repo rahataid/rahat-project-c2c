@@ -76,7 +76,8 @@ export class DisbursementMultisigService {
   }
 
   async getSafeTransaction(safeTxHash: string) {
-    const { confirmations, confirmationsRequired, isExecuted, proposer } = await this.safeApiKit.getTransaction(safeTxHash);
+    const { confirmations, confirmationsRequired, isExecuted, proposer } =
+      await this.safeApiKit.getTransaction(safeTxHash);
     return { confirmations, confirmationsRequired, isExecuted, proposer };
   }
 
@@ -129,10 +130,10 @@ export class DisbursementMultisigService {
     }
   }
 
-
   async getTransactionApprovals(safeTxHash: string) {
     const owners = await this.getOwnersList();
-    const { confirmations, confirmationsRequired, isExecuted, proposer } = await this.getSafeTransaction(safeTxHash);
+    const { confirmations, confirmationsRequired, isExecuted, proposer } =
+      await this.getSafeTransaction(safeTxHash);
     console.log({ owners });
     const approvals = owners.map((owner) => {
       const confirmation = confirmations?.find(
@@ -145,5 +146,18 @@ export class DisbursementMultisigService {
       };
     });
     return { approvals, confirmationsRequired, isExecuted, proposer };
+  }
+
+  async getSafePendingTransactions() {
+    const SAFE_ADDRESS = await this.prisma.setting.findFirst({
+      where: {
+        name: 'SAFE_WALLET',
+      },
+    });
+    const pendingTransaction = await this.safeApiKit.getPendingTransactions(
+      SAFE_ADDRESS.value['ADDRESS'],
+    );
+
+    return pendingTransaction;
   }
 }
