@@ -27,6 +27,7 @@
     "prisma:studio": "npx prisma studio",
     "prisma:generate": "npx prisma generate",
     "prisma:generate:watch": "npx prisma generate --watch",
+    "contracts:docgen": "cd ./apps/contracts && hardhat docgen",
     "contracts:compile": "cd ./apps/contracts && hardhat compile",
     "contracts:coverage": "cd ./apps/contracts && hardhat coverage",
     "contracts:test": "cd ./apps/contracts && hardhat test",
