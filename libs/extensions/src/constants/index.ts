@@ -82,6 +82,7 @@ export const JOBS = {
   SAFE_TRANSACTION: {
     CREATE: 'rahat.jobs.safe_transaction.create',
     GET: 'rahat.jobs.safe_transaction.get',
+    GET_PENDING: 'rahat.jobs.safe_transaction.get_pending',
   },
 };
 
