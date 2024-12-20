@@ -80,6 +80,8 @@ model Beneficiary {
 model Campaign {
   id          Int     @id @default(autoincrement()) @db.Integer()
   uuid        String  @unique @default(uuid()) @db.Uuid()
+  // TODO: remove campaignId
+  campaignId Int     @default(autoincrement()) 
   name        String
   message     String
   transportId String
