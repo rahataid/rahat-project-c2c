@@ -1,6 +1,6 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { JOBS } from '@rahataid/c2c-extensions/constants';
+import { CreateCampaignDto, JOBS, ListCommDto } from '@rahataid/c2c-extensions';
 
 import { CampaignService } from './campaign.service';
 
@@ -12,69 +12,63 @@ export class CampaignController {
     cmd: JOBS.CAMPAIGN.CREATE,
     uuid: process.env.PROJECT_ID,
   })
-  createCampaign(dto) {
+  create(@Body() dto: CreateCampaignDto) {
     return this.campaignService.create(dto);
   }
+
+  // @MessagePattern({
+  //   cmd: JOBS.CAMPAIGN.UPDATE,
+  //   uuid: process.env.PROJECT_ID,
+  // })
+  // update(@Body() dto: UpdateCVACommsDto) {
+  //   return this.campaignService.update(dto);
+  // }
+
+  @MessagePattern({
+    cmd: JOBS.CAMPAIGN.GET_ALL_TRANSPORT,
+    uuid: process.env.PROJECT_ID,
+  })
+  listTransports() {
+    return this.campaignService.listTransports();
+  }
+
   @MessagePattern({
     cmd: JOBS.CAMPAIGN.LIST,
     uuid: process.env.PROJECT_ID,
   })
-  async listCampaign(dto) {
-    return await this.campaignService.findAll(dto);
+  findAll(query: ListCommDto) {
+    return this.campaignService.findAll(query);
   }
+
   @MessagePattern({
-    cmd: JOBS.CAMPAIGN.GET,
+    cmd: JOBS.CAMPAIGN.GET_CAMPAIGN_LOG,
     uuid: process.env.PROJECT_ID,
   })
-  async getCampaign(dto) {
-    return await this.campaignService.findOne(dto.id);
+  sessionLogs(payload: any) {
+    return this.campaignService.listSessionLogs(payload.uuid, payload.query);
   }
 
   @MessagePattern({
     cmd: JOBS.CAMPAIGN.TRIGGER_CAMPAIGN,
     uuid: process.env.PROJECT_ID,
   })
-  triggerCampaign(dto) {
-    return this.campaignService.triggerCampaign(dto.id);
+  trigger(payload: any) {
+    return this.campaignService.triggerCommunication(payload.uuid);
+  }
+
+  @MessagePattern({
+    cmd: JOBS.CAMPAIGN.GET,
+    uuid: process.env.PROJECT_ID,
+  })
+  findOne(payload: any) {
+    return this.campaignService.findOne(payload.uuid);
   }
 
   @MessagePattern({
     cmd: JOBS.CAMPAIGN.GET_ALL_COMMUNICATION_LOGS,
     uuid: process.env.PROJECT_ID,
   })
-  async listCommunicationLogs(dto) {
-    return await this.campaignService.findCommunicationLogs();
-  }
-
-  @MessagePattern({
-    cmd: JOBS.CAMPAIGN.GET_ALL_COMMUNICATION_STATS,
-    uuid: process.env.PROJECT_ID,
-  })
-  async listCommunicationStats(dto) {
-    return await this.campaignService.findCommunicationStats();
-  }
-
-  @MessagePattern({
-    cmd: JOBS.CAMPAIGN.GET_ALL_AUDIENCE,
-    uuid: process.env.PROJECT_ID,
-  })
-  async listAudiences(dto) {
-    return await this.campaignService.findAudience();
-  }
-
-  @MessagePattern({
-    cmd: JOBS.CAMPAIGN.GET_ALL_TRANSPORT,
-    uuid: process.env.PROJECT_ID,
-  })
-  async listTransport(dto) {
-    return await this.campaignService.findTransport();
-  }
-
-  @MessagePattern({
-    cmd: JOBS.CAMPAIGN.CREATE_AUDIENCE,
-    uuid: process.env.PROJECT_ID,
-  })
-  async createAudience(dto) {
-    return await this.campaignService.createAudience(dto);
+  findLogs(payload: any) {
+    return this.campaignService.getBroadcastLogs(payload);
   }
 }

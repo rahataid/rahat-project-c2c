@@ -72,6 +72,7 @@
     "@rahataid/c2c-subgraph": "link:libs/react-query",
     "@rahataid/contracts": "0.0.1",
     "@rahataid/sdk": "0.0.20",
+    "@rumsan/connect": "^1.0.3",
     "@rumsan/communication": "0.0.23",
     "@rumsan/extensions": "0.0.21",
     "@rumsan/prisma": "1.0.121",
