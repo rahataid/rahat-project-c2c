@@ -7,9 +7,12 @@ import { BeneficiaryModule } from '../beneficiary/beneficiary.module';
 import { CampaignModule } from '../campaign/campaign.module';
 import { ConfigModule } from '@nestjs/config';
 import { DisbursementModule } from '../disbursement/disbursement.module';
+import { CommsModule } from '../comms';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    CommsModule.forRoot(),
     PrismaModule,
     SettingsModule,
     BeneficiaryModule,

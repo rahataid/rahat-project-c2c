@@ -70,6 +70,7 @@ export const JOBS = {
     GET_ALL_COMMUNICATION_LOGS: 'rahat.jobs.campaign.communication_logs',
     GET_ALL_COMMUNICATION_STATS: 'rahat.jobs.campaign.communication_stats',
     CREATE_AUDIENCE: 'rahat.jobs.campaign.create_audience',
+    GET_CAMPAIGN_LOG: 'rahat.jobs.campaign.log',
   },
   DISBURSEMENT: {
     CREATE: 'rahat.jobs.disbursement.create',
