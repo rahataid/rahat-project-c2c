@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from '@rumsan/prisma';
-import { ProjectContants } from '@rahataid/sdk';
-import { CampaignService } from './campaign.service';
 import { CampaignController } from './campaign.controller';
+import { CampaignService } from './campaign.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ProjectContants } from '@rahataid/sdk';
 
 @Module({
   imports: [

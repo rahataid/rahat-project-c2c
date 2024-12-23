@@ -78,8 +78,20 @@ model Beneficiary {
 }
 
 model Campaign {
-  id         Int @id @default(autoincrement()) @db.Integer()
-  campaignId Int
+  id          Int     @id @default(autoincrement()) @db.Integer()
+  uuid        String  @unique @default(uuid()) @db.Uuid()
+  // TODO: remove campaignId
+  campaignId Int     @default(autoincrement()) 
+  name        String
+  message     String
+  transportId String
+  sessionId   String?
+  groupUID    String? @db.Uuid()
+
+  isActive  Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime?          @updatedAt()
+  addresses String[]
 
   @@map(name: "tbl_campaign")
 }
