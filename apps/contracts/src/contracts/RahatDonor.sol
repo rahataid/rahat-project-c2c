@@ -1,139 +1,89 @@
-//SPDX-License-Identifier: LGPL-3.0
+// SPDX-License-Identifier: LGPL-3.0
 pragma solidity 0.8.20;
 
-import '@openzeppelin/contracts/utils/introspection/ERC165.sol';
+import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
 import './RahatToken.sol';
 import '../libraries/AbstractTokenActions.sol';
-import '../interfaces/IRahatProject.sol';
 import '../interfaces/IRahatDonor.sol';
 
-/**
- * @title RahatDonor
- * @dev This contract allows the management of Rahat tokens and projects. It provides functionality
- * for creating tokens, minting them, approving addresses, and registering projects. All actions
- * are restricted to the contract owner.
- */
-contract RahatDonor is AbstractTokenActions, ERC165 {
-  event TokenCreated(address indexed tokenAddress);
-  event TokenMintedAndApproved(
-    address indexed tokenAddress,
-    address indexed approveAddress,
-    uint256 amount
-  );
+/// @title RahatDonor
+/// @dev A contract to manage token creation, minting, approvals, and project registration.
+contract RahatDonor is AbstractTokenActions, ReentrancyGuard, IRahatDonor {
+    event TokenCreated(address indexed tokenAddress);
+    event TokenMintedAndApproved(
+        address indexed tokenAddress,
+        address indexed approveAddress,
+        uint256 amount
+    );
 
-  /// @notice All the supply is allocated to this contract
-  /// @dev Deploys AidToken and Rahat contract by sending supply to this contract
+    mapping(address => bool) public _registeredProject;
 
-  bytes4 public constant IID_RAHAT_DONOR = type(IRahatDonor).interfaceId;
+    /// @dev Initializes the contract owner.
+    constructor(address _admin) {
+        require(_admin != address(0), 'Admin address cannot be zero');
+        _addOwner(_admin);
+    }
 
-  mapping(address => bool) public _registeredProject;
+    /// @inheritdoc IRahatDonor
+    function createToken(
+        string memory _name,
+        string memory _symbol,
+        uint8 decimals
+    ) public returns (address) {
+        require(bytes(_name).length > 0, 'Token name is required');
+        require(bytes(_symbol).length > 0, 'Token symbol is required');
+        RahatToken _token = new RahatToken(
+            _name,
+            _symbol,
+            address(this),
+            decimals
+        );
+        emit TokenCreated(address(_token));
+        return address(_token);
+    }
 
-  /**
-   * @dev Sets the contract owner to the specified address.
-   * @param _admin The address of the admin who will be the owner of the contract.
-   */
-  constructor(address _admin) {
-    _addOwner(_admin);
-  }
+    /// @inheritdoc IRahatDonor
+    function mintToken(address _token, uint256 _amount) public override {
+        require(_token != address(0), 'Token address cannot be zero');
+        require(_amount > 0, 'Mint amount must be greater than zero');
+        RahatToken(_token).mint(address(this), _amount);
+    }
 
-  //#region Token function
+    /// @inheritdoc IRahatDonor
+    function mintTokenAndApprove(
+        address _token,
+        address _approveAddress,
+        uint256 _amount,
+        address _projectAddress
+    ) public {
+        require(_token != address(0), 'Token address cannot be zero');
+        require(
+            _approveAddress != address(0),
+            'Approve address cannot be zero'
+        );
+        require(
+            _projectAddress != address(0),
+            'Project address cannot be zero'
+        );
+        require(_registeredProject[_projectAddress], 'Project not registered');
+        require(_amount > 0, 'Amount must be greater than zero');
 
-  /**
-   * @notice Creates a new Rahat token.
-   * @param _name The name of the token.
-   * @param _symbol The symbol of the token.
-   * @param decimals The number of decimals for the token.
-   * @return The address of the newly created token.
-   * Requirements:
-   * - The caller must be the owner.
-   */
-  function createToken(
-    string memory _name,
-    string memory _symbol,
-    uint8 decimals
-  ) public OnlyOwner returns (address) {
-    RahatToken _token = new RahatToken(_name, _symbol, address(this), decimals);
-    address _tokenAddress = address(_token);
-    emit TokenCreated(_tokenAddress);
-    return _tokenAddress;
-  }
+        RahatToken token = RahatToken(_token);
+        token.mint(address(this), _amount);
+        token.approve(_approveAddress, _amount);
 
-  /**
-   * @notice Mints a specified amount of tokens to the contract.
-   * @param _token The address of the token to mint.
-   * @param _amount The amount of tokens to mint.
-   * Requirements:
-   * - The caller must be the owner.
-   */
-  function mintToken(address _token, uint256 _amount) public OnlyOwner {
-    RahatToken(_token).mint(address(this), _amount);
-  }
+        emit TokenMintedAndApproved(_token, _approveAddress, _amount);
+    }
 
-  /**
-   * @notice Mints tokens and approves a specified address to spend them.
-   * @param _token The address of the token to mint.
-   * @param _approveAddress The address to approve for spending the minted tokens.
-   * @param _amount The amount of tokens to mint and approve.
-   * @param _projectAddress The address of the project associated with the tokens.
-   * Requirements:
-   * - The caller must be the owner.
-   * - The token address, approve address, and project address must not be zero.
-   * - The project must be registered.
-   * - The amount must be greater than zero.
-   */
-  function mintTokenAndApprove(
-    address _token,
-    address _approveAddress,
-    uint256 _amount,
-    address _projectAddress
-  ) public OnlyOwner {
-    require(_token != address(0), 'token address cannot be zero');
-    require(_approveAddress != address(0), 'approve address cannot be zero');
-    require(_projectAddress != address(0), 'approve address cannot be zero');
-    require(_registeredProject[_projectAddress], 'project not registered');
+    /// @inheritdoc IRahatDonor
+    function addTokenOwner(address _token, address _ownerAddress) public {
+        require(_token != address(0), 'Token address cannot be zero');
+        require(_ownerAddress != address(0), 'Owner address cannot be zero');
+        RahatToken(_token).addOwner(_ownerAddress);
+    }
 
-    require(_amount > 0, 'amount cannot be zero');
-
-    RahatToken token = RahatToken(_token);
-    token.mint(address(this), _amount);
-    token.approve(_approveAddress, _amount);
-    emit TokenMintedAndApproved(_token, _approveAddress, _amount);
-  }
-
-  /**
-   * @notice Adds a new owner to the specified token.
-   * @param _token The address of the token.
-   * @param _ownerAddress The address of the new owner to add.
-   * Requirements:
-   * - The caller must be the owner.
-   */
-  function addTokenOwner(
-    address _token,
-    address _ownerAddress
-  ) public OnlyOwner {
-    RahatToken(_token).addOwner(_ownerAddress);
-  }
-
-  /**
-   * @notice Registers or unregisters a project.
-   * @param _projectAddress The address of the project to register.
-   * @param status A boolean indicating whether to register (true) or unregister (false) the project.
-   */
-  function registerProject(address _projectAddress, bool status) public {
-    _registeredProject[_projectAddress] = status;
-  }
-
-  /**
-   * @dev Checks if the contract supports a specific interface.
-   * @param interfaceId The ID of the interface to check.
-   * @return True if the interface is supported, false otherwise.
-   */
-  function supportsInterface(
-    bytes4 interfaceId
-  ) public view virtual override returns (bool) {
-    return
-      interfaceId == IID_RAHAT_DONOR || super.supportsInterface(interfaceId);
-  }
-
-  //#endregion
+    /// @inheritdoc IERC165
+    function supportsInterface(bytes4 interfaceId) public view returns (bool) {
+        return interfaceId == type(IRahatDonor).interfaceId;
+    }
 }
