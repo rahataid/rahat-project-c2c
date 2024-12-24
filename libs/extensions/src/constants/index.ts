@@ -40,6 +40,9 @@ export const JOBS = {
     ADD_TO_PROJECT: 'rahat.jobs.beneficiary.add_to_project',
     BULK_ASSIGN_TO_PROJECT: 'rahat.jobs.beneficiary.bulk_assign',
     VERIFY_SIGNATURE: 'rahat.jobs.beneficiary.verify_signature',
+    GET_ALL_GROUPS: 'rahat.jobs.beneficiary.getAllGroups',
+    GET_ONE_GROUP: 'rahat.jobs.beneficiary.getOneGroup',
+    ADD_GROUP_TO_PROJECT: 'rahat.jobs.beneficiary.add_group_to_project',
   },
 
   PROJECT: {
