@@ -7,6 +7,7 @@ import {
   UpdateBeneficiaryDto,
   VerifyWalletDto,
 } from '@rahataid/c2c-extensions/dtos/beneficiary';
+import { UUID } from 'crypto';
 
 @Controller()
 export class BeneficiaryController {
@@ -61,4 +62,30 @@ export class BeneficiaryController {
   verifyWallet(verifyWalletDto: VerifyWalletDto) {
     return this.beneficiaryService.verfiyWallet(verifyWalletDto);
   }
+
+  // ***** groups start ********** //
+  @MessagePattern({
+    cmd: JOBS.BENEFICIARY.ADD_GROUP_TO_PROJECT,
+    uuid: process.env.PROJECT_ID,
+  })
+  async addGroupToProject(payload) {
+    return this.beneficiaryService.addGroupToProject(payload);
+  }
+
+  @MessagePattern({
+    cmd: JOBS.BENEFICIARY.GET_ALL_GROUPS,
+    uuid: process.env.PROJECT_ID,
+  })
+  async getAllGroups(payload) {
+    return this.beneficiaryService.getAllGroups(payload);
+  }
+
+  @MessagePattern({
+    cmd: JOBS.BENEFICIARY.GET_ONE_GROUP,
+    uuid: process.env.PROJECT_ID,
+  })
+  async getOneGroup(payload: { uuid: UUID }) {
+    return this.beneficiaryService.getOneGroup(payload.uuid);
+  }
+  // ***** groups end ********** //
 }
