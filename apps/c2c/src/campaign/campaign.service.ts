@@ -88,20 +88,20 @@ export class CampaignService {
   async triggerCommunication(uuid: string) {
     const comm = await this.findOne(uuid);
     if (!comm) throw new RpcException('Communication not found');
-    const { sessionId, transportId, message, addresses } = comm;
+    const { sessionId, transportId, message, groupUID } = comm;
     if (sessionId) throw new RpcException('Communication already triggered');
     const transport = await this.commsClient.transport.get(transportId);
     if (!transport) throw new RpcException('Transport not found');
-    // let beneficiaries;
-    // if (groupUID) {
-    //   beneficiaries = await this.listBenefByGroup(groupUID);
-    // } else {
-    //   beneficiaries = await this.listBenef(process.env['PROJECT_ID'] as string);
-    // }
-    // const addresses = this.pickPhoneOrEmail(
-    //   beneficiaries,
-    //   transport.data?.type
-    // );
+    let beneficiaries;
+    if (groupUID) {
+      beneficiaries = await this.listBenefByGroup(groupUID);
+    } else {
+      beneficiaries = await this.listBenef(process.env['PROJECT_ID'] as string);
+    }
+    const addresses = this.pickPhoneOrEmail(
+      beneficiaries,
+      transport.data?.type
+    );
     if (!addresses.length) throw new RpcException('No valid addresses found!');
 
     return this.broadcastMessages({
@@ -170,10 +170,14 @@ export class CampaignService {
 
   async create(dto) {
     try {
+      const transports = await this.listTransports();
+      const transportId = transports?.find(
+        (transport) => transport.name === process.env.TRANSPORT_NAME
+      )?.cuid;
       return this.prisma.campaign.create({
         data: {
           ...dto,
-          transportId: dto.transportId || '',
+          transportId: transportId || '',
         },
       });
     } catch (e) {

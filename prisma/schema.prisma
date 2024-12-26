@@ -77,6 +77,19 @@ model Beneficiary {
   @@map(name: "tbl_beneficiaries")
 }
 
+model BeneficiaryGroups {
+  id                  Int     @id @default(autoincrement()) @db.Integer()
+  uuid                String  @unique @default(uuid()) @db.Uuid()
+  name                String
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt()
+  deletedAt DateTime?
+  Campaign  Campaign[]
+
+  @@map("tbl_beneficiaries_groups")
+}
+
 model Campaign {
   id          Int     @id @default(autoincrement()) @db.Integer()
   uuid        String  @unique @default(uuid()) @db.Uuid()
@@ -91,7 +104,7 @@ model Campaign {
   isActive  Boolean            @default(true)
   createdAt DateTime           @default(now())
   updatedAt DateTime?          @updatedAt()
-  addresses String[]
+  group     BeneficiaryGroups? @relation(fields: [groupUID], references: [uuid])
 
   @@map(name: "tbl_campaign")
 }

@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ProjectContants } from '@rahataid/sdk';
 import { paginator, PaginatorTypes, PrismaService } from '@rumsan/prisma';
 import { UUID } from 'crypto';
 import {
+  AssignBenfGroupToProject,
   CreateBeneficiaryDto,
   UpdateBeneficiaryDto,
   VerifyWalletDto,
@@ -12,6 +13,7 @@ import {
   createContractInstance,
   createContractInstanceSign,
 } from '../utils/web3';
+import { lastValueFrom } from 'rxjs';
 
 const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 20 });
 
@@ -120,5 +122,61 @@ export class BeneficiaryService {
       where: { walletAddress },
       data: { isVerified: true },
     });
+  }
+
+  // *****  beneficiary groups ********** //
+  async getOneGroup(uuid: UUID) {
+    const benfGroup = await this.prisma.beneficiaryGroups.findUnique({
+      where: {
+        uuid: uuid,
+        deletedAt: null,
+      },
+    });
+    if (!benfGroup) throw new RpcException('Beneficiary group not found.');
+
+    return lastValueFrom(
+      this.client.send(
+        { cmd: 'rahat.jobs.beneficiary.get_one_group_by_project' },
+        benfGroup.uuid
+      )
+    );
+  }
+
+  async addGroupToProject(payload: AssignBenfGroupToProject) {
+    const { beneficiaryGroupData } = payload;
+    return await this.prisma.beneficiaryGroups.create({
+      data: {
+        uuid: beneficiaryGroupData.uuid,
+        name: beneficiaryGroupData.name,
+      },
+    });
+  }
+
+  async getAllGroups(dto) {
+    const { page, perPage, sort, order, disableSync, uuid } = dto;
+    const orderBy: Record<string, 'asc' | 'desc'> = {};
+    orderBy[sort] = order;
+    let where: any = {
+      deletedAt: null,
+      ...(disableSync && { beneficiariesSynced: false }),
+      ...(uuid && { uuid: { in: uuid } }),
+    };
+
+    const benfGroups = await paginate(
+      this.prisma.beneficiaryGroups,
+      {
+        where: where,
+        orderBy,
+      },
+      {
+        page,
+        perPage,
+      }
+    );
+
+    return this.client.send(
+      { cmd: 'rahat.jobs.beneficiary.list_group_by_project' },
+      benfGroups
+    );
   }
 }
