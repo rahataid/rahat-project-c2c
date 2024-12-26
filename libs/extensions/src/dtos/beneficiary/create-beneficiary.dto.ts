@@ -5,3 +5,11 @@ export class CreateBeneficiaryDto {
   walletAddress?: string;
   extras?: any;
 }
+
+export interface AssignBenfGroupToProject {
+  beneficiaryGroupData: {
+    id: number;
+    uuid: string;
+    name: string;
+  };
+}
