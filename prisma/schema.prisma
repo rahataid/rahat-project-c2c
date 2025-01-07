@@ -135,6 +135,8 @@ model DisbursementBeneficiary {
   extras          Json?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime?    @updatedAt
+
+  @@unique([disbursementId, beneficiaryWalletAddress]) 
 }
 
 enum DisbursementType {
