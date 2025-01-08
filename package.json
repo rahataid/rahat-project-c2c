@@ -49,7 +49,8 @@
     "graph:studio:deploy-stage-base-sepolia": "cd ./apps/graph && graph deploy --studio --network base-sepolia c2c-stage-base",
     "graph:test": "cd ./apps/graph && graph test",
     "fund:project": "ts-node  tools/project-scripts/2-fund-project",
-    "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage"
+    "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage",
+    "test": "jest --config=apps/c2c/jest.config.ts --coverage"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
