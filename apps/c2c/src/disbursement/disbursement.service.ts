@@ -34,7 +34,7 @@ export class DisbursementService {
         type,
       } = createDisbursementDto;
 
-      // Create disbursement first
+      // Create disbursement
       const disbursement = await this.prisma.disbursement.create({
         data: {
           uuid: randomUUID(),
@@ -49,49 +49,36 @@ export class DisbursementService {
         },
       });
 
-      // const result = await this.prisma.disbursementBeneficiary.create({
-      //   data: {
-      //     amount: parseFloat(amount),
-      //     from,
-      //     transactionHash,
-      //     Disbursement: {
-      //       connect: {
-      //         id: disbursement.id,
-      //       },
-      //     },
-      //     Beneficiary: {
-      //       connect: beneficiaries.map((ben) => {
-      //         return {
-      //           walletAddress: ben.walletAddress,
-      //         };
-      //       }),
-      //     },
-      //   },
-      // });
-
       // Create or connect beneficiaries to the disbursement
       const result = await Promise.all(
         beneficiaries.map(async (ben: DisbursementBenefeciaryCreate) => {
           const disbursementBeneficiary =
-            await this.prisma.disbursementBeneficiary.create({
-              include: {
-                Beneficiary: true,
-                Disbursement: true,
+            await this.prisma.disbursementBeneficiary.upsert({
+              where: {
+                disbursementId_beneficiaryWalletAddress: {
+                  disbursementId: disbursement.id,
+                  beneficiaryWalletAddress: ben.walletAddress,
+                },
               },
-              data: {
+              update: {
+                amount: parseFloat(amount),
+                from,
+                transactionHash,
+              },
+              create: {
                 amount: parseFloat(amount),
                 from,
                 transactionHash,
                 Disbursement: {
-                  connect: {
-                    id: disbursement.id,
-                  },
+                  connect: { id: disbursement.id },
                 },
                 Beneficiary: {
-                  connect: {
-                    walletAddress: ben.walletAddress,
-                  },
+                  connect: { walletAddress: ben.walletAddress },
                 },
+              },
+              include: {
+                Beneficiary: true,
+                Disbursement: true,
               },
             });
           return disbursementBeneficiary;
@@ -102,7 +89,7 @@ export class DisbursementService {
       return result;
     } catch (error) {
       console.log(error);
-      throw error; // It's a good practice to rethrow the error or handle it appropriately
+      throw error; // Re-throw the error for better debugging
     }
   }
 
