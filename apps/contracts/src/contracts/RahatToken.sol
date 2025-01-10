@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: LGPL-3.0
 pragma solidity 0.8.20;
-import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol';
-import '../interfaces/IRahatToken.sol';
-import '../libraries/AbstractOwner.sol';
+import '@rahataid/contracts/src/contracts/RahatToken.sol'
+
 
 /// @title RahatToken
 /// @dev This contract implements an ERC20 token with burnable capabilities and ownership management.

@@ -2,47 +2,26 @@
 pragma solidity 0.8.20;
 
 import '../../interfaces/IC2CProject.sol';
-import '../../libraries/AbstractProject.sol';
+import {AbstractProject} from '@rahataid/contracts/src/libraries/AbstractProject.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 /**
  * @title C2CProject
- * @dev This contract implements a project that allows for the acceptance and disbursement of tokens.
+ * @dev This contract implements a project that allows for the disbursement of tokens.
  * It inherits from the AbstractProject and implements the IC2CProject interface. The contract
  * manages donors and beneficiaries, allowing for token transfers and project management.
  */
 contract C2CProject is AbstractProject, IC2CProject {
-  using EnumerableSet for EnumerableSet.AddressSet;
-
   /**
    * @dev Sets the project name during contract deployment.
    * @param _name The name of the project.
    */
-  constructor(string memory _name) AbstractProject(_name) {}
-
-  // #region ***** Variables *********//
-
-  bytes4 public constant IID_RAHAT_PROJECT = type(IRahatProject).interfaceId;
-
-  mapping(address => bool) public isDonor;
-
-  // #endregion
+  constructor(
+    string memory _name,
+    address _forwarder
+  ) AbstractProject(_name, _forwarder) {}
 
   // #region ***** Token Functions *********//
-
-  /**
-   * @notice Accepts tokens from a specified address and marks them as a donor.
-   * @param _from The address from which the tokens are accepted.
-   * @param _tokenAddress The address of the token being accepted.
-   * @param _amount The amount of tokens to accept.
-   */
-  function acceptToken(
-    address _from,
-    address _tokenAddress,
-    uint256 _amount
-  ) public {
-    isDonor[_from] = true;
-    _acceptToken(_tokenAddress, _from, _amount);
-  }
 
   /**
    * @notice Withdraws all tokens of a specified type to a given address.
@@ -54,7 +33,7 @@ contract C2CProject is AbstractProject, IC2CProject {
     address _withdrawAddress
   ) public {
     uint256 _balance = IERC20(_tokenAddress).balanceOf(address(this));
-    _withdrawToken(_tokenAddress, _balance, _withdrawAddress);
+    IERC20(_tokenAddress).transfer(_withdrawAddress, _balance);
   }
 
   // #endregion
@@ -143,14 +122,24 @@ contract C2CProject is AbstractProject, IC2CProject {
 
   // #endregion
 
-  /**
-   * @dev Checks if the contract supports a specific interface.
-   * @param interfaceId The ID of the interface to check.
-   * @return True if the interface is supported, false otherwise.
-   */
+  //   /**
+  //    * @dev Checks if the contract supports a specific interface.
+  //    * @param interfaceId The ID of the interface to check.
+  //    * @return True if the interface is supported, false otherwise.
+  //    */
+  //   function supportsInterface(
+  //     bytes4 interfaceId
+  //   ) public view virtual override returns (bool) {
+  //     return interfaceId == IID_RAHAT_PROJECT;
+  //   }
   function supportsInterface(
     bytes4 interfaceId
-  ) public view virtual override returns (bool) {
-    return interfaceId == IID_RAHAT_PROJECT;
-  }
+  ) external view override returns (bool) {}
+
+  function transferTokenToClaimer(
+    address _tokenAddress,
+    address _benAddress,
+    address _vendorAddress,
+    uint _amount
+  ) external override {}
 }
