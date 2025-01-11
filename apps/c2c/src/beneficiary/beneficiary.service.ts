@@ -58,6 +58,9 @@ export class BeneficiaryService {
           deletedAt: null,
         },
         orderBy,
+        include: {
+          DisbursementBeneficiary: true,
+        },
       },
       {
         page,
