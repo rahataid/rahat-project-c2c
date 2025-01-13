@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
 import { DisbursementStatus, Prisma } from '@prisma/client';
+import { EVENTS } from '@rahataid/c2c-extensions';
 import {
   DisbursementApprovalsDTO,
   CreateDisbursementDto,
@@ -19,7 +21,8 @@ export class DisbursementService {
   private rsprisma;
   constructor(
     protected prisma: PrismaService,
-    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
+    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
+    private eventEmitter: EventEmitter2
   ) {}
 
   async create(createDisbursementDto: CreateDisbursementDto) {
@@ -84,6 +87,7 @@ export class DisbursementService {
           return disbursementBeneficiary;
         })
       );
+      this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
       return result;
@@ -131,10 +135,15 @@ export class DisbursementService {
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
-    return await this.rsprisma.disbursement.update({
-      where: { id },
-      data: { ...updateDisbursementDto },
-    });
+    try {
+      return await this.prisma.disbursement.update({
+        where: { id },
+        data: { ...updateDisbursementDto },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async disbursementTransaction(disbursementDto: DisbursementTransactionDto) {

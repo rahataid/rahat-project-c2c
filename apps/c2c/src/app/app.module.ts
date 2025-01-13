@@ -8,6 +8,9 @@ import { CampaignModule } from '../campaign/campaign.module';
 import { ConfigModule } from '@nestjs/config';
 import { DisbursementModule } from '../disbursement/disbursement.module';
 import { CommsModule } from '../comms';
+import { StatsModule } from '../stats/stats.module';
+import { ListenersModule } from '../listener/listener.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -16,9 +19,12 @@ import { CommsModule } from '../comms';
     PrismaModule,
     SettingsModule,
     BeneficiaryModule,
+    StatsModule,
+    ListenersModule,
     CampaignModule,
     ConfigModule.forRoot({ isGlobal: true }),
     DisbursementModule,
+    EventEmitterModule.forRoot({ maxListeners: 10, ignoreErrors: false }),
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
