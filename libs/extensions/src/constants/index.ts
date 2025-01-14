@@ -54,6 +54,7 @@ export const JOBS = {
   },
   REPORTING: {
     LIST: 'rahat.jobs.reporting.list',
+    GET: 'rahat.jobs.reporting.get',
   },
   SETTINGS: {
     CREATE: 'rahat.jobs.settings.create',
@@ -92,4 +93,13 @@ export const JOBS = {
 
 export const APP = {
   SETTINGS: null,
+};
+
+export const EVENTS = {
+  BENEFICIARY_REDEMPTIONS: 'beneficiary_redemptions',
+  REIMBURSMENTS_REQUESTS: 'reimbursements_requests',
+  REIMBURSMENTS_APPROVALS: 'reimbursements_approvals',
+  VOUCHER_ASSIGNED: 'voucher_assigned',
+  BENEFICIARY_CREATE: 'beneficiary.created',
+  DISBURSEMENT_CREATE: 'disbursement.created',
 };
