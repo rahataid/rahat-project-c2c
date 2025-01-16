@@ -156,13 +156,12 @@ export class BeneficiaryService {
   }
 
   async getAllGroups(dto) {
-    const { page, perPage, sort, order, disableSync, uuid } = dto;
+    const { page, perPage, sort, order, disableSync, uuid, name } = dto;
     const orderBy: Record<string, 'asc' | 'desc'> = {};
     orderBy[sort] = order;
     let where: any = {
       deletedAt: null,
-      ...(disableSync && { beneficiariesSynced: false }),
-      ...(uuid && { uuid: { in: uuid } }),
+      ...(name && { name: { contains: name, mode: 'insensitive' } }),
     };
 
     const benfGroups = await paginate(
