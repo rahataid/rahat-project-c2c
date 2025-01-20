@@ -17,24 +17,6 @@ interface IC2CProject {
   );
 
   /**
-   * @dev Checks if the given address is a donor.
-   * @param _address The address to check.
-   * @return A boolean value indicating whether the address is a donor or not.
-   */
-  function isDonor(address _address) external returns (bool);
-
-  /**
-   * @dev Allows the contract to accept tokens from a specified address.
-   * @param _from The address from which the tokens are being transferred.
-   * @param _amount The amount of tokens being transferred.
-   */
-  function acceptToken(
-    address _from,
-    address _tokenAddress,
-    uint256 _amount
-  ) external;
-
-  /**
    * @dev Allows the user to withdraw tokens from the contract.
    * @param _tokenAddress The address of the token to be withdrawn.
    */
