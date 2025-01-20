@@ -2,7 +2,8 @@
 pragma solidity 0.8.20;
 
 import '../../interfaces/IC2CProject.sol';
-import {AbstractProject} from '@rahataid/contracts/src/libraries/AbstractProject.sol';
+import '@rahataid/contracts/src/contracts/libraries/AbstractProject.sol';
+import '@openzeppelin/contracts/access/manager/AccessManaged.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 /**
@@ -12,14 +13,17 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
  * manages donors and beneficiaries, allowing for token transfers and project management.
  */
 contract C2CProject is AbstractProject, IC2CProject {
+  using SafeERC20 for IERC20;
+
   /**
    * @dev Sets the project name during contract deployment.
    * @param _name The name of the project.
    */
   constructor(
     string memory _name,
+    address _manager,
     address _forwarder
-  ) AbstractProject(_name, _forwarder) {}
+  ) AbstractProject(_name, _manager, _forwarder) {}
 
   // #region ***** Token Functions *********//
 
@@ -31,9 +35,9 @@ contract C2CProject is AbstractProject, IC2CProject {
   function withdrawToken(
     address _tokenAddress,
     address _withdrawAddress
-  ) public {
+  ) public restricted {
     uint256 _balance = IERC20(_tokenAddress).balanceOf(address(this));
-    IERC20(_tokenAddress).transfer(_withdrawAddress, _balance);
+    _withdrawToken(_tokenAddress, _balance, _withdrawAddress);
   }
 
   // #endregion
@@ -44,7 +48,7 @@ contract C2CProject is AbstractProject, IC2CProject {
    * @notice Adds a beneficiary to the project.
    * @param _beneficiary The address of the beneficiary to add.
    */
-  function addBeneficiary(address _beneficiary) public {
+  function addBeneficiary(address _beneficiary) public restricted {
     _addBeneficiary(_beneficiary);
   }
 
@@ -52,7 +56,7 @@ contract C2CProject is AbstractProject, IC2CProject {
    * @notice Removes a beneficiary from the project.
    * @param _beneficiary The address of the beneficiary to remove.
    */
-  function removeBeneficiary(address _beneficiary) public {
+  function removeBeneficiary(address _beneficiary) public restricted {
     _removeBeneficiary(_beneficiary);
   }
 
@@ -66,17 +70,14 @@ contract C2CProject is AbstractProject, IC2CProject {
     address _tokenAddress,
     address _beneficiary,
     uint256 _amount
-  ) public {
-    addBeneficiary(_beneficiary);
+  ) public restricted {
     require(
       IERC20(_tokenAddress).balanceOf(address(this)) >= _amount,
       'Not enough balance'
     );
-
-    require(
-      IERC20(_tokenAddress).transfer(_beneficiary, _amount),
-      'Transfer Failed'
-    );
+    addBeneficiary(_beneficiary);
+    allocateToken(_tokenAddress, _beneficiary, _amount);
+    disburseToken(_tokenAddress, _beneficiary);
     emit TransferProcessed(_tokenAddress, _beneficiary, address(this), _amount);
   }
 
@@ -90,12 +91,9 @@ contract C2CProject is AbstractProject, IC2CProject {
     address _tokenAddress,
     address _beneficiary,
     uint256 _amount
-  ) public {
+  ) public restricted {
     addBeneficiary(_beneficiary);
-    require(
-      IERC20(_tokenAddress).transferFrom(msg.sender, _beneficiary, _amount),
-      'Transfer Failed'
-    );
+    IERC20(_tokenAddress).safeTransferFrom(msg.sender, _beneficiary, _amount);
     emit TransferProcessed(_tokenAddress, _beneficiary, msg.sender, _amount);
   }
 
@@ -111,35 +109,13 @@ contract C2CProject is AbstractProject, IC2CProject {
     address _beneficiary,
     address _tokenOwner,
     uint256 _amount
-  ) public {
+  ) public restricted {
     addBeneficiary(_beneficiary);
-    require(
-      IERC20(_tokenAddress).transferFrom(_tokenOwner, _beneficiary, _amount),
-      'Transfer Failed'
-    );
+    IERC20(_tokenAddress).safeTransferFrom(_tokenOwner, _beneficiary, _amount);
     emit TransferProcessed(_tokenAddress, _beneficiary, _tokenOwner, _amount);
   }
 
-  // #endregion
-
-  //   /**
-  //    * @dev Checks if the contract supports a specific interface.
-  //    * @param interfaceId The ID of the interface to check.
-  //    * @return True if the interface is supported, false otherwise.
-  //    */
-  //   function supportsInterface(
-  //     bytes4 interfaceId
-  //   ) public view virtual override returns (bool) {
-  //     return interfaceId == IID_RAHAT_PROJECT;
-  //   }
   function supportsInterface(
     bytes4 interfaceId
   ) external view override returns (bool) {}
-
-  function transferTokenToClaimer(
-    address _tokenAddress,
-    address _benAddress,
-    address _vendorAddress,
-    uint _amount
-  ) external override {}
 }

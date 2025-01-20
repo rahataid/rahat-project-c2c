@@ -48,8 +48,8 @@ dependencies:
     specifier: link:libs/react-query
     version: link:libs/react-query
   '@rahataid/contracts':
-    specifier: 0.0.2
-    version: 0.0.2
+    specifier: 0.0.3
+    version: 0.0.3
   '@rahataid/sdk':
     specifier: 0.0.20
     version: 0.0.20
@@ -4958,8 +4958,8 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
-  /@rahataid/contracts@0.0.2:
-    resolution: {integrity: sha512-SwlN6TpqvibA8W1qzIpVd7w7TWDCAHzwirE3Kfkij1YNzTbg6glrXoPqeB2ZzD4ONvNbVNvDkDJt44yf6O7RQg==}
+  /@rahataid/contracts@0.0.3:
+    resolution: {integrity: sha512-AuHFCJ/KBdVIdITFpya8GOfuMhJP8kAdP0xlRizd9PchjfTv+LzqA8tJ6PBRJ4XWZf8eIhMeQ8f95KDvPk6uEw==}
     dependencies:
       tslib: 2.8.1
     dev: false
