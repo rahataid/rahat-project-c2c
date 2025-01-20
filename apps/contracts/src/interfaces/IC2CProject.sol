@@ -36,4 +36,17 @@ interface IC2CProject {
     address _beneficiary,
     uint256 _amount
   ) external;
+
+  function disburseOwnedToken(
+    address _tokenAddress,
+    address _beneficiary,
+    uint256 _amount
+  ) external;
+
+  function disburseExternalToken(
+    address _tokenAddress,
+    address _beneficiary,
+    address _tokenOwner,
+    uint256 _amount
+  ) external;
 }
