@@ -24,7 +24,7 @@ export class BeneficiaryService {
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy // private eventEmitter: EventEmitter2
   ) {
-    this.rsprisma = prisma.rsclient;
+    this.rsprisma = this.prisma.rsclient;
   }
   async create(dto: CreateBeneficiaryDto) {
     // const contract = await createContractInstanceSign(
