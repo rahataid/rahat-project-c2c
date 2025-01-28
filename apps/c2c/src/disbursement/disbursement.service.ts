@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
 import { DisbursementStatus, Prisma } from '@prisma/client';
+import { EVENTS } from '@rahataid/c2c-extensions';
 import {
   DisbursementApprovalsDTO,
   CreateDisbursementDto,
@@ -19,7 +21,8 @@ export class DisbursementService {
   private rsprisma;
   constructor(
     protected prisma: PrismaService,
-    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
+    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
+    private eventEmitter: EventEmitter2
   ) {}
 
   async create(createDisbursementDto: CreateDisbursementDto) {
@@ -34,7 +37,7 @@ export class DisbursementService {
         type,
       } = createDisbursementDto;
 
-      // Create disbursement first
+      // Create disbursement
       const disbursement = await this.prisma.disbursement.create({
         data: {
           uuid: randomUUID(),
@@ -49,60 +52,48 @@ export class DisbursementService {
         },
       });
 
-      // const result = await this.prisma.disbursementBeneficiary.create({
-      //   data: {
-      //     amount: parseFloat(amount),
-      //     from,
-      //     transactionHash,
-      //     Disbursement: {
-      //       connect: {
-      //         id: disbursement.id,
-      //       },
-      //     },
-      //     Beneficiary: {
-      //       connect: beneficiaries.map((ben) => {
-      //         return {
-      //           walletAddress: ben.walletAddress,
-      //         };
-      //       }),
-      //     },
-      //   },
-      // });
-
       // Create or connect beneficiaries to the disbursement
       const result = await Promise.all(
         beneficiaries.map(async (ben: DisbursementBenefeciaryCreate) => {
           const disbursementBeneficiary =
-            await this.prisma.disbursementBeneficiary.create({
-              include: {
-                Beneficiary: true,
-                Disbursement: true,
+            await this.prisma.disbursementBeneficiary.upsert({
+              where: {
+                disbursementId_beneficiaryWalletAddress: {
+                  disbursementId: disbursement.id,
+                  beneficiaryWalletAddress: ben.walletAddress,
+                },
               },
-              data: {
+              update: {
+                amount: parseFloat(amount),
+                from,
+                transactionHash,
+              },
+              create: {
                 amount: parseFloat(amount),
                 from,
                 transactionHash,
                 Disbursement: {
-                  connect: {
-                    id: disbursement.id,
-                  },
+                  connect: { id: disbursement.id },
                 },
                 Beneficiary: {
-                  connect: {
-                    walletAddress: ben.walletAddress,
-                  },
+                  connect: { walletAddress: ben.walletAddress },
                 },
+              },
+              include: {
+                Beneficiary: true,
+                Disbursement: true,
               },
             });
           return disbursementBeneficiary;
         })
       );
+      this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
       return result;
     } catch (error) {
       console.log(error);
-      throw error; // It's a good practice to rethrow the error or handle it appropriately
+      throw error; // Re-throw the error for better debugging
     }
   }
 
@@ -144,10 +135,15 @@ export class DisbursementService {
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
-    return await this.rsprisma.disbursement.update({
-      where: { id },
-      data: { ...updateDisbursementDto },
-    });
+    try {
+      return await this.prisma.disbursement.update({
+        where: { id },
+        data: { ...updateDisbursementDto },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async disbursementTransaction(disbursementDto: DisbursementTransactionDto) {

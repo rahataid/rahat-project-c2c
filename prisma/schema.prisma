@@ -135,6 +135,19 @@ model DisbursementBeneficiary {
   extras          Json?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime?    @updatedAt
+
+  @@unique([disbursementId, beneficiaryWalletAddress]) 
+}
+
+model Stats {
+  name  String  @id @unique
+  data  Json
+  group String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt()
+
+  @@map("tbl_stats")
 }
 
 enum DisbursementType {
