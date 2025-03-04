@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { DisbursementStatus, Prisma } from '@prisma/client';
 import { EVENTS } from '@rahataid/c2c-extensions';
 import {
@@ -13,6 +13,7 @@ import {
 import { ProjectContants } from '@rahataid/sdk';
 import { PrismaService, paginator } from '@rumsan/prisma';
 import { randomUUID } from 'crypto';
+import { handleMicroserviceCall } from '../utils/handleMicroserviceCall';
 
 const paginate = paginator({ perPage: 20 });
 
@@ -84,9 +85,26 @@ export class DisbursementService {
                 Disbursement: true,
               },
             });
+          await handleMicroserviceCall({
+            client: this.client.send(
+              { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
+              {
+                walletAddress: disbursementBeneficiary.beneficiaryWalletAddress,
+                amount: disbursementBeneficiary.amount,
+              }
+            ),
+            onSuccess(response) {
+              console.log('Email sent', response);
+              return response;
+            },
+            onError(error) {
+              throw new RpcException('Sending email failed: ' + error.message);
+            },
+          });
           return disbursementBeneficiary;
         })
       );
+
       this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
