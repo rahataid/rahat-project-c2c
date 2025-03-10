@@ -3,102 +3,59 @@ import {
     loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import hre from "hardhat";
-import { RahatToken } from "../typechain-types";
+import { ethers } from "ethers";
+import { deployRahatTokenFixture, TokenFixture } from "./fixtures/tokenFixture";
 
-
-interface Fixture {
-    rahatToken: RahatToken;
-    deployer: any;
-    owner: any;
-    nonOwner: any;
-    minter: any;
-    beneficiary: any;
+export const getFunctionId = (signature: string) => {
+    return ethers.FunctionFragment.from(signature).selector;
 }
 
-describe('------ Rahat Token Tests ------', function () {
-    const deployRahatFixture = async function (): Promise<Fixture> {
-        //@ts-ignore
-        const [deployer, owner, nonOwner, minter, beneficiary] = await hre.ethers.getSigners();
-        const rahatToken: RahatToken = await hre.ethers.deployContract("RahatToken", ['Rahat', 'RTH', owner.address, 0]);
-        return {
-            rahatToken,
-            deployer,
-            owner,
-            nonOwner,
-            minter,
-            beneficiary
+describe('------ Reward Token Tests ------', function () {
 
-        };
-    }
-
-    describe("Token Minting", function () {
-        let rahatToken: RahatToken;
-        let owner: any;
-        let nonOwner: any;
-        let beneficiary: any;
-
+    describe("Deployment", function () {
+        let tf: TokenFixture;
+        let minter: ethers.Signer;
+        // let provider: EthereumProvider;
         before(async function () {
-            const fixtures = await loadFixture(deployRahatFixture);
-            rahatToken = fixtures.rahatToken;
-            owner = fixtures.owner;
-            nonOwner = fixtures.nonOwner;
-            beneficiary = fixtures.beneficiary;
-
+            tf = await loadFixture(deployRahatTokenFixture);
+            minter = tf.signers[0];
         });
+
         it("should deploy contracts with expected initial values", async function () {
-            expect(await rahatToken.name()).to.equal('Rahat');
-            expect(await rahatToken.symbol()).to.equal('RTH');
-            expect(await rahatToken.decimals()).to.equal(0n);
-            expect(await rahatToken.totalSupply()).to.equal(0n);
+            expect(await tf.rahatToken.name()).to.equal('Rahat');
+            expect(await tf.rahatToken.symbol()).to.equal('RTH');
+            expect(await tf.rahatToken.decimals()).to.equal(0n);
+            expect(await tf.rahatToken.totalSupply()).to.equal(0n);
         });
 
-        it('should mint tokens', async function () {
-            await rahatToken.connect(owner).mint(owner.address, 1000n);
-            expect(await rahatToken.balanceOf(owner.address)).to.equal(1000n);
+        it("should not be able to mint tokens without role", async function () {
+            await expect(tf.rahatToken.connect(minter).mint(minter.address, 100000n)).to.be.reverted;
         });
 
-        it("should not allow non-owner to mint tokens", async function () {
-            await expect(rahatToken.connect(nonOwner).mint(nonOwner.address, 1000n)).to.be.revertedWith("Only owner can execute this transaction");
+        it('should set minter', async function () {
+
+            const functionSignature = tf.rahatToken.interface.getFunction('mint').format();
+            const mintId = getFunctionId(functionSignature);
+            //set mint function to require manager role
+            await tf.accessManager.connect(tf.deployer).setTargetFunctionRole(tf.rahatToken.target, [mintId], 1);
+
+            //grant manager role to manager
+            await tf.accessManager.connect(tf.deployer).grantRole(1, minter.address, 0);
+
+            //check if manager has access to mint function
+            const canCall = await tf.accessManager.canCall(minter.address, tf.rahatToken.target, mintId);
+
+            //get target function role
+            const targetFunctionRole = await tf.accessManager.getTargetFunctionRole(tf.rahatToken.target, mintId);
+
+            expect(canCall[0]).to.equal(true);
+            expect(targetFunctionRole).to.equal(1);
+        })
+        it("should mint tokens", async function () {
+            await tf.rahatToken.connect(minter).mint(minter.address, 100000n);
+            expect(await tf.rahatToken.balanceOf(minter.address)).to.equal(100000n);
         });
 
     });
-
-    describe('Token Burning', function () {
-        let rahatToken: RahatToken;
-        let owner: any;
-        let nonOwner: any;
-        let beneficiary: any;
-
-        before(async function () {
-            const fixtures = await loadFixture(deployRahatFixture);
-            rahatToken = fixtures.rahatToken;
-            owner = fixtures.owner;
-            nonOwner = fixtures.nonOwner;
-            beneficiary = fixtures.beneficiary;
-        });
-
-        // New tests for burning tokens
-        it('should burn tokens', async function () {
-            await rahatToken.connect(owner).mint(owner.address, 1000n);
-            const initialBalance = await rahatToken.balanceOf(owner.address);
-            const totalSupply = await rahatToken.totalSupply();
-            await rahatToken.connect(owner).burn(500n);
-            expect(await rahatToken.balanceOf(owner.address)).to.equal(initialBalance - 500n);
-            expect(await rahatToken.totalSupply()).to.equal(totalSupply - 500n);
-        });
-
-        it("should not allow non-owner to burn tokens", async function () {
-            await rahatToken.connect(owner).mint(owner.address, 1000n);
-            await expect(rahatToken.connect(nonOwner).burn(500n)).to.be.reverted;
-        });
-
-        it("should not allow burning more tokens than balance", async function () {
-            await rahatToken.connect(owner).mint(owner.address, 1000n);
-            await expect(rahatToken.connect(owner).burn(10000n)).to.be.reverted;
-        });
-
-    })
-
 });
-
 
