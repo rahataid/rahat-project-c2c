@@ -98,7 +98,7 @@ export class DisbursementService {
               return response;
             },
             onError(error) {
-              throw new RpcException('Sending email failed: ' + error.message);
+              console.log('Sending email failed: ' + error.message);
             },
           });
           return disbursementBeneficiary;
