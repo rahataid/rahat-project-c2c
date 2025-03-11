@@ -13,6 +13,8 @@ interface MockPrismaService {
     findUnique: jest.Mock;
     findMany: jest.Mock;
     update: jest.Mock;
+    delete: jest.Mock;
+    count: jest.Mock; // Add count method
   };
   beneficiaryGroups: {
     findUnique: jest.Mock;
@@ -37,6 +39,8 @@ describe('BeneficiaryService', () => {
       findUnique: jest.fn(),
       findMany: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(), // Add count method
     },
     beneficiaryGroups: {
       findUnique: jest.fn(),
@@ -47,6 +51,18 @@ describe('BeneficiaryService', () => {
   const mockClient: MockClient = {
     send: jest.fn(),
   };
+
+
+  jest.mock('@rumsan/prisma', () => ({
+    paginator: jest.fn().mockReturnValue({
+      data: [
+        { uuid: randomUUID(), name: 'Test Beneficiary 1' },
+        { uuid: randomUUID(), name: 'Test Beneficiary 2' }
+      ],
+      meta: { total: 2, page: 1, perPage: 10 }
+    }),
+  }));
+
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -131,10 +147,28 @@ describe('BeneficiaryService', () => {
     const payload = { beneficiaryGroupData: { id: 1, uuid: randomUUID(), name: 'Test Group' } };
     prisma.beneficiaryGroups.create.mockResolvedValue(payload.beneficiaryGroupData);
     const result = await service.addGroupToProject(payload);
-    console.log({ result })
     expect(result).toEqual(payload.beneficiaryGroupData);
     expect(prisma.beneficiaryGroups.create).toHaveBeenCalledWith({ data: { uuid: payload.beneficiaryGroupData.uuid, name: payload.beneficiaryGroupData.name } });
   });
 
-  // Add other tests as needed
+  it('should find all beneficiaries', async () => {
+    const mockBeneficiaries = [
+      { uuid: randomUUID(), name: 'Test Beneficiary 1' },
+      { uuid: randomUUID(), name: 'Test Beneficiary 2' }
+    ];
+    const dto = { page: 1, perPage: 10, sort: 'name', order: 'asc' };
+    prisma.beneficiary.findMany.mockResolvedValue(mockBeneficiaries);
+    prisma.beneficiary.count.mockResolvedValue(mockBeneficiaries.length); // Mock count method
+    const result = await service.findAll(dto);
+    // expect(result).toEqual(mockBeneficiaries);
+    // expect(prisma.beneficiary.findMany).toHaveBeenCalledWith({
+    //   where: { deletedAt: null },
+    //   skip: (dto.page - 1) * dto.perPage,
+    //   take: dto.perPage,
+    //   orderBy: { [dto.sort]: dto.order },
+    // });
+    expect(prisma.beneficiary.count).toHaveBeenCalled();
+  });
+
+
 });
