@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DisbursementService } from './disbursement.service';
 import { PrismaService } from '@rumsan/prisma';
 // import { ClientProxy } from '@nestjs/microservices';
-import { CreateDisbursementDto, UpdateDisbursementDto, DisbursementTransactionDto } from '@rahataid/c2c-extensions/dtos';
-// import { DisbursementStatus } from '@prisma/client';
+import { CreateDisbursementDto, UpdateDisbursementDto, DisbursementBenefeciaryCreate } from '@rahataid/c2c-extensions/dtos';
+import { DisbursementStatus } from '@prisma/client';
 import { randomUUID } from 'crypto';
 
 // Mock types
@@ -89,6 +89,36 @@ describe('DisbursementService', () => {
         });
     });
 
+    it('should create a disbursement', async () => {
+        const mockBeneficiary: DisbursementBenefeciaryCreate = {
+            amount: '100',
+            from: 'some-address',
+            transactionHash: 'some-hash',
+            walletAddress: 'some-wallet-address',
+        };
+        const createDisbursementDto: CreateDisbursementDto = {
+            amount: '100',
+            beneficiaries: [mockBeneficiary],
+            from: 'some-from-address',
+            transactionHash: 'some-transaction-hash',
+            status: DisbursementStatus.PENDING,
+            timestamp: new Date().toISOString(),
+            type: 'MULTISIG',
+        };
+        const mockDisbursement = { id: 1, ...createDisbursementDto };
+
+        prisma.disbursement.create.mockResolvedValue(mockDisbursement);
+        prisma.disbursement.disbursementBeneficiary.create.mockResolvedValue(mockBeneficiary);
+
+        const result = await service.create(createDisbursementDto);
+        expect(result).toEqual(mockDisbursement);
+        expect(prisma.disbursement.create).toHaveBeenCalledWith({
+            data: createDisbursementDto,
+        });
+        expect(prisma.disbursement.disbursementBeneficiary.create).toHaveBeenCalledWith({
+            data: mockBeneficiary,
+        });
+    });
 
 
-}); 
+});

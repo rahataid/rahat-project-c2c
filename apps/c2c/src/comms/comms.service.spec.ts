@@ -58,6 +58,10 @@ describe('CommsService', () => {
         expect(mockClient.setAppId).toHaveBeenCalledWith(mockCommunicationSettings.value['APP_ID']);
     });
 
+    it('should handle errors during initialization', async () => {
+        (coreClient.send as jest.Mock).mockReturnValueOnce(Promise.reject(new Error('Initialization error')));
+        await expect(service.init()).rejects.toThrow('Initialization error');
+    });
 
     it('should return the client after initialization', async () => {
         await service.init();
@@ -71,4 +75,4 @@ describe('CommsService', () => {
         const client2 = await service.getClient();
         expect(client1).toBe(client2);
     });
-}); 
+});

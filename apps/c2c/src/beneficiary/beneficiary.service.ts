@@ -9,10 +9,6 @@ import {
   UpdateBeneficiaryDto,
   VerifyWalletDto,
 } from '@rahataid/c2c-extensions/dtos/beneficiary';
-import {
-  createContractInstance,
-  createContractInstanceSign,
-} from '../utils/web3';
 import { lastValueFrom } from 'rxjs';
 
 const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 20 });
@@ -27,22 +23,14 @@ export class BeneficiaryService {
     this.rsprisma = this.prisma.rsclient;
   }
   async create(dto: CreateBeneficiaryDto) {
-    // const contract = await createContractInstanceSign(
-    //   'C2CPROJECT',
-    //   this.prisma.setting
-    // );
-    // console.log({ contract });
-    // console.log({ dto });
-    // const addBeneficiary = await contract.addBeneficiary(dto.walletAddress);
-    // console.log({ addBeneficiary });
 
-    return this.rsprisma.beneficiary.create({
+    return this.prisma.beneficiary.create({
       data: dto,
     });
   }
 
   async createMany(dto) {
-    return this.rsprisma.beneficiary.createMany({ data: dto });
+    return this.prisma.beneficiary.createMany({ data: dto });
   }
 
   async findAll(dto) {
@@ -52,7 +40,7 @@ export class BeneficiaryService {
     orderBy[sort] = order;
 
     const projectData = await paginate(
-      this.rsprisma.beneficiary,
+      this.prisma.beneficiary,
       {
         where: {
           deletedAt: null,
@@ -72,7 +60,7 @@ export class BeneficiaryService {
   }
 
   async findAllBeneficaryPii(data) {
-    const projectdata = await this.rsprisma.beneficiary.findMany({
+    const projectdata = await this.prisma.beneficiary.findMany({
       where: { type: data?.status },
     });
 
@@ -97,12 +85,12 @@ export class BeneficiaryService {
   }
 
   async findByUUID(uuid: UUID) {
-    return await this.rsprisma.beneficiary.findUnique({ where: { uuid } });
+    return await this.prisma.beneficiary.findUnique({ where: { uuid } });
   }
 
   async findOne(payload) {
     const { uuid, data } = payload;
-    const projectBendata = await this.rsprisma.beneficiary.findUnique({
+    const projectBendata = await this.prisma.beneficiary.findUnique({
       where: { uuid },
     });
     if (data) return { ...data, ...projectBendata };
@@ -110,7 +98,7 @@ export class BeneficiaryService {
   }
 
   async update(id: number, updateBeneficiaryDto: UpdateBeneficiaryDto) {
-    return await this.rsprisma.beneficiary.update({
+    return await this.prisma.beneficiary.update({
       where: { id: id },
       data: { ...updateBeneficiaryDto },
     });
@@ -118,7 +106,7 @@ export class BeneficiaryService {
 
   async verfiyWallet(verfiyWalletDto: VerifyWalletDto) {
     const { walletAddress } = verfiyWalletDto;
-    return this.rsprisma.beneficiary.update({
+    return this.prisma.beneficiary.update({
       where: { walletAddress },
       data: { isVerified: true },
     });
