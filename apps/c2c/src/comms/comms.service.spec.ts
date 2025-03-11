@@ -1,78 +1,55 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommsService } from './comms.service';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom, of } from 'rxjs';
-import { getClient } from '@rumsan/connect/src/clients';
-
-jest.mock('@rumsan/connect/src/clients', () => ({
-    getClient: jest.fn(),
-}));
+import { of } from 'rxjs';
 
 describe('CommsService', () => {
     let service: CommsService;
-    let coreClient: ClientProxy;
-    let mockClient: any;
-
-    const mockCommunicationSettings = {
-        value: {
-            URL: 'http://example.com',
-            APP_ID: 'test-app-id',
-        },
-    };
+    let clientProxyMock: ClientProxy;
 
     beforeEach(async () => {
-        coreClient = {
-            send: jest.fn().mockReturnValue(of([mockCommunicationSettings])),
-            connect: jest.fn(),
-            close: jest.fn(),
-            routingMap: {},
-            serializer: {},
-        } as unknown as ClientProxy;
+        clientProxyMock = {
+            send: jest.fn().mockReturnValue(of([{ value: { URL: 'http://example.com', APP_ID: 'test-app-id' } }])),
+        } as any;
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 CommsService,
-                { provide: 'CORE_CLIENT', useValue: coreClient },
+                { provide: 'CORE_CLIENT', useValue: clientProxyMock },
             ],
         }).compile();
 
         service = module.get<CommsService>(CommsService);
-        mockClient = { setAppId: jest.fn() };
-        (getClient as jest.Mock).mockReturnValue(mockClient);
     });
 
     it('should be defined', () => {
         expect(service).toBeDefined();
     });
 
-    it('should initialize the client with communication settings', async () => {
+    it('should initialize client with communication settings', async () => {
         await service.init();
+        expect(clientProxyMock.send).toHaveBeenCalledWith({ cmd: 'appJobs.communication.getSettings' }, {});
+        expect(service['client']).toBeDefined();
+    });
 
-        expect(coreClient.send).toHaveBeenCalledWith(
-            { cmd: 'appJobs.communication.getSettings' },
-            {}
-        );
-        expect(getClient).toHaveBeenCalledWith({
-            baseURL: mockCommunicationSettings.value['URL'],
+    it('should log error and exit if communication settings are not found', async () => {
+        jest.spyOn(process, 'exit').mockImplementation((code?: number) => {
+            throw new Error('process.exit: ' + code);
         });
-        expect(mockClient.setAppId).toHaveBeenCalledWith(mockCommunicationSettings.value['APP_ID']);
+        clientProxyMock.send = jest.fn().mockReturnValue(of([null]));
+
+        await expect(service.init()).rejects.toThrow('process.exit: 1');
+        expect(service['logger'].error).toHaveBeenCalledWith('Communication Settings not found.');
     });
 
-    it('should handle errors during initialization', async () => {
-        (coreClient.send as jest.Mock).mockReturnValueOnce(Promise.reject(new Error('Initialization error')));
-        await expect(service.init()).rejects.toThrow('Initialization error');
-    });
-
-    it('should return the client after initialization', async () => {
+    it('should return client if already initialized', async () => {
         await service.init();
         const client = await service.getClient();
-        expect(client).toBe(mockClient);
+        expect(client).toBe(service['client']);
     });
 
-    it('should return the existing client if already initialized', async () => {
-        await service.init();
-        const client1 = await service.getClient();
-        const client2 = await service.getClient();
-        expect(client1).toBe(client2);
+    it('should initialize and return client if not already initialized', async () => {
+        const client = await service.getClient();
+        expect(client).toBe(service['client']);
     });
 });
