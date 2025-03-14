@@ -54,6 +54,6 @@ jobs:
           file: Dockerfile.c2c
           push: ${{ github.event_name == 'workflow_dispatch' }}
           tags: |
-            esatya/rahat-project-kenya:khotani-pay-dry-run
-            esatya/rahat-project-kenya:khotani-pay-dry-run-${{ env.VERSION }}
-            esatya/rahat-project-kenya:khotani-pay-dry-run-${{ env.VERSION }}-${{ env.timestamp }}
+            esatya/rahat-project-c2c:khotani-pay-dry-run
+            esatya/rahat-project-c2c:khotani-pay-dry-run-${{ env.VERSION }}
+            esatya/rahat-project-c2c:khotani-pay-dry-run-${{ env.VERSION }}-${{ env.timestamp }}
