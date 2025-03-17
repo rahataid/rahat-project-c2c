@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { DisbursementStatus, Prisma } from '@prisma/client';
+import { DisbursementStatus, DisbursementType, Prisma } from '@prisma/client';
 import { EVENTS } from '@rahataid/c2c-extensions';
 import {
   DisbursementApprovalsDTO,
@@ -85,22 +85,29 @@ export class DisbursementService {
                 Disbursement: true,
               },
             });
-          await handleMicroserviceCall({
-            client: this.client.send(
-              { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
-              {
-                walletAddress: disbursementBeneficiary.beneficiaryWalletAddress,
-                amount: disbursementBeneficiary.amount,
-              }
-            ),
-            onSuccess(response) {
-              console.log('Email sent', response);
-              return response;
-            },
-            onError(error) {
-              console.log('Sending email failed: ' + error.message);
-            },
-          });
+          if (
+            disbursementBeneficiary.Disbursement.type ===
+            DisbursementType.PROJECT
+          ) {
+            await handleMicroserviceCall({
+              client: this.client.send(
+                { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
+                {
+                  walletAddress:
+                    disbursementBeneficiary.beneficiaryWalletAddress,
+                  amount: disbursementBeneficiary.amount,
+                }
+              ),
+              onSuccess(response) {
+                console.log('Email sent', response);
+                return response;
+              },
+              onError(error) {
+                console.log('Sending email failed: ' + error.message);
+              },
+            });
+          }
+
           return disbursementBeneficiary;
         })
       );
@@ -154,10 +161,41 @@ export class DisbursementService {
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
     try {
-      return await this.prisma.disbursement.update({
+      const disbursement = await this.prisma.disbursement.update({
         where: { id },
         data: { ...updateDisbursementDto },
       });
+
+      if (
+        disbursement.type === DisbursementType.MULTISIG &&
+        disbursement.status === DisbursementStatus.COMPLETED
+      ) {
+        const beneficiary = await this.prisma.disbursementBeneficiary.findFirst(
+          {
+            where: {
+              disbursementId: id,
+            },
+          }
+        );
+        await handleMicroserviceCall({
+          client: this.client.send(
+            { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
+            {
+              walletAddress: beneficiary.beneficiaryWalletAddress,
+              amount: disbursement.amount,
+            }
+          ),
+          onSuccess(response) {
+            console.log('Email sent', response);
+            return response;
+          },
+          onError(error) {
+            console.log('Sending email failed: ' + error.message);
+          },
+        });
+      }
+
+      return disbursement;
     } catch (error) {
       console.log(error);
       throw error;
