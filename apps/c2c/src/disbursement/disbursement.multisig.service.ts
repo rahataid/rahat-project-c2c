@@ -17,7 +17,7 @@ export class DisbursementMultisigService {
   private safeApiKit: SafeApiKit;
   constructor(protected prisma: PrismaService) {
     this.safeApiKit = new SafeApiKit({
-      chainId: 84532n,
+      chainId: BigInt(process.env.CHAIN_ID),
     });
   }
 
