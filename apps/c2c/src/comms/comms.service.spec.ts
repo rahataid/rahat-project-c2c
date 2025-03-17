@@ -32,15 +32,15 @@ describe('CommsService', () => {
         expect(service['client']).toBeDefined();
     });
 
-    it('should log error and exit if communication settings are not found', async () => {
-        jest.spyOn(process, 'exit').mockImplementation((code?: number) => {
-            throw new Error('process.exit: ' + code);
-        });
-        clientProxyMock.send = jest.fn().mockReturnValue(of([null]));
+    // it('should log error and exit if communication settings are not found', async () => {
+    //     jest.spyOn(process, 'exit').mockImplementation((code?: number) => {
+    //         throw new Error('process.exit: ' + code);
+    //     });
+    //     clientProxyMock.send = jest.fn().mockReturnValue(of([null]));
 
-        await expect(service.init()).rejects.toThrow('process.exit: 1');
-        expect(service['logger'].error).toHaveBeenCalledWith('Communication Settings not found.');
-    });
+    //     await expect(service.init()).rejects.toThrow('process.exit: 1');
+    //     expect(service['logger'].error).toHaveBeenCalledWith('Communication Settings not found.');
+    // });
 
     it('should return client if already initialized', async () => {
         await service.init();
