@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DisbursementService } from './disbursement.service';
 import { PrismaService } from '@rumsan/prisma';
 // import { ClientProxy } from '@nestjs/microservices';
-import { CreateDisbursementDto, UpdateDisbursementDto, DisbursementTransactionDto } from '@rahataid/c2c-extensions/dtos';
-// import { DisbursementStatus } from '@prisma/client';
+import { CreateDisbursementDto, UpdateDisbursementDto, DisbursementBenefeciaryCreate } from '@rahataid/c2c-extensions/dtos';
+import { DisbursementStatus } from '@prisma/client';
 import { randomUUID } from 'crypto';
 
 // Mock types
@@ -16,6 +16,10 @@ interface MockPrismaService {
             create: jest.Mock;
             findMany: jest.Mock;
         };
+    };
+    disbursementBeneficiary: {
+        create: jest.Mock;
+        findMany: jest.Mock;
     };
 }
 
@@ -37,6 +41,10 @@ describe('DisbursementService', () => {
                 create: jest.fn(),
                 findMany: jest.fn(),
             },
+        },
+        disbursementBeneficiary: {
+            create: jest.fn(),
+            findMany: jest.fn(),
         },
     };
 
@@ -89,6 +97,33 @@ describe('DisbursementService', () => {
         });
     });
 
+    it('should create a disbursement', async () => {
+        const mockBeneficiary: DisbursementBenefeciaryCreate = {
+            amount: '100',
+            from: 'some-address',
+            transactionHash: 'some-hash',
+            walletAddress: 'some-wallet-address',
+        };
+        const createDisbursementDto: CreateDisbursementDto = {
+            amount: '100',
+            beneficiaries: [mockBeneficiary],
+            from: 'some-from-address',
+            transactionHash: 'some-transaction-hash',
+            status: DisbursementStatus.PENDING,
+            timestamp: new Date().toISOString(),
+            type: 'MULTISIG',
+        };
+        const mockDisbursement = { id: 1, ...createDisbursementDto };
+
+        prisma.disbursement.create.mockResolvedValue(mockDisbursement);
+        prisma.disbursement.disbursementBeneficiary.create.mockResolvedValue(mockBeneficiary);
+
+        const result = await service.create(createDisbursementDto);
+        expect(prisma.disbursement.create).toHaveBeenCalled();
+        // expect(prisma.disbursement.disbursementBeneficiary.create).toHaveBeenCalledWith({
+        //     data: mockBeneficiary,
+        // });
+    });
 
 
-}); 
+});
