@@ -49,14 +49,13 @@ export class DisbursementMultisigService {
   async getSafeInstance() {
     //CONSTANTS for BASE SEPOLIA
     //TODO: getit from settings
-    const RPC_URL = 'https://sepolia.base.org';
     const SAFE_ADDRESS = await this.prisma.setting.findFirst({
       where: {
         name: 'SAFE_WALLET',
       },
     });
     const safeKit = await Safe.init({
-      provider: RPC_URL,
+      provider: process.env.NETWORK_PROVIDER,
       signer: process.env.DEPLOYER_PRIVATE_KEY,
       safeAddress: SAFE_ADDRESS.value['ADDRESS'],
     });
@@ -155,7 +154,7 @@ export class DisbursementMultisigService {
       },
     });
     const pendingTransaction = await this.safeApiKit.getPendingTransactions(
-      SAFE_ADDRESS.value['ADDRESS'],
+      SAFE_ADDRESS.value['ADDRESS']
     );
 
     return pendingTransaction;
