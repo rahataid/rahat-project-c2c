@@ -6,7 +6,7 @@ import {
   OperationType,
 } from '@safe-global/safe-core-sdk-types';
 import { PrismaService } from '@rumsan/prisma';
-import { ethers } from 'ethers';
+import { ethers, JsonRpcApiProvider, JsonRpcProvider } from 'ethers';
 import { erc20Abi } from '../utils/constant';
 import { getWalletFromPrivateKey } from '../utils/web3';
 import { get } from 'http';
@@ -30,10 +30,16 @@ export class DisbursementMultisigService {
     const c2cAddress = CONTRACT.value['C2CPROJECT']['ADDRESS'];
     const tokenAddress = CONTRACT.value['RAHATTOKEN']['ADDRESS'];
 
-    const tokenContract = new ethers.Contract(tokenAddress, erc20Abi);
+    const tokenContract = new ethers.Contract(
+      tokenAddress,
+      erc20Abi,
+      new JsonRpcProvider(process.env.NETWORK_PROVIDER)
+    );
+    // getWalletFromPrivateKey(process.env.DEPLOYER_PRIVATE_KEY));
+    const decimals = await tokenContract.decimals();
     const tokenApprovalEncodedData = tokenContract.interface.encodeFunctionData(
       'approve',
-      [c2cAddress, ethers.parseEther(amount)]
+      [c2cAddress, ethers.parseUnits(amount, decimals)]
     );
     // Create transaction
     const safeTransactionData: MetaTransactionData = {
