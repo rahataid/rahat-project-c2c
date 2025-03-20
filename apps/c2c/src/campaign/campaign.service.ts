@@ -194,6 +194,12 @@ export class CampaignService {
     if (query?.name) {
       conditions['name'] = { contains: query.name, mode: 'insensitive' } as any;
     }
+
+    if (query?.transportId) {
+      conditions['transportId'] = {
+        contains: query.transportId,
+      } as any;
+    }
     return paginate(
       this.prisma.campaign,
       {
