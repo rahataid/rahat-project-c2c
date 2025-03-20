@@ -46,21 +46,23 @@ class SeedProject extends ContractLib {
   public async deployC2CContracts() {
     const deployerAccount = this.getWalletFromPrivateKey(this.deployerKey);
 
-    console.log('----------Deploying Rahat Token-------------------');
-    const TokenContract = await this.deployContract('RahatToken', [
-      rahatTokenDetails.name,
-      rahatTokenDetails.symbol,
-      deployerAccount.address,
-      rahatTokenDetails.decimals,
-    ]);
-    console.log({
-      TokenContract: TokenContract.contract.target,
-      blockNumber: TokenContract.blockNumber,
-    });
+    // console.log('----------Deploying Rahat Token-------------------');
+    // const TokenContract = await this.deployContract('RahatToken', [
+    //   rahatTokenDetails.name,
+    //   rahatTokenDetails.symbol,
+    //   deployerAccount.address,
+    //   rahatTokenDetails.decimals,
+    // ]);
+    // console.log({
+    //   TokenContract: TokenContract.contract.target,
+    //   blockNumber: TokenContract.blockNumber,
+    // });
 
     console.log('----------Deploying C2C Project Contract-------------------');
     const C2CProjectContract = await this.deployContract('C2CProject', [
       'C2C Project',
+      '0x9ED2f37e12c34c7Eb5c88Ff7FAF04d77f499efaD',
+      '0x70A6797002BF40BE37A5835dcE2Efa21F7917632',
     ]);
     console.log({
       C2CProjectContract: C2CProjectContract.contract.target,
@@ -69,13 +71,13 @@ class SeedProject extends ContractLib {
 
     console.log('Writing deployed address to file');
     writeFileSync(
-      `${__dirname}/${this.projectUUID}.json`,
+      `${__dirname}/${this.projectUUID}-new.json`,
       JSON.stringify(
         {
-          RahatToken: {
-            address: TokenContract.contract.target,
-            startBlock: TokenContract.blockNumber,
-          },
+          // RahatToken: {
+          //   address: TokenContract.contract.target,
+          //   startBlock: TokenContract.blockNumber,
+          // },
           C2CProject: {
             address: C2CProjectContract.contract.target,
             startBlock: C2CProjectContract.blockNumber,
@@ -105,7 +107,7 @@ class SeedProject extends ContractLib {
 
 async function main() {
   const seedProject = new SeedProject();
-  await seedProject.deployC2CContracts();
+  // await seedProject.deployC2CContracts();
   await seedProject.addContractSettings();
 
   process.exit(0);
