@@ -14,6 +14,7 @@ import { ProjectContants } from '@rahataid/sdk';
 import { PrismaService, paginator } from '@rumsan/prisma';
 import { randomUUID } from 'crypto';
 import { handleMicroserviceCall } from '../utils/handleMicroserviceCall';
+import { Decimal } from '@prisma/client/runtime/library';
 
 const paginate = paginator({ perPage: 20 });
 
@@ -44,9 +45,11 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: beneficiaries.reduce(
-            (acc, curr) => acc + parseFloat(curr.amount),
-            0
+          amount: new Decimal(
+            beneficiaries.reduce(
+              (acc, curr) => acc + parseFloat(curr.amount),
+              0
+            )
           ),
           transactionHash,
           type,
