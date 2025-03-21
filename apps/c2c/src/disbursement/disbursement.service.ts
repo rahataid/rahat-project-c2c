@@ -45,12 +45,9 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: new Decimal(
-            beneficiaries.reduce(
-              (acc, curr) => acc + parseFloat(curr.amount),
-              0
-            )
-          ),
+          amount: beneficiaries
+            .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
+            .toString(),
           transactionHash,
           type,
         },
@@ -118,7 +115,7 @@ export class DisbursementService {
       this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
-      return result;
+      return disbursement;
     } catch (error) {
       console.log(error);
       throw error; // Re-throw the error for better debugging
