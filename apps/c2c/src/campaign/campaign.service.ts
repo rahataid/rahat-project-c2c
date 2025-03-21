@@ -113,8 +113,8 @@ export class CampaignService {
   }
 
   async getBroadcastLogs(dto: any) {
-    const logs = await this.commsClient.broadcastLog.list();
-    return logs.data;
+    const logs = await this.commsClient.broadcast.list(dto);
+    return { data: logs.data, meta: logs.response.meta };
   }
 
   async broadcastMessages({ uuid, addresses, msgContent, transportId }: any) {
@@ -170,14 +170,9 @@ export class CampaignService {
 
   async create(dto) {
     try {
-      const transports = await this.listTransports();
-      const transportId = transports?.find(
-        (transport) => transport.name === process.env.TRANSPORT_NAME
-      )?.cuid;
       return this.prisma.campaign.create({
         data: {
           ...dto,
-          transportId: transportId || '',
         },
       });
     } catch (e) {
@@ -198,6 +193,12 @@ export class CampaignService {
     const conditions = {} as any;
     if (query?.name) {
       conditions['name'] = { contains: query.name, mode: 'insensitive' } as any;
+    }
+
+    if (query?.transportId) {
+      conditions['transportId'] = {
+        contains: query.transportId,
+      } as any;
     }
     return paginate(
       this.prisma.campaign,
