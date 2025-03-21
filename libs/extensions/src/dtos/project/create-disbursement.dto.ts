@@ -67,7 +67,7 @@ export class CreateDisbursementDto {
 
 export class UpdateDisbursementDto {
   id!: number;
-  amount!: number;
+  amount!: string;
 }
 
 export class DisbursementApprovalsDTO {

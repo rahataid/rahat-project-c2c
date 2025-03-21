@@ -130,7 +130,7 @@ model DisbursementBeneficiary {
   Disbursement    Disbursement @relation(fields: [disbursementId], references: [id])
   Beneficiary     Beneficiary  @relation(fields: [beneficiaryWalletAddress], references: [walletAddress])
   from            String?
-  amount          Decimal  @db.Decimal(10, 2)
+  amount          String
   transactionHash String?
   extras          Json?
   createdAt       DateTime     @default(now())
