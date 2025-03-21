@@ -116,7 +116,7 @@ model Disbursement {
   type                    DisbursementType          @default(PROJECT)
   status                  DisbursementStatus        @default(DRAFT)
   timestamp               String?
-  amount                  Decimal  @db.Decimal(10, 2)
+  amount                  String
   transactionHash         String?
   extras                  Json?
   createdAt               DateTime                  @default(now())
