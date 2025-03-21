@@ -65,12 +65,12 @@ export class DisbursementService {
                 },
               },
               update: {
-                amount: parseFloat(amount),
+                amount: amount.toString(),
                 from,
                 transactionHash,
               },
               create: {
-                amount: parseFloat(amount),
+                amount: amount.toString(),
                 from,
                 transactionHash,
                 Disbursement: {
