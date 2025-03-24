@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/rahataid/rahat-project-c2c/badge.svg?branch=main)](https://coveralls.io/github/rahataid/rahat-project-c2c?branch=main)
+
 # Rahat Project C2C Documentation
 
 ## Summary
