@@ -42,6 +42,10 @@ export class ListCommDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  transportId?: string;
 }
 
 export class ListSessionLogsDto {

@@ -116,7 +116,7 @@ model Disbursement {
   type                    DisbursementType          @default(PROJECT)
   status                  DisbursementStatus        @default(DRAFT)
   timestamp               String?
-  amount                  Int?
+  amount                  String
   transactionHash         String?
   extras                  Json?
   createdAt               DateTime                  @default(now())
@@ -130,11 +130,24 @@ model DisbursementBeneficiary {
   Disbursement    Disbursement @relation(fields: [disbursementId], references: [id])
   Beneficiary     Beneficiary  @relation(fields: [beneficiaryWalletAddress], references: [walletAddress])
   from            String?
-  amount          Int?
+  amount          String
   transactionHash String?
   extras          Json?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime?    @updatedAt
+
+  @@unique([disbursementId, beneficiaryWalletAddress]) 
+}
+
+model Stats {
+  name  String  @id @unique
+  data  Json
+  group String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt()
+
+  @@map("tbl_stats")
 }
 
 enum DisbursementType {

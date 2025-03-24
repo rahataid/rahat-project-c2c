@@ -11,21 +11,27 @@ const prismaClient = new PrismaClient({
 const prisma = new PrismaService();
 const settings = new SettingsService(prisma);
 const subGraphURL = process.env.SUBGRAPH_URL;
-const SETTINGS_DB_NAME = 'C2C_DEV';
+const SETTINGS_DB_NAME = 'c2c';
 
 class SettingsSeed extends ContractLib {
   private projectUUID: string;
   constructor() {
     super();
-    this.projectUUID = process.env.PROJECT_UUID as string;
+    this.projectUUID = process.env.PROJECT_ID as string;
   }
 
   async getDevSettings() {
-    const [devSettings] = await prismaClient.$queryRaw<any[]>(
-      Prisma.sql([
-        `SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`,
-      ])
-    );
+    // const [devSettings] = await prismaClient.$queryRaw<any[]>(
+    //   Prisma.sql([
+    //     `SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`,
+    //   ])
+    // );
+    // console.log('devSettings', devSettings);
+    const devSettings = {
+      value: {
+        adminAccounts: ['0x9bd3397E69392fE698A094B17CdABf2f6Ca6490B'],
+      },
+    };
     return devSettings;
   }
 
@@ -114,9 +120,9 @@ async function main() {
   await seedProject.addContractSettings(['RahatToken', 'C2CProject']);
   console.log(`first`);
   await seedProject.addAppSettings();
-  await seedProject.addAdminAddress(adminAccounts[0]);
-  await seedProject.addGraphSettings();
-  await seedProject.addSafeWalletSettings();
+  // await seedProject.addAdminAddress(adminAccounts[0]);
+  // await seedProject.addGraphSettings();
+  // await seedProject.addSafeWalletSettings();
 
   process.exit(0);
 }

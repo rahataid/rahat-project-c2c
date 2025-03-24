@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { DisbursementStatus, Prisma } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { DisbursementStatus, DisbursementType, Prisma } from '@prisma/client';
+import { EVENTS } from '@rahataid/c2c-extensions';
 import {
   DisbursementApprovalsDTO,
   CreateDisbursementDto,
@@ -11,6 +13,8 @@ import {
 import { ProjectContants } from '@rahataid/sdk';
 import { PrismaService, paginator } from '@rumsan/prisma';
 import { randomUUID } from 'crypto';
+import { handleMicroserviceCall } from '../utils/handleMicroserviceCall';
+import { Decimal } from '@prisma/client/runtime/library';
 
 const paginate = paginator({ perPage: 20 });
 
@@ -19,7 +23,8 @@ export class DisbursementService {
   private rsprisma;
   constructor(
     protected prisma: PrismaService,
-    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
+    @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
+    private eventEmitter: EventEmitter2
   ) { }
 
   async create(createDisbursementDto: CreateDisbursementDto) {
@@ -34,75 +39,86 @@ export class DisbursementService {
         type,
       } = createDisbursementDto;
 
-      // Create disbursement first
+      // Create disbursement
       const disbursement = await this.prisma.disbursement.create({
         data: {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: beneficiaries.reduce(
-            (acc, curr) => acc + parseFloat(curr.amount),
-            0
-          ),
+          amount: beneficiaries
+            .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
+            .toString(),
           transactionHash,
           type,
         },
       });
 
-      // const result = await this.prisma.disbursementBeneficiary.create({
-      //   data: {
-      //     amount: parseFloat(amount),
-      //     from,
-      //     transactionHash,
-      //     Disbursement: {
-      //       connect: {
-      //         id: disbursement.id,
-      //       },
-      //     },
-      //     Beneficiary: {
-      //       connect: beneficiaries.map((ben) => {
-      //         return {
-      //           walletAddress: ben.walletAddress,
-      //         };
-      //       }),
-      //     },
-      //   },
-      // });
-
       // Create or connect beneficiaries to the disbursement
       const result = await Promise.all(
         beneficiaries.map(async (ben: DisbursementBenefeciaryCreate) => {
           const disbursementBeneficiary =
-            await this.prisma.disbursementBeneficiary.create({
+            await this.prisma.disbursementBeneficiary.upsert({
+              where: {
+                disbursementId_beneficiaryWalletAddress: {
+                  disbursementId: disbursement.id,
+                  beneficiaryWalletAddress: ben.walletAddress,
+                },
+              },
+              update: {
+                amount: amount.toString(),
+                from,
+                transactionHash,
+              },
+              create: {
+                amount: amount.toString(),
+                from,
+                transactionHash,
+                Disbursement: {
+                  connect: { id: disbursement.id },
+                },
+                Beneficiary: {
+                  connect: { walletAddress: ben.walletAddress },
+                },
+              },
               include: {
                 Beneficiary: true,
                 Disbursement: true,
               },
-              data: {
-                amount: parseFloat(amount),
-                from,
-                transactionHash,
-                Disbursement: {
-                  connect: {
-                    id: disbursement.id,
-                  },
-                },
-                Beneficiary: {
-                  connect: {
-                    walletAddress: ben.walletAddress,
-                  },
-                },
+            });
+          if (
+            disbursementBeneficiary.Disbursement.type ===
+            DisbursementType.PROJECT
+          ) {
+            await handleMicroserviceCall({
+              client: this.client.send(
+                { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
+                {
+                  walletAddress:
+                    disbursementBeneficiary.beneficiaryWalletAddress,
+                  amount: disbursementBeneficiary.amount,
+                }
+              ),
+              onSuccess(response) {
+                console.log('Email sent', response);
+                return response;
+              },
+              onError(error) {
+                console.log('Sending email failed: ' + error.message);
               },
             });
+          }
+
           return disbursementBeneficiary;
         })
       );
 
+      this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
+
       console.log({ result });
-      return result;
+      return disbursement;
     } catch (error) {
       console.log(error);
-      throw error; // It's a good practice to rethrow the error or handle it appropriately
+      throw error; // Re-throw the error for better debugging
     }
   }
 
@@ -144,10 +160,46 @@ export class DisbursementService {
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
-    return await this.prisma.disbursement.update({
-      where: { id },
-      data: { ...updateDisbursementDto },
-    });
+    try {
+      const disbursement = await this.prisma.disbursement.update({
+        where: { id },
+        data: { ...updateDisbursementDto },
+      });
+
+      if (
+        disbursement.type === DisbursementType.MULTISIG &&
+        disbursement.status === DisbursementStatus.COMPLETED
+      ) {
+        const beneficiary = await this.prisma.disbursementBeneficiary.findFirst(
+          {
+            where: {
+              disbursementId: id,
+            },
+          }
+        );
+        await handleMicroserviceCall({
+          client: this.client.send(
+            { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
+            {
+              walletAddress: beneficiary.beneficiaryWalletAddress,
+              amount: disbursement.amount,
+            }
+          ),
+          onSuccess(response) {
+            console.log('Email sent', response);
+            return response;
+          },
+          onError(error) {
+            console.log('Sending email failed: ' + error.message);
+          },
+        });
+      }
+
+      return disbursement;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async disbursementTransaction(disbursementDto: DisbursementTransactionDto) {
