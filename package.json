@@ -50,7 +50,8 @@
     "graph:test": "cd ./apps/graph && graph test",
     "fund:project": "ts-node  tools/project-scripts/2-fund-project",
     "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage",
-    "test": "jest --config=apps/c2c/jest.config.ts --coverage"
+    "test": "jest --config=apps/c2c/jest.config.ts --coverage",
+    "test-coverage": "pnpm test && npx coveralls < coverage/lcov.info"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
@@ -74,8 +75,8 @@
     "@rahataid/c2c-subgraph": "link:libs/react-query",
     "@rahataid/contracts": "0.0.4",
     "@rahataid/sdk": "0.0.20",
-    "@rumsan/connect": "^1.0.3",
     "@rumsan/communication": "0.0.23",
+    "@rumsan/connect": "^1.0.3",
     "@rumsan/extensions": "0.0.21",
     "@rumsan/prisma": "1.0.121",
     "@rumsan/react-query": "0.0.38",
@@ -134,6 +135,7 @@
     "@types/node": "~18.16.20",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
+    "coveralls": "^3.1.1",
     "eslint": "~8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "hardhat": "^2.22.2",
