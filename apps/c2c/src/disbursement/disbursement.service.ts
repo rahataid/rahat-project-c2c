@@ -25,7 +25,7 @@ export class DisbursementService {
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
     private eventEmitter: EventEmitter2
-  ) {}
+  ) { }
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {

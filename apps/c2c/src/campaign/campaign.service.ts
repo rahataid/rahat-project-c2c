@@ -22,7 +22,7 @@ export class CampaignService {
     @Inject('COMMS_CLIENT')
     private commsClient: CommsClient,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy // private eventEmitter: EventEmitter2
-  ) {}
+  ) { }
 
   async listSessionLogs(uuid: string, dto: ListSessionLogsDto) {
     const comm = await this.findOne(uuid);

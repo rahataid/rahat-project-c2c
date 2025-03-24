@@ -132,7 +132,7 @@ describe('------ Rahat Token Tests ------', function () {
         });
 
         it("should disburse tokens from project", async function () {
-            await cf.c2cProject.disburseExternalToken(cf.rahatToken.target, cf.beneficiary.address, cf.admin.address, 10n);
+            await cf.c2cProject.connect(cf.admin).disburseExternalToken(cf.rahatToken.target, cf.beneficiary.address, cf.admin.address, 10n);
             expect(await cf.rahatToken.balanceOf(cf.beneficiary.address)).to.equal(10n);
         }
         );
