@@ -3,7 +3,6 @@ import 'solidity-docgen';
 import '@nomicfoundation/hardhat-toolbox';
 import type { NetworkUserConfig } from 'hardhat/types';
 
-const coinMarketCapApiKey: string = vars.get('COINMARKETCAP_API_KEY');
 const privateKey: string = vars.get('PRIVATE_KEY');
 const infuraApiKey: string = `43babf32ce0346fabbf1c1069418a90b`;
 
@@ -26,7 +25,7 @@ const chainIds = {
   'polygon-mainnet': 137,
   'polygon-mumbai': 80001,
   sepolia: 11155111,
-  baseSepolia: 84532
+  baseSepolia: 84532,
 };
 
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
@@ -68,21 +67,21 @@ const config: ExtendedHardhatUserConfig = {
     },
   },
 
-  gasReporter: {
-    token: 'ETH',
-    currency: 'USD',
-    gasPriceApi:
-      'https://api.etherscan.io/api?module=proxy&action=eth_gasPrice',
-    coinmarketcap: coinMarketCapApiKey,
-    enabled:
-      vars.get('REPORT_GAS') === 'false'
-        ? false
-        : Boolean(vars.get('REPORT_GAS')),
-    showTimeSpent: true,
-    showMethodSig: true,
-    outputFile: 'gas-report.txt',
-    noColors: true,
-  },
+  // gasReporter: {
+  //   token: 'ETH',
+  //   currency: 'USD',
+  //   gasPriceApi:
+  //     'https://api.etherscan.io/api?module=proxy&action=eth_gasPrice',
+  //   coinmarketcap: coinMarketCapApiKey,
+  //   enabled:
+  //     vars.get('REPORT_GAS') === 'false'
+  //       ? false
+  //       : Boolean(vars.get('REPORT_GAS')),
+  //   showTimeSpent: true,
+  //   showMethodSig: true,
+  //   outputFile: 'gas-report.txt',
+  //   noColors: true,
+  // },
 
   docgen: {
     outputDir: './docs',

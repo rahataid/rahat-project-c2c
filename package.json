@@ -1,6 +1,6 @@
 {
   "name": "@rahat-project-c2c/source",
-  "version": "0.0.0",
+  "version": "1.2.1",
   "license": "MIT",
   "scripts": {
     "build:all": "npx nx run-many --target=build --all",
