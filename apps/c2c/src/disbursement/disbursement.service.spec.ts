@@ -85,7 +85,7 @@ describe('DisbursementService', () => {
     });
 
     it('should update a disbursement', async () => {
-        const updateDisbursementDto: UpdateDisbursementDto = { id: 2, amount: 200 };
+        const updateDisbursementDto: UpdateDisbursementDto = { id: 2, amount: '200' };
         const mockId = 1;
         prisma.disbursement.update.mockResolvedValue({ id: mockId, ...updateDisbursementDto });
 
