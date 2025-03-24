@@ -20,7 +20,7 @@ export class DisbursementService {
   constructor(
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy
-  ) {}
+  ) { }
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
@@ -144,7 +144,7 @@ export class DisbursementService {
   }
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
-    return await this.rsprisma.disbursement.update({
+    return await this.prisma.disbursement.update({
       where: { id },
       data: { ...updateDisbursementDto },
     });
