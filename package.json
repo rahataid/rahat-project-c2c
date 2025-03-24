@@ -51,7 +51,7 @@
     "fund:project": "ts-node  tools/project-scripts/2-fund-project",
     "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage",
     "test": "jest --config=apps/c2c/jest.config.ts --coverage",
-    "test-coverage": "pnpm test && npx coveralls < coverage/lcov.info"
+    "test-coverage": "pnpm test && npx coveralls < coverage/apps/c2c/lcov.info"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
