@@ -22,4 +22,5 @@ jobs:
           pnpm test-coverage
 
       - name: Coveralls
+        if: always()
         uses: coverallsapp/github-action@v2
