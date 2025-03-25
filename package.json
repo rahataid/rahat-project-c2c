@@ -47,6 +47,7 @@
     "graph:studio:deploy-arbitrum-sepolia-stage": "cd ./apps/graph && graph deploy --studio --network arbitrum-sepolia c2c-stage-arbi",
     "graph:studio:deploy-base-sepolia": "cd ./apps/graph && graph deploy --studio --network base-sepolia rahat-c2c-dev",
     "graph:studio:deploy-stage-base-sepolia": "cd ./apps/graph && graph deploy --studio --network base-sepolia c2c-stage-base",
+    "graph:studio:deploy-kotanipay-base": "cd ./apps/graph && graph deploy --studio --network base c2c-kenya-dryrun--kotanipay",
     "graph:test": "cd ./apps/graph && graph test",
     "fund:project": "ts-node  tools/project-scripts/2-fund-project",
     "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage",

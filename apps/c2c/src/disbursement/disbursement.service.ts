@@ -14,6 +14,7 @@ import { ProjectContants } from '@rahataid/sdk';
 import { PrismaService, paginator } from '@rumsan/prisma';
 import { randomUUID } from 'crypto';
 import { handleMicroserviceCall } from '../utils/handleMicroserviceCall';
+import { Decimal } from '@prisma/client/runtime/library';
 
 const paginate = paginator({ perPage: 20 });
 
@@ -24,7 +25,7 @@ export class DisbursementService {
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
     private eventEmitter: EventEmitter2
-  ) {}
+  ) { }
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
@@ -44,10 +45,9 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: beneficiaries.reduce(
-            (acc, curr) => acc + parseFloat(curr.amount),
-            0
-          ),
+          amount: beneficiaries
+            .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
+            .toString(),
           transactionHash,
           type,
         },
@@ -65,12 +65,12 @@ export class DisbursementService {
                 },
               },
               update: {
-                amount: parseFloat(amount),
+                amount: amount.toString(),
                 from,
                 transactionHash,
               },
               create: {
-                amount: parseFloat(amount),
+                amount: amount.toString(),
                 from,
                 transactionHash,
                 Disbursement: {
@@ -115,7 +115,7 @@ export class DisbursementService {
       this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
-      return result;
+      return disbursement;
     } catch (error) {
       console.log(error);
       throw error; // Re-throw the error for better debugging

@@ -17,10 +17,7 @@ const SETTINGS_DB_NAME = 'C2C_DEV';
 const prisma = new PrismaService();
 const settings = new SettingsService(prisma);
 
-const contractName = [
-  'RahatToken',
-  'C2CProject',
-];
+const contractName = ['RahatToken', 'C2CProject'];
 
 const rahatTokenDetails = {
   name: 'USD Coin',
@@ -75,7 +72,6 @@ class SeedProject extends ContractLib {
       `${__dirname}/${this.projectUUID}.json`,
       JSON.stringify(
         {
-
           RahatToken: {
             address: TokenContract.contract.target,
             startBlock: TokenContract.blockNumber,
@@ -109,7 +105,7 @@ class SeedProject extends ContractLib {
 
 async function main() {
   const seedProject = new SeedProject();
-  await seedProject.deployC2CContracts();
+  // await seedProject.deployC2CContracts();
   await seedProject.addContractSettings();
 
   process.exit(0);
