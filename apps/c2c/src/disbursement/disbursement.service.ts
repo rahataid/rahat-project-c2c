@@ -25,19 +25,12 @@ export class DisbursementService {
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
     private eventEmitter: EventEmitter2
-  ) { }
+  ) {}
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
-      const {
-        amount,
-        beneficiaries,
-        from,
-        transactionHash,
-        status,
-        timestamp,
-        type,
-      } = createDisbursementDto;
+      const { amount, beneficiaries, from, status, timestamp, type } =
+        createDisbursementDto;
 
       // Create disbursement
       const disbursement = await this.prisma.disbursement.create({
@@ -48,7 +41,6 @@ export class DisbursementService {
           amount: beneficiaries
             .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
             .toString(),
-          transactionHash,
           type,
         },
       });
@@ -67,12 +59,10 @@ export class DisbursementService {
               update: {
                 amount: amount.toString(),
                 from,
-                transactionHash,
               },
               create: {
                 amount: amount.toString(),
                 from,
-                transactionHash,
                 Disbursement: {
                   connect: { id: disbursement.id },
                 },
