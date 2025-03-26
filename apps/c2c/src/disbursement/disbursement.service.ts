@@ -29,8 +29,15 @@ export class DisbursementService {
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
-      const { amount, beneficiaries, from, status, timestamp, type } =
-        createDisbursementDto;
+      const {
+        amount,
+        beneficiaries,
+        from,
+        transactionHash,
+        status,
+        timestamp,
+        type,
+      } = createDisbursementDto;
 
       // Create disbursement
       const disbursement = await this.prisma.disbursement.create({
@@ -38,9 +45,13 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: beneficiaries
-            .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
-            .toString(),
+          amount: new Decimal(
+            beneficiaries.reduce(
+              (acc, curr) => acc + parseFloat(curr.amount),
+              0
+            )
+          ),
+          transactionHash,
           type,
         },
       });
@@ -57,12 +68,14 @@ export class DisbursementService {
                 },
               },
               update: {
-                amount: amount.toString(),
+                amount: parseFloat(amount),
                 from,
+                transactionHash,
               },
               create: {
-                amount: amount.toString(),
+                amount: parseFloat(amount),
                 from,
+                transactionHash,
                 Disbursement: {
                   connect: { id: disbursement.id },
                 },
@@ -105,7 +118,7 @@ export class DisbursementService {
       this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
-      return disbursement;
+      return result;
     } catch (error) {
       console.log(error);
       throw error; // Re-throw the error for better debugging
