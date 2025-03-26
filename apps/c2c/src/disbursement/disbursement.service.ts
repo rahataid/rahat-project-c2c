@@ -45,12 +45,9 @@ export class DisbursementService {
           uuid: randomUUID(),
           status,
           timestamp,
-          amount: new Decimal(
-            beneficiaries.reduce(
-              (acc, curr) => acc + parseFloat(curr.amount),
-              0
-            )
-          ),
+          amount: beneficiaries
+            .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
+            .toString(),
           transactionHash,
           type,
         },
@@ -68,12 +65,12 @@ export class DisbursementService {
                 },
               },
               update: {
-                amount: parseFloat(amount),
+                amount: amount,
                 from,
                 transactionHash,
               },
               create: {
-                amount: parseFloat(amount),
+                amount,
                 from,
                 transactionHash,
                 Disbursement: {
