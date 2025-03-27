@@ -81,9 +81,8 @@ export class DisbursementMultisigService {
   }
 
   async getSafeTransaction(safeTxHash: string) {
-    const { confirmations, confirmationsRequired, isExecuted, proposer } =
-      await this.safeApiKit.getTransaction(safeTxHash);
-    return { confirmations, confirmationsRequired, isExecuted, proposer };
+    const safeTransaction = await this.safeApiKit.getTransaction(safeTxHash);
+    return safeTransaction;
   }
 
   async createSafeTransaction(payload: CreateSafeTransactionDto) {
@@ -148,6 +147,7 @@ export class DisbursementMultisigService {
         owner,
         submissionDate: confirmation?.submissionDate || null,
         hasApproved: confirmation ? true : false,
+        ...confirmation,
       };
     });
     return { approvals, confirmationsRequired, isExecuted, proposer };
