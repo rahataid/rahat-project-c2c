@@ -115,7 +115,7 @@ export class DisbursementService {
       this.eventEmitter.emit(EVENTS.DISBURSEMENT_CREATE, {});
 
       console.log({ result });
-      return result;
+      return result[0];
     } catch (error) {
       console.log(error);
       throw error; // Re-throw the error for better debugging
