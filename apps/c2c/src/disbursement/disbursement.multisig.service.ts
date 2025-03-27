@@ -150,6 +150,7 @@ export class DisbursementMultisigService {
         ...confirmation,
       };
     });
+    console.log('approvals', approvals);
     return { approvals, confirmationsRequired, isExecuted, proposer };
   }
 
