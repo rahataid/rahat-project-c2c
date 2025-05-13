@@ -201,6 +201,28 @@ describe('DisbursementService', () => {
         expect(paginator).toHaveBeenCalled()
       });
 
-   
+    it('should fetch disbursement approvals', async () => {
+        const mockDisbursementDto = { disbursementUUID: randomUUID() };
+        const mockApprovals = [
+            {
+                amount: '100',
+                Beneficiary: { name: 'Jane Doe', walletAddress: 'wallet2' },
+                Disbursement: {
+                    uuid: mockDisbursementDto.disbursementUUID,
+                    status: DisbursementStatus.COMPLETED,
+                    createdAt: new Date(),
+                    amount: '100',
+                    type: 'MULTISIG',
+                },
+            },
+        ];
+
+        prisma.disbursementBeneficiary.findMany = jest.fn().mockResolvedValue(mockApprovals);
+
+        const result = await service.disbursementApprovals(mockDisbursementDto);
+
+        expect(result.data.length).toEqual(mockApprovals.length);
+        expect(paginator).toHaveBeenCalled();
+    });
 
 });
