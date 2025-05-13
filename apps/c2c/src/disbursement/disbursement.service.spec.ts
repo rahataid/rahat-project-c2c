@@ -23,7 +23,7 @@ interface MockPrismaService {
         create: jest.Mock;
         findMany: jest.Mock;
         upsert: jest.Mock;
-        Disbusement:{
+        Disbursement:{
             type: string;
         }
     };
@@ -52,7 +52,7 @@ describe('DisbursementService', () => {
             create: jest.fn(),
             findMany: jest.fn(),
             upsert: jest.fn(),
-            Disbusement: {
+            Disbursement: {
                 type: 'PROJECT', // Mock the return value
             },
 
@@ -113,33 +113,32 @@ describe('DisbursementService', () => {
         });
     });
 
-    // it('should create a disbursement', async () => {
-    //     const mockBeneficiary: DisbursementBenefeciaryCreate = {
-    //         amount: '100',
-    //         from: 'some-address',
-    //         transactionHash: 'some-hash',
-    //         walletAddress: 'some-wallet-address',
-    //     };
-    //     const createDisbursementDto: CreateDisbursementDto = {
-    //         amount: '100',
-    //         beneficiaries: [mockBeneficiary],
-    //         from: 'some-from-address',
-    //         transactionHash: 'some-transaction-hash',
-    //         status: DisbursementStatus.PENDING,
-    //         timestamp: new Date().toISOString(),
-    //         type: 'MULTISIG',
-    //     };
-    //     const mockDisbursement = { id: 1, ...createDisbursementDto };
+    it('should create a disbursement', async () => {
+        const mockBeneficiary: DisbursementBenefeciaryCreate = {
+            amount: '100',
+            from: 'some-address',
+            transactionHash: 'some-hash',
+            walletAddress: 'some-wallet-address',
+        };
+        const createDisbursementDto: CreateDisbursementDto = {
+            amount: '100',
+            beneficiaries: [mockBeneficiary],
+            from: 'some-from-address',
+            transactionHash: 'some-transaction-hash',
+            status: DisbursementStatus.PENDING,
+            timestamp: new Date().toISOString(),
+            type: 'MULTISIG',
+        };
+        const mockDisbursement = { id: 1, ...createDisbursementDto };
 
-    //     prisma.disbursement.create.mockResolvedValue(mockDisbursement);
-    //     prisma.disbursement.disbursementBeneficiary.create.mockResolvedValue(mockBeneficiary);
+        prisma.disbursement.create.mockResolvedValue(mockDisbursement);
+        prisma.disbursement.disbursementBeneficiary.create.mockResolvedValue(mockBeneficiary);
+        prisma.disbursementBeneficiary.upsert.mockResolvedValue({...mockBeneficiary, Disbursement:{type:'PROJECT'}});
 
-    //     const result = await service.create(createDisbursementDto);
-    //     expect(prisma.disbursement.create).toHaveBeenCalled();
-    //     // expect(prisma.disbursement.disbursementBeneficiary.create).toHaveBeenCalledWith({
-    //     //     data: mockBeneficiary,
-    //     // });
-    // });
+        const result = await service.create(createDisbursementDto);
+        expect(prisma.disbursement.create).toHaveBeenCalled();
+
+    });
 
 
 });
