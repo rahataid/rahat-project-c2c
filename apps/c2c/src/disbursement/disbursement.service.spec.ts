@@ -2,11 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DisbursementService } from './disbursement.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { PrismaService } from '@rumsan/prisma';
-// import { ClientProxy } from '@nestjs/microservices';
+import { paginator, PrismaService } from '@rumsan/prisma';
+import { ProjectContants } from '@rahataid/sdk';
 import { CreateDisbursementDto, UpdateDisbursementDto, DisbursementBenefeciaryCreate } from '@rahataid/c2c-extensions/dtos';
-import { DisbursementStatus } from '@prisma/client';
+import { DisbursementStatus, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
+
+
 
 // Mock types
 interface MockPrismaService {
@@ -28,6 +30,43 @@ interface MockPrismaService {
         }
     };
 }
+
+jest.mock('@rumsan/prisma', () => ({
+    paginator: jest.fn().mockReturnValue(jest.fn().mockResolvedValue({
+      data: [
+        {
+          amount: '100',
+          Beneficiary: { name: 'John Doe', walletAddress: 'wallet1' },
+          Disbursement: {
+            status: 'COMPLETED',
+            createdAt: new Date(),
+            amount: '100',
+            type: 'MULTISIG',
+          },
+        },
+      ],
+      meta: { total: 1, page: 1, perPage: 20 },
+    })),
+    PrismaService: jest.fn().mockImplementation(() => ({
+        disbursement: {
+            create: jest.fn(),
+            findUnique: jest.fn(),
+            update: jest.fn(),
+            disbursementBeneficiary: {
+                create: jest.fn(),
+                findMany: jest.fn(),
+            },
+        },
+        disbursementBeneficiary: {
+            create: jest.fn(),
+            findMany: jest.fn(),
+            upsert: jest.fn(),
+            Disbursement: {
+                type: 'PROJECT', // Mock the return value
+            },
+        },
+    })),
+  }));
 
 interface MockClient {
     send: jest.Mock;
@@ -71,9 +110,8 @@ describe('DisbursementService', () => {
             providers: [
                 DisbursementService,
                 { provide: PrismaService, useValue: mockPrismaService },
-                { provide: 'EL_PROJECT_CLIENT', useValue: mockClient },
-                { provide: EventEmitter2, useValue: mockEventEmitter }, // Add this line
-
+                { provide: 'EL_PROJECT_CLIENT', useValue: mockClient }, // Correctly mock ELClient
+                { provide: EventEmitter2, useValue: mockEventEmitter },
             ],
         }).compile();
 
@@ -139,6 +177,30 @@ describe('DisbursementService', () => {
         expect(prisma.disbursement.create).toHaveBeenCalled();
 
     });
+    
+    it('should fetch disbursement transactions', async () => {
+        const mockDisbursementDto = { disbursementUUID: randomUUID() }; // Example valid UUID
+        const mockTransactions = [
+          {
+            amount: '100',
+            Beneficiary: { name: 'John Doe', walletAddress: 'wallet1' },
+            Disbursement: {
+              status: 'COMPLETED',
+              createdAt: new Date(),
+              amount: '100',
+              type: 'MULTISIG',
+            },
+          },
+        ];
+    
+        prisma.disbursementBeneficiary.findMany = jest.fn().mockResolvedValue(mockTransactions);
+    
+        const result = await service.disbursementTransaction(mockDisbursementDto);
 
+        expect(result.data.length).toEqual(mockTransactions.length); // Adjusted to compare only the data array
+        expect(paginator).toHaveBeenCalled()
+      });
+
+   
 
 });

@@ -19,6 +19,8 @@ interface MockPrismaService {
   beneficiaryGroups: {
     findUnique: jest.Mock;
     create: jest.Mock;
+    findMany: jest.Mock;
+    count: jest.Mock;
   };
 }
 
@@ -40,11 +42,13 @@ describe('BeneficiaryService', () => {
       findMany: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-      count: jest.fn(), // Add count method
+      count: jest.fn(), 
     },
     beneficiaryGroups: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(), 
     },
   };
 
@@ -170,5 +174,69 @@ describe('BeneficiaryService', () => {
     expect(prisma.beneficiary.count).toHaveBeenCalled();
   });
 
+  it('should get all groups', async () => {
+    const mockGroups = [
+      { uuid: randomUUID(), name: 'Group 1' },
+      { uuid: randomUUID(), name: 'Group 2' }
+    ];
+    const dto = { page: 1, perPage: 10, sort: 'name', order: 'asc', name: 'Group' };
+    prisma.beneficiaryGroups.findMany = jest.fn().mockResolvedValue(mockGroups);
+    prisma.beneficiaryGroups.count = jest.fn().mockResolvedValue(mockGroups.length);
+    client.send.mockReturnValue(of(mockGroups));
+
+    const result = await service.getAllGroups(dto);
+
+    expect(prisma.beneficiaryGroups.findMany).toHaveBeenCalledWith({
+      where: {
+        deletedAt: null,
+        name: { contains: dto.name, mode: 'insensitive' }
+      },
+      orderBy: { [dto.sort]: dto.order },
+      skip: (dto.page - 1) * dto.perPage,
+      take: dto.perPage
+    });
+    expect(client.send).toHaveBeenCalledWith(
+      { cmd: 'rahat.jobs.beneficiary.list_group_by_project' },
+      expect.anything()
+    );
+  });
+
+  it('should find all beneficiary PII', async () => {
+    const mockData = {
+      status: 'active',
+      data: [
+        { beneficiaryId: 'uuid1', Beneficiary: { name: 'John Doe' } },
+        { beneficiaryId: 'uuid2', Beneficiary: { name: 'Jane Doe' } }
+      ],
+      meta: { total: 2, page: 1, perPage: 10 }
+    };
+
+    const mockProjectData = [
+      { uuid: 'uuid1', name: 'John Doe', type: 'active' },
+      { uuid: 'uuid2', name: 'Jane Doe', type: 'active' }
+    ];
+
+    prisma.beneficiary.findMany = jest.fn().mockResolvedValue(mockProjectData);
+
+    const result = await service.findAllBeneficaryPii(mockData);
+
+    expect(result).toEqual({
+      data: [
+        {
+          beneficiaryId: 'uuid1',
+          Beneficiary: { name: 'John Doe', uuid: 'uuid1', type: 'active' }
+        },
+        {
+          beneficiaryId: 'uuid2',
+          Beneficiary: { name: 'Jane Doe', uuid: 'uuid2', type: 'active' }
+        }
+      ],
+      meta: mockData.meta
+    });
+
+    expect(prisma.beneficiary.findMany).toHaveBeenCalledWith({
+      where: { type: mockData.status }
+    });
+  });
 
 });
