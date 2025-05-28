@@ -33,7 +33,7 @@ export class ContractLib {
       chainId: Number(process.env.CHAIN_ID) || 8888,
       blockExplorerUrls: [
         process.env.BLOCK_EXPLORER_URL ||
-        'https://explorer-mumbai.maticvigil.com/',
+          'https://explorer-mumbai.maticvigil.com/',
       ],
     };
 
@@ -83,7 +83,12 @@ export class ContractLib {
       'utf8'
     );
     const data = JSON.parse(fileData);
-    return data[contractName].address;
+    console.log('data', data);
+    return (
+      data[contractName].address ||
+      data[contractName].target ||
+      data[contractName]?.ADDRESS
+    );
   }
 
   public async getDeployedContractDetails(
@@ -176,6 +181,7 @@ export class ContractLib {
       contractAddressFile,
       contractName
     );
+    console.log('contractAddress', contractAddress);
 
     if (!contractAddress) {
       throw new Error(`Contract ${contractName} not deployed`);

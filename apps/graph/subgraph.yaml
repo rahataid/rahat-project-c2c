@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RahatToken
-    network: base
+    network: base-sepolia
     source:
       abi: RahatToken
-      address: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-      startBlock: 28181112
+      address: "0x12e32e06cd36C21120932BCB2600c7C396e04F45"
+      startBlock: 12418270
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -35,11 +35,11 @@ dataSources:
       file: ./src/rahat-token.ts
   - kind: ethereum
     name: C2CProject
-    network: base
+    network: base-sepolia
     source:
       abi: C2CProject
-      address: "0x152f3333Eadd5cFf48FFcC75bF0B3c53fA21AD64"
-      startBlock: 28181112
+      address: "0x49F803d0A06441931b62C4AAE02fce85d0C13aD8"
+      startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

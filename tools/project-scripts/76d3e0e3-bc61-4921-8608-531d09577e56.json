@@ -1,0 +1,10 @@
+{
+  "C2CProject": {
+    "address": "0x49F803d0A06441931b62C4AAE02fce85d0C13aD8",
+    "startBlock": 1
+  },
+  "RahatToken": {
+    "address": "0x75c107744F8A50FA0E446252b4313A15c3b18799",
+    "startBlock": 1
+  }
+}

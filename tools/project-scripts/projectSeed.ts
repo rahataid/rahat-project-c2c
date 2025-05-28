@@ -1,4 +1,3 @@
-import { Prisma, PrismaClient } from '@prisma/client';
 import { SettingsService } from '@rumsan/extensions/settings';
 import { PrismaService } from '@rumsan/prisma';
 import { randomBytes } from 'crypto';
@@ -6,6 +5,8 @@ import * as dotenv from 'dotenv';
 import { uuidV4 } from 'ethers';
 import { writeFileSync } from 'fs';
 import { ContractLib } from './_common';
+import axios from 'axios';
+import { PrismaClient } from '@prisma/client';
 dotenv.config();
 
 const prismaClient = new PrismaClient({
@@ -14,10 +15,18 @@ const prismaClient = new PrismaClient({
 
 const SETTINGS_DB_NAME = 'C2C_DEV';
 
+const api = axios.create({
+  baseURL: (process.env.RAHAT_CORE_API_URL as string) + '/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${process.env.RAHAT_CORE_API_KEY}`,
+  },
+});
+
 const prisma = new PrismaService();
 const settings = new SettingsService(prisma);
 
-const contractName = ['RahatToken', 'C2CProject'];
+const contractName = ['C2CProject'];
 
 const rahatTokenDetails = {
   name: 'USD Coin',
@@ -42,9 +51,30 @@ class SeedProject extends ContractLib {
   public sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+  public async fetchContractSettings() {
+    const url = `/settings/CONTRACTS`;
+    const { data } = await api.get(url);
+    const contracts = data?.data?.value;
+    const RahatAccessManagerAddress =
+      contracts.RAHATACCESSMANAGER.address ||
+      contracts.RAHATACCESSMANAGER.ADDRESS;
+    const RahatTreasuryAddress =
+      contracts.RAHATTREASURY.address || contracts.RAHATTREASURY.ADDRESS;
+    // const forwarderAddress =
+    //   contracts.ERC2771FORWARDER.address || contracts.ERC2771FORWARDER.ADDRESS;
+
+    return {
+      RahatAccessManagerAddress,
+      RahatTreasuryAddress,
+      // forwarderAddress,
+    };
+  }
 
   public async deployC2CContracts() {
     const deployerAccount = this.getWalletFromPrivateKey(this.deployerKey);
+    console.log('Deployer Account:', deployerAccount.address);
+    const rahatTokenDetails = await this.fetchContractSettings();
+    console.log('Rahat Token Details:', rahatTokenDetails);
 
     // console.log('----------Deploying Rahat Token-------------------');
     // const TokenContract = await this.deployContract('RahatToken', [
@@ -60,9 +90,11 @@ class SeedProject extends ContractLib {
 
     console.log('----------Deploying C2C Project Contract-------------------');
     const C2CProjectContract = await this.deployContract('C2CProject', [
+      // todo: make this dynamic: name, manager, forwarder
       'C2C Project',
-      '0x9ED2f37e12c34c7Eb5c88Ff7FAF04d77f499efaD',
-      '0x70A6797002BF40BE37A5835dcE2Efa21F7917632',
+      rahatTokenDetails.RahatAccessManagerAddress,
+      rahatTokenDetails.RahatAccessManagerAddress, // Rahat Treasury Address
+      // '0x70A6797002BF40BE37A5835dcE2Efa21F7917632',
     ]);
     console.log({
       C2CProjectContract: C2CProjectContract.contract.target,
@@ -71,7 +103,7 @@ class SeedProject extends ContractLib {
 
     console.log('Writing deployed address to file');
     writeFileSync(
-      `${__dirname}/${this.projectUUID}-new.json`,
+      `${__dirname}/${this.projectUUID}.json`,
       JSON.stringify(
         {
           // RahatToken: {
@@ -107,7 +139,7 @@ class SeedProject extends ContractLib {
 
 async function main() {
   const seedProject = new SeedProject();
-  // await seedProject.deployC2CContracts();
+  await seedProject.deployC2CContracts();
   await seedProject.addContractSettings();
 
   process.exit(0);
