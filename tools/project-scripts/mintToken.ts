@@ -35,7 +35,7 @@ class MintToken extends ContractLib {
 (async () => {
   const mintToken = new MintToken();
   const tx = await mintToken.mintToken(
-    12000000,
+    1000,
     '0x49F803d0A06441931b62C4AAE02fce85d0C13aD8'
   );
   console.log({ tx });
