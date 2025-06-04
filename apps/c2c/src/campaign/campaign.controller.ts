@@ -1,6 +1,11 @@
 import { Body, Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateCampaignDto, JOBS, ListCommDto } from '@rahataid/c2c-extensions';
+import {
+  CreateCampaignDto,
+  JOBS,
+  ListCommDto,
+  UpdateCampaignDto,
+} from '@rahataid/c2c-extensions';
 
 import { CampaignService } from './campaign.service';
 
@@ -16,13 +21,13 @@ export class CampaignController {
     return this.campaignService.create(dto);
   }
 
-  // @MessagePattern({
-  //   cmd: JOBS.CAMPAIGN.UPDATE,
-  //   uuid: process.env.PROJECT_ID,
-  // })
-  // update(@Body() dto: UpdateCVACommsDto) {
-  //   return this.campaignService.update(dto);
-  // }
+  @MessagePattern({
+    cmd: JOBS.CAMPAIGN.UPDATE,
+    uuid: process.env.PROJECT_ID,
+  })
+  update(@Body() dto: UpdateCampaignDto) {
+    return this.campaignService.update(dto);
+  }
 
   @MessagePattern({
     cmd: JOBS.CAMPAIGN.GET_ALL_TRANSPORT,
