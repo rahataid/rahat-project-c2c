@@ -65,6 +65,7 @@ export const JOBS = {
   },
   CAMPAIGN: {
     CREATE: 'rahat.jobs.campaign.create',
+    UPDATE: 'rahat.jobs.campaign.update',
     LIST: 'rahat.jobs.campaign.list',
     GET: 'rahat.jobs.campaign.get',
     REMOVE: 'rahat.jobs.campaign.remove',
