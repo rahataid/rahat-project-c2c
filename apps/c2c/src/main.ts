@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app/app.module';
@@ -18,6 +18,13 @@ async function bootstrap() {
     }
   );
   app.useGlobalFilters(new RpcExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    })
+  );
   await app.listen();
   Logger.log(`🚀 Microservice is running on: http://localhost:${PORT}`);
 }
