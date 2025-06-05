@@ -6,6 +6,7 @@ import {
   CreateCampaignDto,
   ListCommDto,
   ListSessionLogsDto,
+  UpdateCampaignDto,
   // UpdateCVACommsDto,
 } from '@rahataid/c2c-extensions';
 import { ProjectContants } from '@rahataid/sdk';
@@ -22,7 +23,7 @@ export class CampaignService {
     @Inject('COMMS_CLIENT')
     private commsClient: CommsClient,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy // private eventEmitter: EventEmitter2
-  ) { }
+  ) {}
 
   async listSessionLogs(uuid: string, dto: ListSessionLogsDto) {
     const comm = await this.findOne(uuid);
@@ -182,11 +183,16 @@ export class CampaignService {
     }
   }
 
-  async update(updateCVACommsDto) {
-    return this.prisma.campaign.update({
-      where: { uuid: updateCVACommsDto.uuid },
-      data: updateCVACommsDto,
-    });
+  async update(updateCVACommsDto: UpdateCampaignDto) {
+    try {
+      return this.prisma.campaign.update({
+        where: { uuid: updateCVACommsDto.uuid },
+        data: updateCVACommsDto,
+      });
+    } catch (e) {
+      console.log(e);
+      throw new RpcException(e.message);
+    }
   }
 
   findAll(query: ListCommDto) {
