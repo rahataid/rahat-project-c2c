@@ -25,7 +25,9 @@ export class DisbursementService {
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
     private eventEmitter: EventEmitter2
-  ) {}
+  ) {
+    this.rsprisma = this.prisma.rsclient;
+  }
 
   async create(createDisbursementDto: CreateDisbursementDto) {
     try {
@@ -40,7 +42,7 @@ export class DisbursementService {
       } = createDisbursementDto;
 
       // Create disbursement
-      const disbursement = await this.prisma.disbursement.create({
+      const disbursement = await this.rsprisma.disbursement.create({
         data: {
           uuid: randomUUID(),
           status,
@@ -57,7 +59,7 @@ export class DisbursementService {
       const result = await Promise.all(
         beneficiaries.map(async (ben: DisbursementBenefeciaryCreate) => {
           const disbursementBeneficiary =
-            await this.prisma.disbursementBeneficiary.upsert({
+            await this.rsprisma.disbursementBeneficiary.upsert({
               where: {
                 disbursementId_beneficiaryWalletAddress: {
                   disbursementId: disbursement.id,
@@ -132,7 +134,7 @@ export class DisbursementService {
     };
 
     return paginate(
-      this.prisma.disbursement,
+      this.rsprisma.disbursement,
       { where, include, orderBy },
       {
         page: 1,
@@ -142,7 +144,7 @@ export class DisbursementService {
   }
 
   async findOne(params: DisbursementTransactionDto) {
-    const disbursement = await this.prisma.disbursement.findUnique({
+    const disbursement = await this.rsprisma.disbursement.findUnique({
       where: {
         uuid: params.disbursementUUID,
       },
@@ -161,7 +163,7 @@ export class DisbursementService {
 
   async update(id: number, updateDisbursementDto: UpdateDisbursementDto) {
     try {
-      const disbursement = await this.prisma.disbursement.update({
+      const disbursement = await this.rsprisma.disbursement.update({
         where: { id },
         data: { ...updateDisbursementDto },
       });
@@ -170,13 +172,12 @@ export class DisbursementService {
         disbursement.type === DisbursementType.MULTISIG &&
         disbursement.status === DisbursementStatus.COMPLETED
       ) {
-        const beneficiary = await this.prisma.disbursementBeneficiary.findFirst(
-          {
+        const beneficiary =
+          await this.rsprisma.disbursementBeneficiary.findFirst({
             where: {
               disbursementId: id,
             },
-          }
-        );
+          });
         await handleMicroserviceCall({
           client: this.client.send(
             { cmd: 'rahat.jobs.projects.send_disbursement_created_email' },
@@ -224,7 +225,7 @@ export class DisbursementService {
     };
 
     return paginate(
-      this.prisma.disbursementBeneficiary,
+      this.rsprisma.disbursementBeneficiary,
       { where, include, orderBy },
       {
         page: 1,
@@ -248,7 +249,7 @@ export class DisbursementService {
     };
 
     return paginate(
-      this.prisma.disbursementBeneficiary,
+      this.rsprisma.disbursementBeneficiary,
       { where, include },
       {
         page: 1,
