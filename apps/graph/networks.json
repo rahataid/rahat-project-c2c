@@ -28,5 +28,15 @@
       "address": "0xc06c7Eb9FefD901eb734e554fC510821d939d25d",
       "startBlock": 1
     }
+  },
+  "matic": {
+    "RahatToken": {
+      "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "startBlock": 4196335
+    },
+    "C2CProject": {
+      "address": "0x0Fe8F70C98054cD2d101680C9195b2537871B49C",
+      "startBlock": 73688183
+    }
   }
 }

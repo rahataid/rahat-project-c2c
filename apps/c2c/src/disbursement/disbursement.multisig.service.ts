@@ -63,7 +63,7 @@ export class DisbursementMultisigService {
     const safeKit = await Safe.init({
       provider: process.env.NETWORK_PROVIDER,
       signer: process.env.DEPLOYER_PRIVATE_KEY,
-      safeAddress: SAFE_ADDRESS.value['ADDRESS'],
+      safeAddress: ethers.getAddress(SAFE_ADDRESS.value['ADDRESS']),
     });
     return safeKit;
   }
@@ -75,7 +75,7 @@ export class DisbursementMultisigService {
       },
     });
     const { owners } = await this.safeApiKit.getSafeInfo(
-      SAFE_ADDRESS.value['ADDRESS']
+      ethers.getAddress(SAFE_ADDRESS.value['ADDRESS'])
     );
     return owners;
   }
@@ -161,7 +161,7 @@ export class DisbursementMultisigService {
       },
     });
     const pendingTransaction = await this.safeApiKit.getPendingTransactions(
-      SAFE_ADDRESS.value['ADDRESS']
+      ethers.getAddress(SAFE_ADDRESS.value['ADDRESS'])
     );
 
     return pendingTransaction;

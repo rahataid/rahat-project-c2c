@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RahatToken
-    network: base
+    network: matic
     source:
       abi: RahatToken
-      address: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-      startBlock: 28181112
+      address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+      startBlock: 4196335
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -35,11 +35,11 @@ dataSources:
       file: ./src/rahat-token.ts
   - kind: ethereum
     name: C2CProject
-    network: base
+    network: matic
     source:
       abi: C2CProject
-      address: "0x152f3333Eadd5cFf48FFcC75bF0B3c53fA21AD64"
-      startBlock: 28181112
+      address: "0x0Fe8F70C98054cD2d101680C9195b2537871B49C"
+      startBlock: 73688183
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
