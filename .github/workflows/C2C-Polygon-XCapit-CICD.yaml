@@ -54,6 +54,6 @@ jobs:
           file: Dockerfile.c2c
           push: ${{ github.event_name == 'workflow_dispatch' }}
           tags: |
-            esatya/rahat-project-c2c:xcapita
-            esatya/rahat-project-c2c:xcapita-${{ env.VERSION }}
-            esatya/rahat-project-c2c:xcapita-${{ env.VERSION }}-${{ env.timestamp }}
+            esatya/rahat-project-c2c:xcapit
+            esatya/rahat-project-c2c:xcapit-${{ env.VERSION }}
+            esatya/rahat-project-c2c:xcapit-${{ env.VERSION }}-${{ env.timestamp }}
