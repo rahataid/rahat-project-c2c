@@ -94,6 +94,7 @@ class SeedProject extends ContractLib {
       this.projectUUID,
       contractName
     );
+    console.log('contracts', contracts);
     // console.log('contracts', contracts);
     const data = {
       name: 'Contract',
@@ -107,7 +108,7 @@ class SeedProject extends ContractLib {
 
 async function main() {
   const seedProject = new SeedProject();
-  // await seedProject.deployC2CContracts();
+  await seedProject.deployC2CContracts();
   await seedProject.addContractSettings();
 
   process.exit(0);

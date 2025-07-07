@@ -29,7 +29,7 @@ class SettingsSeed extends ContractLib {
     // console.log('devSettings', devSettings);
     const devSettings = {
       value: {
-        adminAccounts: ['0x9bd3397E69392fE698A094B17CdABf2f6Ca6490B'],
+        adminAccounts: ['0x96017f4a620653Cb77979832b13B8A6F5b1350AA'],
       },
     };
     return devSettings;
@@ -120,9 +120,9 @@ async function main() {
   await seedProject.addContractSettings(['RahatToken', 'C2CProject']);
   console.log(`first`);
   await seedProject.addAppSettings();
-  // await seedProject.addAdminAddress(adminAccounts[0]);
-  // await seedProject.addGraphSettings();
-  // await seedProject.addSafeWalletSettings();
+  await seedProject.addAdminAddress(adminAccounts[0]);
+  await seedProject.addGraphSettings();
+  await seedProject.addSafeWalletSettings();
 
   process.exit(0);
 }

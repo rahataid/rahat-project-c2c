@@ -21,12 +21,16 @@ class SettingsSeed extends ContractLib {
   }
 
   async getDevSettings() {
-    const [devSettings] = await prismaClient.$queryRaw<any[]>(
-      Prisma.sql([
-        `SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`,
-      ])
-    );
-    return devSettings;
+    // const [devSettings] = await prismaClient.$queryRaw<any[]>(
+    //   Prisma.sql([
+    //     `SELECT *  FROM tbl_settings WHERE name='${SETTINGS_DB_NAME}'`,
+    //   ])
+    // );
+    return {
+      value: {
+        adminAccounts: '0x89d88bffeA27A9469Cf055350919ff36dB57ECAb',
+      },
+    };
   }
 
   public async addAppSettings() {
@@ -57,13 +61,11 @@ class SettingsSeed extends ContractLib {
   }
 
   public async addGraphSettings() {
-    const formatted = subGraphURL.substring(
-      0,
-      subGraphURL.indexOf('\\') !== -1 ? subGraphURL.indexOf('\\') : undefined
-    );
-    const formattedUrl = formatted
-      ? formatted
-      : 'http://localhost:8000/subgraphs/name/rahat/c2c';
+    // const formatted = subGraphURL.substring(
+    //   0,
+    //   subGraphURL.indexOf('\\') !== -1 ? subGraphURL.indexOf('\\') : undefined
+    // );
+    const formattedUrl = 'http://localhost:8000/subgraphs/name/rahat/c2c';
     await settings.create({
       name: 'Subgraph_URL',
       value: {
