@@ -52,7 +52,8 @@
     "fund:project": "ts-node  tools/project-scripts/2-fund-project",
     "charge:beneficiary": "ts-node  tools/project-scripts/3-beneficiary-manage",
     "test": "jest --config=apps/c2c/jest.config.ts --coverage",
-    "test-coverage": "pnpm test && npx coveralls < coverage/apps/c2c/lcov.info"
+    "test-coverage": "pnpm test && npx coveralls < coverage/apps/c2c/lcov.info",
+    "graph:studio:deploy-xcapit-polygon-aidlink": "cd ./apps/graph && graph deploy --studio --network matic c-2-c-aidlink"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
