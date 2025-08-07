@@ -56,5 +56,5 @@ class MintToken extends ContractLib {
 
 (async () => {
   const mintToken = new MintToken();
-  await mintToken.mintToken('0xcDEe632FB1Ba1B3156b36cc0bDabBfd821305e06', 50);
+  await mintToken.mintToken('0x49F803d0A06441931b62C4AAE02fce85d0C13aD8', 50);
 })();

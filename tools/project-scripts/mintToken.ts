@@ -13,6 +13,12 @@ class MintToken extends ContractLib {
   }
 
   public async mintToken(tokenMintAmount: number, address: string) {
+    console.log('{first}', {
+      tokenMintAmount,
+      address,
+      deployerAddress: this.deployerAddress,
+      projectUUID: this.projectUUID,
+    });
     console.log('----------Minting Token-------------------');
     const tx = await this.callContractMethod(
       'RahatToken',
@@ -29,8 +35,8 @@ class MintToken extends ContractLib {
 (async () => {
   const mintToken = new MintToken();
   const tx = await mintToken.mintToken(
-    12000000,
-    '0xcDEe632FB1Ba1B3156b36cc0bDabBfd821305e06'
+    1000,
+    '0x49F803d0A06441931b62C4AAE02fce85d0C13aD8'
   );
   console.log({ tx });
 })();

@@ -11,12 +11,12 @@
   },
   "base-sepolia": {
     "RahatToken": {
-      "address": "0x12e32e06cd36C21120932BCB2600c7C396e04F45",
-      "startBlock": 12418270
+      "address": "0x40BdA327da6460B106001709ef2F730825c634D8",
+      "startBlock": 1
     },
     "C2CProject": {
-      "address": "0x69517be1307861d0C768B5eD80A1623bE5483f3b",
-      "startBlock": 12418272
+      "address": "0x49F803d0A06441931b62C4AAE02fce85d0C13aD8",
+      "startBlock": 1
     }
   },
   "mainnet": {
