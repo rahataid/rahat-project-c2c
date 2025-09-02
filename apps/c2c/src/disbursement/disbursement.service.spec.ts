@@ -12,22 +12,17 @@ import { randomUUID } from 'crypto';
 
 // Mock types
 interface MockPrismaService {
-    disbursement: {
-        create: jest.Mock;
-        findUnique: jest.Mock;
-        update: jest.Mock;
+    rsclient: {
+        disbursement: {
+            create: jest.Mock;
+            findUnique: jest.Mock;
+            update: jest.Mock;
+        };
         disbursementBeneficiary: {
             create: jest.Mock;
             findMany: jest.Mock;
+            upsert: jest.Mock;
         };
-    };
-    disbursementBeneficiary: {
-        create: jest.Mock;
-        findMany: jest.Mock;
-        upsert: jest.Mock;
-        Disbursement:{
-            type: string;
-        }
     };
 }
 
@@ -48,21 +43,16 @@ jest.mock('@rumsan/prisma', () => ({
       meta: { total: 1, page: 1, perPage: 20 },
     })),
     PrismaService: jest.fn().mockImplementation(() => ({
-        disbursement: {
-            create: jest.fn(),
-            findUnique: jest.fn(),
-            update: jest.fn(),
+        rsclient: {
+            disbursement: {
+                create: jest.fn(),
+                findUnique: jest.fn(),
+                update: jest.fn(),
+            },
             disbursementBeneficiary: {
                 create: jest.fn(),
                 findMany: jest.fn(),
-            },
-        },
-        disbursementBeneficiary: {
-            create: jest.fn(),
-            findMany: jest.fn(),
-            upsert: jest.fn(),
-            Disbursement: {
-                type: 'PROJECT', // Mock the return value
+                upsert: jest.fn(),
             },
         },
     })),
@@ -75,26 +65,19 @@ interface MockClient {
 describe('DisbursementService', () => {
     let service: DisbursementService;
     let prisma: MockPrismaService;
-    let client: MockClient;
 
     const mockPrismaService: MockPrismaService = {
-        disbursement: {
-            create: jest.fn(),
-            findUnique: jest.fn(),
-            update: jest.fn(),
+        rsclient: {
+            disbursement: {
+                create: jest.fn(),
+                findUnique: jest.fn(),
+                update: jest.fn(),
+            },
             disbursementBeneficiary: {
                 create: jest.fn(),
                 findMany: jest.fn(),
+                upsert: jest.fn(),
             },
-        },
-        disbursementBeneficiary: {
-            create: jest.fn(),
-            findMany: jest.fn(),
-            upsert: jest.fn(),
-            Disbursement: {
-                type: 'PROJECT', // Mock the return value
-            },
-
         },
     };
 
@@ -117,7 +100,6 @@ describe('DisbursementService', () => {
 
         service = module.get<DisbursementService>(DisbursementService);
         prisma = mockPrismaService;
-        client = mockClient;
     });
 
     it('should be defined', () => {
@@ -128,11 +110,11 @@ describe('DisbursementService', () => {
     it('should find a disbursement by UUID', async () => {
         const mockUUID = randomUUID();
         const mockDisbursement = { uuid: mockUUID, amount: '100' };
-        prisma.disbursement.findUnique.mockResolvedValue(mockDisbursement);
+        prisma.rsclient.disbursement.findUnique.mockResolvedValue(mockDisbursement);
 
         const result = await service.findOne({ disbursementUUID: mockUUID });
         expect(result).toEqual(mockDisbursement);
-        expect(prisma.disbursement.findUnique).toHaveBeenCalledWith({
+        expect(prisma.rsclient.disbursement.findUnique).toHaveBeenCalledWith({
             where: { uuid: mockUUID },
             include: { DisbursementBeneficiary: true, _count: { select: { DisbursementBeneficiary: true } } },
         });
@@ -141,11 +123,11 @@ describe('DisbursementService', () => {
     it('should update a disbursement', async () => {
         const updateDisbursementDto: UpdateDisbursementDto = { id: 2, amount: '200' };
         const mockId = 1;
-        prisma.disbursement.update.mockResolvedValue({ id: mockId, ...updateDisbursementDto });
+        prisma.rsclient.disbursement.update.mockResolvedValue({ id: mockId, ...updateDisbursementDto });
 
         const result = await service.update(mockId, updateDisbursementDto);
         expect(result).toEqual({ id: mockId, ...updateDisbursementDto });
-        expect(prisma.disbursement.update).toHaveBeenCalledWith({
+        expect(prisma.rsclient.disbursement.update).toHaveBeenCalledWith({
             where: { id: mockId },
             data: updateDisbursementDto,
         });
@@ -169,12 +151,11 @@ describe('DisbursementService', () => {
         };
         const mockDisbursement = { id: 1, ...createDisbursementDto };
 
-        prisma.disbursement.create.mockResolvedValue(mockDisbursement);
-        prisma.disbursement.disbursementBeneficiary.create.mockResolvedValue(mockBeneficiary);
-        prisma.disbursementBeneficiary.upsert.mockResolvedValue({...mockBeneficiary, Disbursement:{type:'PROJECT'}});
+        prisma.rsclient.disbursement.create.mockResolvedValue(mockDisbursement);
+        prisma.rsclient.disbursementBeneficiary.upsert.mockResolvedValue({...mockBeneficiary, Disbursement:{type:'PROJECT'}});
 
-        const result = await service.create(createDisbursementDto);
-        expect(prisma.disbursement.create).toHaveBeenCalled();
+        await service.create(createDisbursementDto);
+        expect(prisma.rsclient.disbursement.create).toHaveBeenCalled();
 
     });
     
@@ -193,7 +174,7 @@ describe('DisbursementService', () => {
           },
         ];
     
-        prisma.disbursementBeneficiary.findMany = jest.fn().mockResolvedValue(mockTransactions);
+        prisma.rsclient.disbursementBeneficiary.findMany = jest.fn().mockResolvedValue(mockTransactions);
     
         const result = await service.disbursementTransaction(mockDisbursementDto);
 
@@ -217,7 +198,7 @@ describe('DisbursementService', () => {
             },
         ];
 
-        prisma.disbursementBeneficiary.findMany = jest.fn().mockResolvedValue(mockApprovals);
+        prisma.rsclient.disbursementBeneficiary.findMany = jest.fn().mockResolvedValue(mockApprovals);
 
         const result = await service.disbursementApprovals(mockDisbursementDto);
 
