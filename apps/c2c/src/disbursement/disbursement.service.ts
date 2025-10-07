@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import {
@@ -26,6 +26,7 @@ const paginate = paginator({ perPage: 20 });
 @Injectable()
 export class DisbursementService {
   private rsprisma;
+  private readonly logger = new Logger(DisbursementService?.name);
   constructor(
     protected prisma: PrismaService,
     @Inject(ProjectContants.ELClient) private readonly client: ClientProxy,
@@ -234,7 +235,7 @@ export class DisbursementService {
         select: {
           BeneficiaryGroup: {
             select: {
-              name:true,
+              name: true,
               _count: {
                 select: {
                   GroupedBeneficiaries: true,
@@ -462,5 +463,14 @@ export class DisbursementService {
         perPage: 20,
       }
     );
+  }
+
+  async disbursementPending() {
+    this.logger.log('calculating total draft disbursement');
+    return await this.prisma.disbursement.count({
+      where: {
+        status: 'DRAFT',
+      },
+    });
   }
 }

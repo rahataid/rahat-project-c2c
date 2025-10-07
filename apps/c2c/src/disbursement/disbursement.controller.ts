@@ -29,7 +29,7 @@ export class DisbursementController {
     cmd: JOBS.DISBURSEMENT.LIST,
     uuid: process.env.PROJECT_ID,
   })
-  findAll(query:ListDisbursementDto) {
+  findAll(query: ListDisbursementDto) {
     return this.disbursementService.findAll(query);
   }
 
@@ -73,6 +73,14 @@ export class DisbursementController {
   }
 
   @MessagePattern({
+    cmd: JOBS.DISBURSEMENT.GET_PENDING_DISBURSEMENT,
+    uuid: process.env.PROJECT_ID,
+  })
+  pendingTransaction() {
+    return this.disbursementService.disbursementPending();
+  }
+
+  @MessagePattern({
     cmd: JOBS.SAFE_TRANSACTION.CREATE,
     uuid: process.env.PROJECT_ID,
   })
@@ -98,7 +106,6 @@ export class DisbursementController {
     return this.disbursementMultisigService.getSafePendingTransactions();
   }
 
-
   @MessagePattern({
     cmd: JOBS.SAFE_TRANSACTION.GET_OWNERS,
     uuid: process.env.PROJECT_ID,
@@ -108,13 +115,10 @@ export class DisbursementController {
   }
 
   @MessagePattern({
-    cmd:JOBS.DISBURSEMENT.DISBURSEMENT_BALANCE_CHART,
+    cmd: JOBS.DISBURSEMENT.DISBURSEMENT_BALANCE_CHART,
     uuid: process.env.PROJECT_ID,
-    
   })
-  getDisbursementSafeBalanceChart(){
+  getDisbursementSafeBalanceChart() {
     return this.disbursementMultisigService.getDisbursementSafeBalanceChart();
   }
 }
-
-
