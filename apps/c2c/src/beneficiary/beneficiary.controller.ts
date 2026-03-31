@@ -26,11 +26,12 @@ export class BeneficiaryController {
     return this.beneficiaryService.findAllBeneficaryPii(data);
   }
 
+  //update CreateBeneficiaryDto
   @MessagePattern({
     cmd: JOBS.BENEFICIARY.ADD_TO_PROJECT,
     uuid: process.env.PROJECT_ID,
   })
-  create(data: CreateBeneficiaryDto) {
+  create(data: any) {
     return this.beneficiaryService.create(data);
   }
 
